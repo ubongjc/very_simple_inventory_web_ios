@@ -1,16 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { AppMoneyInput } from "@/app/components/ui/AppMoneyInput";
-import { AppDateInput } from "@/app/components/ui/AppDateInput";
-import { AppInput } from "@/app/components/ui/AppInput";
 import { toYmd } from "@/app/lib/dateUtils";
+import { useSettings } from "@/app/hooks/useSettings";
 
 interface PaymentPanelProps {
-  currencyCode: string;
   onSubmit: (amount: number, date: Date, notes?: string) => void | Promise<void>;
   defaultDate?: Date;
   loading?: boolean;
+  onSuccess?: () => void;
 }
 
 /**
@@ -18,11 +16,12 @@ interface PaymentPanelProps {
  * Green header with emoji, currency prefix, uniform heights
  */
 export function PaymentPanel({
-  currencyCode,
   onSubmit,
   defaultDate,
   loading = false,
+  onSuccess,
 }: PaymentPanelProps) {
+  const { settings } = useSettings();
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(defaultDate ? toYmd(defaultDate) : toYmd(new Date()));
   const [notes, setNotes] = useState("");
@@ -53,6 +52,10 @@ export function PaymentPanel({
       setAmount("");
       setNotes("");
       setDate(toYmd(new Date()));
+
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (err) {
       setError("Failed to record payment");
     }
@@ -76,33 +79,59 @@ export function PaymentPanel({
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <AppMoneyInput
-            label="Amount"
-            currencyCode={currencyCode}
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="0.00"
-            required
-            disabled={loading}
-          />
+          <div className="w-full min-w-0">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Amount
+            </label>
+            <div className="flex items-center">
+              <div className="flex items-center justify-center h-11 px-3 bg-white border-2 border-gray-300 rounded-l">
+                <span className="text-green-600 font-semibold text-base">
+                  {settings?.currencySymbol || "₦"}
+                </span>
+              </div>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="0.00"
+                required
+                disabled={loading}
+                className="flex-1 h-11 px-3 border-2 border-l-0 border-gray-300 rounded-r focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              />
+            </div>
+          </div>
 
-          <AppDateInput
-            label="Payment Date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            max={toYmd(new Date())} // Cannot record future payments
-            required
-            disabled={loading}
-          />
+          <div className="w-full min-w-0">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Payment Date
+            </label>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              max={toYmd(new Date())}
+              required
+              disabled={loading}
+              className="w-full h-11 px-3 border-2 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            />
+          </div>
         </div>
 
-        <AppInput
-          label="Notes (optional)"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="e.g., Cash payment, Bank transfer..."
-          disabled={loading}
-        />
+        <div className="w-full min-w-0">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Notes (optional)
+          </label>
+          <input
+            type="text"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="e.g., Cash payment, Bank transfer..."
+            disabled={loading}
+            className="w-full h-11 px-3 border-2 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          />
+        </div>
 
         <button
           type="submit"
