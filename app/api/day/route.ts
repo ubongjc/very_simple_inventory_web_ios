@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
 
     // Get all bookings that span this date (inclusive)
     // A booking is active on targetDate if: startDate <= targetDate AND endDate >= targetDate
-    const bookings = await prisma.rental.findMany({
+    const bookings = await prisma.booking.findMany({
       where: {
         startDate: { lte: targetDate },
         endDate: { gte: targetDate },
@@ -49,21 +49,21 @@ export async function GET(request: NextRequest) {
     // Get all items and calculate remaining for this date
     const items = await prisma.item.findMany({
       include: {
-        rentalItems: {
+        bookingItems: {
           include: {
-            rental: true,
+            booking: true,
           },
         },
       },
     });
 
     const itemAvailability = items.map((item) => {
-      const reserved = item.rentalItems
+      const reserved = item.bookingItems
         .filter(
           (ri) =>
-            new Date(ri.rental.startDate) <= targetDate &&
-            new Date(ri.rental.endDate) >= targetDate &&
-            (ri.rental.status === "CONFIRMED" || ri.rental.status === "OUT")
+            new Date(ri.booking.startDate) <= targetDate &&
+            new Date(ri.booking.endDate) >= targetDate &&
+            (ri.booking.status === "CONFIRMED" || ri.booking.status === "OUT")
         )
         .reduce((sum, ri) => sum + ri.quantity, 0);
 

@@ -52,7 +52,7 @@ export async function DELETE(
     const { id } = await params;
 
     // Check if customer has bookings
-    const customerBookings = await prisma.rental.count({
+    const customerBookings = await prisma.booking.count({
       where: { customerId: id }
     });
 

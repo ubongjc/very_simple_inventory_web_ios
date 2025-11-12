@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     const endDate = parseYmd(endStr);
 
     // Get all bookings that overlap with the date range
-    const bookings = await prisma.rental.findMany({
+    const bookings = await prisma.booking.findMany({
       where: {
         AND: [
           { startDate: { lte: endDate } },

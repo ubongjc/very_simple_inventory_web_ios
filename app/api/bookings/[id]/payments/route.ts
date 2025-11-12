@@ -10,7 +10,7 @@ export async function POST(
     const body = await request.json();
 
     // Validate booking exists
-    const booking = await prisma.rental.findUnique({
+    const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
       include: {
         payments: true,
@@ -47,7 +47,7 @@ export async function POST(
     // Create payment
     const payment = await prisma.payment.create({
       data: {
-        rentalId: bookingId,
+        bookingId: bookingId,
         amount: body.amount,
         paymentDate: body.paymentDate ? new Date(body.paymentDate) : new Date(),
         notes: body.notes,

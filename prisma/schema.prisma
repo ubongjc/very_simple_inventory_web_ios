@@ -13,12 +13,12 @@ model Item {
   name           String
   unit           String   // "pcs" etc.
   totalQuantity  Int      // authoritative stock count
-  price          Float?   // default rental price per unit
+  price          Float?   // default booking price per unit
   notes          String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  rentalItems    RentalItem[]
+  bookingItems   BookingItem[]
 }
 
 model Customer {
@@ -33,57 +33,59 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  rentals   Rental[]
+  bookings  Booking[]
 }
 
-model Rental {
+model Booking {
   id              String        @id @default(cuid())
   customerId      String
   startDate       DateTime      // store date at 00:00Z
   endDate         DateTime      // inclusive range
-  status          String        @default("CONFIRMED") // DRAFT, CONFIRMED, OUT, RETURNED, CANCELLED
-  reference       String?       // human-friendly code (e.g., RNT-000123)
+  status          String        @default("CONFIRMED") // CONFIRMED, OUT, RETURNED, CANCELLED
+  reference       String?       // human-friendly code (e.g., BKG-000123)
   notes           String?
   color           String?       // hex color for calendar display (e.g., #3b82f6)
-  totalPrice      Float?        // total agreed rental price
+  totalPrice      Float?        // total agreed booking price
   advancePayment  Float?        // initial advance payment
   paymentDueDate  DateTime?     // date when complete payment is due
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
   customer        Customer      @relation(fields: [customerId], references: [id])
-  items           RentalItem[]
+  items           BookingItem[]
   payments        Payment[]     // track all payments made
 
   @@index([startDate])
   @@index([endDate])
   @@index([status])
+  @@map("Rental")
 }
 
-model RentalItem {
+model BookingItem {
   id        String  @id @default(cuid())
-  rentalId  String
+  bookingId String  @map("rentalId")
   itemId    String
   quantity  Int
 
-  rental    Rental  @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   item      Item    @relation(fields: [itemId], references: [id])
 
   @@index([itemId])
-  @@unique([rentalId, itemId])
+  @@unique([bookingId, itemId], map: "RentalItem_rentalId_itemId_key")
+  @@map("RentalItem")
 }
 
 model Payment {
   id          String   @id @default(cuid())
-  rentalId    String
+  bookingId   String   @map("rentalId")
   amount      Float
   paymentDate DateTime @default(now())
   notes       String?
   createdAt   DateTime @default(now())
 
-  rental      Rental   @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
-  @@index([rentalId])
+  @@index([bookingId], map: "Payment_rentalId_idx")
 }
 
 model Settings {

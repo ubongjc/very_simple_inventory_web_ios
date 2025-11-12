@@ -10,7 +10,7 @@ export async function DELETE(
     const { id } = await params;
 
     // Delete the booking and all associated booking items and payments (cascade delete)
-    await prisma.rental.delete({
+    await prisma.booking.delete({
       where: { id },
     });
 
@@ -43,7 +43,7 @@ export async function PATCH(
     if (body.status !== undefined) updateData.status = body.status;
     if (body.color !== undefined) updateData.color = body.color;
 
-    const booking = await prisma.rental.update({
+    const booking = await prisma.booking.update({
       where: { id },
       data: updateData,
       include: {
@@ -94,7 +94,7 @@ export async function PUT(
       }
 
       // Get overlapping bookings (excluding the current booking being edited)
-      const overlappingBookings = await prisma.rental.findMany({
+      const overlappingBookings = await prisma.booking.findMany({
         where: {
           AND: [
             { id: { not: bookingId } },
@@ -152,12 +152,12 @@ export async function PUT(
     }
 
     // Delete existing booking items
-    await prisma.rentalItem.deleteMany({
-      where: { rentalId: bookingId },
+    await prisma.bookingItem.deleteMany({
+      where: { bookingId: bookingId },
     });
 
     // Update booking with new data
-    const booking = await prisma.rental.update({
+    const booking = await prisma.booking.update({
       where: { id: bookingId },
       data: {
         customerId: body.customerId,

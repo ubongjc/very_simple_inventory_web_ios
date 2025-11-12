@@ -3,7 +3,7 @@ import { prisma } from "@/app/lib/prisma";
 
 export async function DELETE() {
   try {
-    const result = await prisma.rental.deleteMany({});
+    const result = await prisma.booking.deleteMany({});
 
     return NextResponse.json({
       message: "All bookings deleted successfully",

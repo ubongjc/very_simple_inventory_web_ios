@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    const bookings = await prisma.rental.findMany({
+    const bookings = await prisma.booking.findMany({
       where: whereClause,
       include: {
         customer: true,
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Get all overlapping bookings for this item
-      const overlappingBookings = await prisma.rental.findMany({
+      const overlappingBookings = await prisma.booking.findMany({
         where: {
           AND: [
             { startDate: { lte: endDate } },
@@ -205,7 +205,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create booking with random color
-    const booking = await prisma.rental.create({
+    const booking = await prisma.booking.create({
       data: {
         customerId: validated.customerId,
         startDate,

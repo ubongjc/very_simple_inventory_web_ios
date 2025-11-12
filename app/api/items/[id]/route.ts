@@ -17,7 +17,7 @@ export async function PATCH(
       const now = new Date();
       now.setHours(0, 0, 0, 0);
 
-      const overlappingBookings = await prisma.rental.findMany({
+      const overlappingBookings = await prisma.booking.findMany({
         where: {
           AND: [
             { endDate: { gte: now } },
@@ -81,7 +81,7 @@ export async function DELETE(
     const { id } = await params;
 
     // Check if item is used in any bookings
-    const itemBookings = await prisma.rentalItem.count({
+    const itemBookings = await prisma.bookingItem.count({
       where: { itemId: id }
     });
 
