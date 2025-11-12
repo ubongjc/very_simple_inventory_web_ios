@@ -412,6 +412,13 @@ export default function EditRentalModal({
               </div>
             </div>
 
+            {/* Date Error Warning */}
+            {startDate && endDate && endDate < startDate && (
+              <div className="bg-red-50 border border-red-200 rounded p-2">
+                <p className="text-red-600 text-xs font-semibold">⚠️ Return date cannot be before start date</p>
+              </div>
+            )}
+
             {/* Status */}
             <div>
               <label className="block text-xs font-bold mb-1 text-black">
