@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Edit, Trash2, Package, Users, Calendar, AlertTriangle, Search, Menu, X, ChevronDown, ChevronRight } from "lucide-react";
+import { ArrowLeft, Edit, Trash2, Package, Users, AlertTriangle, Search, Menu, X, ChevronDown, ChevronRight } from "lucide-react";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import InventorySummary from "../components/InventorySummary";
 import { useSettings } from "@/app/hooks/useSettings";
@@ -28,39 +28,10 @@ interface Customer {
   notes?: string;
 }
 
-interface Rental {
-  id: string;
-  startDate: string;
-  endDate: string;
-  status: string;
-  reference?: string;
-  color?: string;
-  totalPrice?: number;
-  advancePayment?: number;
-  paymentDueDate?: string;
-  customer: {
-    name: string; // For backward compatibility
-    firstName?: string;
-    lastName?: string;
-  };
-  items: Array<{
-    quantity: number;
-    item: {
-      name: string;
-    };
-  }>;
-  payments?: Array<{
-    id: string;
-    amount: number;
-    paymentDate: string;
-  }>;
-}
-
 export default function InventoryPage() {
-  const [activeTab, setActiveTab] = useState<"items" | "customers" | "bookings">("items");
+  const [activeTab, setActiveTab] = useState<"items" | "customers">("items");
   const [items, setItems] = useState<Item[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [rentals, setRentals] = useState<Rental[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<any>({});
   const [showItemSummary, setShowItemSummary] = useState(false);
@@ -68,15 +39,10 @@ export default function InventoryPage() {
   // Search states
   const [itemSearch, setItemSearch] = useState("");
   const [customerSearch, setCustomerSearch] = useState("");
-  const [rentalSearch, setRentalSearch] = useState("");
 
   // Sort states
   const [itemSortBy, setItemSortBy] = useState<"name" | "quantity" | "price" | "unit">("name");
   const [customerSortBy, setCustomerSortBy] = useState<"name" | "email" | "phone">("name");
-  const [rentalSortBy, setRentalSortBy] = useState<"date" | "customer" | "items" | "status">("date");
-
-  // Filter states
-  const [rentalStatusFilter, setRentalStatusFilter] = useState<string>("all");
 
   // Expanded customer rows
   const [expandedCustomerIds, setExpandedCustomerIds] = useState<Set<string>>(new Set());
@@ -101,7 +67,7 @@ export default function InventoryPage() {
 
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
-    type: "items" | "customers" | "bookings" | "all";
+    type: "items" | "customers" | "all";
     title: string;
     message: string;
     count: number;
@@ -115,19 +81,9 @@ export default function InventoryPage() {
 
   const { formatCurrency } = useSettings();
 
-  // Format date without timezone conversion
-  const formatDate = (dateString: string) => {
-    const datePart = dateString.split('T')[0]; // "2025-11-06"
-    const [year, month, day] = datePart.split('-').map(Number);
-    const date = new Date(Date.UTC(year, month - 1, day));
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return `${monthNames[date.getUTCMonth()]} ${date.getUTCDate()}`;
-  };
-
   useEffect(() => {
     fetchItems();
     fetchCustomers();
-    fetchRentals();
   }, []);
 
   const fetchItems = async () => {
@@ -140,12 +96,6 @@ export default function InventoryPage() {
     const response = await fetch("/api/customers");
     const data = await response.json();
     setCustomers(data);
-  };
-
-  const fetchRentals = async () => {
-    const response = await fetch("/api/rentals");
-    const data = await response.json();
-    setRentals(data);
   };
 
   const handleEdit = (id: string, data: any) => {
@@ -289,46 +239,6 @@ export default function InventoryPage() {
     }
   };
 
-  const handleDeleteRental = async (id: string) => {
-    try {
-      const response = await fetch(`/api/rentals/${id}`, { method: "DELETE" });
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error || "Failed to delete rental");
-      }
-      await fetchRentals();
-    } catch (error: any) {
-      console.error("Error deleting rental:", error);
-      alert(`Failed to delete rental: ${error.message}`);
-    }
-  };
-
-  const handleUpdateRentalStatus = async (id: string, status: string) => {
-    try {
-      await fetch(`/api/rentals/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      });
-      await fetchRentals();
-    } catch (error) {
-      console.error("Error updating rental status:", error);
-    }
-  };
-
-  const handleUpdateRentalColor = async (id: string, color: string) => {
-    try {
-      await fetch(`/api/rentals/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ color }),
-      });
-      await fetchRentals();
-    } catch (error) {
-      console.error("Error updating rental color:", error);
-    }
-  };
-
   // Filter and sort functions
   const getFilteredAndSortedItems = () => {
     let filtered = [...items];
@@ -388,43 +298,7 @@ export default function InventoryPage() {
     }
   };
 
-  const getFilteredAndSortedRentals = () => {
-    let filtered = [...rentals];
-
-    // Apply status filter
-    if (rentalStatusFilter !== "all") {
-      filtered = filtered.filter((rental) => rental.status === rentalStatusFilter);
-    }
-
-    // Apply search filter
-    if (rentalSearch) {
-      filtered = filtered.filter((rental) => {
-        const fullName = `${rental.customer.firstName || rental.customer.name} ${rental.customer.lastName || ""}`.trim();
-        return fullName.toLowerCase().includes(rentalSearch.toLowerCase()) ||
-          rental.reference?.toLowerCase().includes(rentalSearch.toLowerCase()) ||
-          rental.items.some((item) => item.item.name.toLowerCase().includes(rentalSearch.toLowerCase()));
-      });
-    }
-
-    // Apply sorting
-    switch (rentalSortBy) {
-      case "customer":
-        return filtered.sort((a, b) => {
-          const aName = `${a.customer.firstName || a.customer.name} ${a.customer.lastName || ""}`.trim();
-          const bName = `${b.customer.firstName || b.customer.name} ${b.customer.lastName || ""}`.trim();
-          return aName.localeCompare(bName);
-        });
-      case "items":
-        return filtered.sort((a, b) => b.items.length - a.items.length);
-      case "status":
-        return filtered.sort((a, b) => a.status.localeCompare(b.status));
-      case "date":
-      default:
-        return filtered.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
-    }
-  };
-
-  const handleOpenDeleteModal = (type: "items" | "customers" | "bookings" | "all") => {
+  const handleOpenDeleteModal = (type: "items" | "customers" | "all") => {
     let title = "";
     let message = "";
     let count = 0;
@@ -440,15 +314,10 @@ export default function InventoryPage() {
         message = "This will permanently delete all customers.";
         count = customers.length;
         break;
-      case "bookings":
-        title = "Delete All Bookings";
-        message = "This will permanently delete all bookings.";
-        count = rentals.length;
-        break;
       case "all":
         title = "Delete Everything";
-        message = "This will permanently delete ALL items, customers, and bookings. This action cannot be undone!";
-        count = items.length + customers.length + rentals.length;
+        message = "This will permanently delete ALL items and customers. This action cannot be undone!";
+        count = items.length + customers.length;
         break;
     }
 
@@ -465,9 +334,6 @@ export default function InventoryPage() {
         case "customers":
           endpoint = "/api/customers/bulk";
           break;
-        case "bookings":
-          endpoint = "/api/rentals/bulk";
-          break;
         case "all":
           endpoint = "/api/clear-all";
           break;
@@ -482,7 +348,6 @@ export default function InventoryPage() {
       // Refresh all data
       await fetchItems();
       await fetchCustomers();
-      await fetchRentals();
 
       alert(`Successfully deleted ${deleteModal.type === "all" ? "all data" : `all ${deleteModal.type}`}`);
       setDeleteModal({ ...deleteModal, isOpen: false });
@@ -546,17 +411,6 @@ export default function InventoryPage() {
             <Users className="w-3 h-3" />
             Customers ({customers.length})
           </button>
-          <button
-            onClick={() => setActiveTab("bookings")}
-            className={`px-2 py-1 rounded-md font-semibold transition-colors flex items-center gap-1 text-xs ${
-              activeTab === "bookings"
-                ? "bg-blue-600 text-white"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            <Calendar className="w-3 h-3" />
-            Bookings ({rentals.length})
-          </button>
         </div>
 
         {/* Items Tab */}
@@ -566,22 +420,15 @@ export default function InventoryPage() {
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
               <button
                 onClick={() => setShowItemSummary(!showItemSummary)}
-                className="w-full flex items-center justify-between p-3 hover:bg-blue-50 transition-colors"
+                className="w-full px-3 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded hover:from-blue-700 hover:to-purple-700 font-semibold shadow-md transition-all flex items-center justify-center gap-2 text-sm"
               >
-                <div className="flex items-center gap-2">
-                  <Package className="w-5 h-5 text-blue-600" />
-                  <h2 className="text-sm font-bold text-black">Item Summary</h2>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-600 font-medium">
-                    {showItemSummary ? "Hide" : "Show"}
-                  </span>
-                  {showItemSummary ? (
-                    <ChevronDown className="w-4 h-4 text-gray-600" />
-                  ) : (
-                    <ChevronRight className="w-4 h-4 text-gray-600" />
-                  )}
-                </div>
+                <Package className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">📊 ITEM SUMMARY</span>
+                {showItemSummary ? (
+                  <ChevronDown className="w-4 h-4 flex-shrink-0" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 flex-shrink-0" />
+                )}
               </button>
               {showItemSummary && (
                 <div className="border-t border-gray-200">
@@ -727,8 +574,12 @@ export default function InventoryPage() {
                             onChange={(e) =>
                               setEditData({ ...editData, notes: e.target.value })
                             }
+                            maxLength={50}
                             className="w-full px-1 py-0.5 border border-gray-400 rounded text-black font-semibold text-[10px]"
                           />
+                          <p className="text-[9px] text-gray-600 mt-0.5">
+                            {(editData.notes ?? item.notes ?? "").length}/50
+                          </p>
                         </td>
                         <td className="px-2 py-1 text-right space-x-1">
                           <button
@@ -975,9 +826,13 @@ export default function InventoryPage() {
                                     onChange={(e) =>
                                       setEditData({ ...editData, notes: e.target.value })
                                     }
+                                    maxLength={50}
                                     className="w-full px-2 py-1 border border-gray-400 rounded text-black font-semibold text-[10px]"
                                     rows={2}
                                   />
+                                  <p className="text-[9px] text-gray-600 mt-0.5">
+                                    {(editData.notes ?? customer.notes ?? "").length}/50 characters
+                                  </p>
                                 </div>
                                 <div className="flex gap-2">
                                   <button
@@ -1057,163 +912,6 @@ export default function InventoryPage() {
           </div>
         )}
 
-        {/* Bookings Tab */}
-        {activeTab === "bookings" && (
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-            <div className="p-2 border-b border-gray-200">
-              <div className="flex justify-between items-center mb-2">
-                <h2 className="text-xs font-bold text-black">Bookings ({getFilteredAndSortedRentals().length})</h2>
-                <button
-                  onClick={() => handleOpenDeleteModal("bookings")}
-                  disabled={rentals.length === 0}
-                  className="flex items-center gap-1 px-2 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-[10px]"
-                >
-                  <Trash2 className="w-3 h-3" />
-                  Clear All Bookings
-                </button>
-              </div>
-              <div className="flex gap-2 mb-2">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    value={rentalSearch}
-                    onChange={(e) => setRentalSearch(e.target.value)}
-                    className="w-full pl-7 pr-2 py-1 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-black font-medium text-xs"
-                  />
-                </div>
-                <select
-                  value={rentalStatusFilter}
-                  onChange={(e) => setRentalStatusFilter(e.target.value)}
-                  className="px-2 py-1 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-[10px]"
-                >
-                  <option value="all">All</option>
-                  <option value="CONFIRMED">Confirmed</option>
-                  <option value="OUT">Out</option>
-                  <option value="RETURNED">Returned</option>
-                  <option value="CANCELLED">Cancelled</option>
-                </select>
-                <select
-                  value={rentalSortBy}
-                  onChange={(e) => setRentalSortBy(e.target.value as any)}
-                  className="px-2 py-1 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-[10px]"
-                >
-                  <option value="date">Date</option>
-                  <option value="customer">Customer</option>
-                  <option value="items">Items</option>
-                  <option value="status">Status</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
-                    Color
-                  </th>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
-                    Customer
-                  </th>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
-                    Start
-                  </th>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
-                    End
-                  </th>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
-                    Items
-                  </th>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
-                    Status
-                  </th>
-                  <th className="px-2 py-1 text-right text-[9px] font-bold text-black uppercase">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {getFilteredAndSortedRentals().map((rental) => (
-                  <tr key={rental.id} className="relative">
-                    {/* Color stripe */}
-                    <td className="px-2 py-1 relative">
-                      <div
-                        className="absolute top-0 left-0 w-1 h-full"
-                        style={{ backgroundColor: rental.color || "#3b82f6" }}
-                      />
-                      <input
-                        type="color"
-                        value={rental.color || "#3b82f6"}
-                        onChange={(e) => handleUpdateRentalColor(rental.id, e.target.value)}
-                        className="w-5 h-5 border border-gray-300 rounded cursor-pointer ml-1"
-                        title="Choose rental color"
-                      />
-                    </td>
-                    <td className="px-2 py-1 font-bold text-black text-[10px]">
-                      {rental.customer.firstName || rental.customer.name} {rental.customer.lastName || ""}
-                    </td>
-                    <td className="px-2 py-1 font-semibold text-black text-[10px]">
-                      {formatDate(rental.startDate)}
-                    </td>
-                    <td className="px-2 py-1 font-semibold text-black text-[10px]">
-                      {formatDate(rental.endDate)}
-                    </td>
-                    <td className="px-2 py-1 text-[9px] font-medium text-black">
-                      <div className="font-bold text-blue-600">
-                        {rental.items.length} item{rental.items.length !== 1 ? "s" : ""}
-                      </div>
-                      <div className="text-[8px]">
-                        {rental.items
-                          .map((i) => `${i.item.name} ×${i.quantity}`)
-                          .join(", ")}
-                      </div>
-                    </td>
-                    <td className="px-2 py-1">
-                      <select
-                        value={rental.status}
-                        onChange={(e) =>
-                          handleUpdateRentalStatus(rental.id, e.target.value)
-                        }
-                        className={`px-2 py-1 rounded text-[10px] font-bold border w-full min-w-[120px] ${
-                          rental.status === "CONFIRMED"
-                            ? "bg-blue-100 text-blue-800"
-                            : rental.status === "OUT"
-                            ? "bg-red-100 text-red-800"
-                            : rental.status === "RETURNED"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-800"
-                        }`}
-                      >
-                        <option value="CONFIRMED">CONFIRMED</option>
-                        <option value="OUT">OUT</option>
-                        <option value="RETURNED">RETURNED</option>
-                        <option value="CANCELLED">CANCELLED</option>
-                      </select>
-                    </td>
-                    <td className="px-2 py-1 text-right">
-                      <button
-                        onClick={() => handleDeleteRental(rental.id)}
-                        className="px-1 py-0.5 text-[9px] font-bold text-red-600 hover:text-white hover:bg-red-600 border border-red-600 rounded transition-colors"
-                      >
-                        DEL
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            </div>
-            {getFilteredAndSortedRentals().length === 0 && (
-              <div className="text-center py-6 text-black font-semibold text-xs">
-                {rentals.length === 0
-                  ? "No bookings yet."
-                  : "No bookings match your filters."}
-              </div>
-            )}
-          </div>
-        )}
       </main>
 
       <DeleteConfirmModal
