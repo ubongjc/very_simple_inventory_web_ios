@@ -879,14 +879,14 @@ export default function AddRentalModal({
               <h4 className="text-xs font-bold mb-2 text-black">Pricing Information</h4>
               <div className="space-y-3">
                 {/* Total and Advance Row */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div className="flex flex-col min-w-0">
                     <label className="block text-xs font-bold mb-1 text-black">
                       Total
                     </label>
-                    <div className="flex items-center">
-                      <div className="flex items-center justify-center h-10 px-3 bg-white border-2 border-gray-400 border-r-0 rounded-l">
-                        <span className="text-green-600 font-semibold text-base">
+                    <div className="flex items-center min-w-0">
+                      <div className="flex items-center justify-center h-10 px-2 bg-white border-2 border-gray-400 border-r-0 rounded-l flex-shrink-0">
+                        <span className="text-green-600 font-semibold text-sm">
                           {settings?.currencySymbol || "₦"}
                         </span>
                       </div>
@@ -901,7 +901,7 @@ export default function AddRentalModal({
                         placeholder="0"
                         step="0.01"
                         min="0"
-                        className="flex-1 h-10 px-2 py-1.5 border-2 border-gray-400 rounded-r focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm"
+                        className="flex-1 min-w-0 h-10 px-2 py-1.5 border-2 border-gray-400 rounded-r focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm"
                       />
                     </div>
                   </div>
@@ -909,9 +909,9 @@ export default function AddRentalModal({
                     <label className="block text-xs font-bold mb-1 text-black">
                       Advance
                     </label>
-                    <div className="flex items-center">
-                      <div className="flex items-center justify-center h-10 px-3 bg-white border-2 border-gray-400 border-r-0 rounded-l">
-                        <span className="text-green-600 font-semibold text-base">
+                    <div className="flex items-center min-w-0">
+                      <div className="flex items-center justify-center h-10 px-2 bg-white border-2 border-gray-400 border-r-0 rounded-l flex-shrink-0">
+                        <span className="text-green-600 font-semibold text-sm">
                           {settings?.currencySymbol || "₦"}
                         </span>
                       </div>
@@ -922,7 +922,7 @@ export default function AddRentalModal({
                         placeholder="0"
                         step="0.01"
                         min="0"
-                        className="flex-1 h-10 px-2 py-1.5 border-2 border-gray-400 rounded-r focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm"
+                        className="flex-1 min-w-0 h-10 px-2 py-1.5 border-2 border-gray-400 rounded-r focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm"
                       />
                     </div>
                   </div>
