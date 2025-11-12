@@ -198,7 +198,7 @@ export default function AddBookingModal({
             const quantity = typeof bookingItem.quantity === "number"
               ? bookingItem.quantity
               : parseInt(String(bookingItem.quantity)) || 0;
-            calculatedTotal += item.price * quantity;
+            calculatedTotal += Number(item.price) * quantity;
             hasValidItems = true;
           }
         }
@@ -434,7 +434,7 @@ export default function AddBookingModal({
           if (item && item.price) {
             hasItemsWithPrice = true;
             const quantity = typeof bookingItem.quantity === "number" ? bookingItem.quantity : parseInt(String(bookingItem.quantity)) || 0;
-            calculatedTotal += item.price * quantity;
+            calculatedTotal += Number(item.price) * quantity;
           }
         }
       });

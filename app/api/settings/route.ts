@@ -1,20 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
-import { z } from "zod";
-
-const updateSettingsSchema = z.object({
-  businessName: z.string().optional(),
-  currency: z.string().optional(),
-  currencySymbol: z.string().optional(),
-  businessPhone: z.string().nullable().optional(),
-  businessEmail: z.string().email().nullable().optional(),
-  businessAddress: z.string().nullable().optional(),
-  taxRate: z.number().min(0).max(100).nullable().optional(),
-  lowStockThreshold: z.number().int().min(0).optional(),
-  defaultRentalDays: z.number().int().min(1).optional(),
-  dateFormat: z.string().optional(),
-  timezone: z.string().optional(),
-});
+import { updateSettingsSchema } from "@/app/lib/validation";
 
 export async function GET() {
   try {

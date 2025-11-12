@@ -201,6 +201,9 @@ export default function SettingsPage() {
                 onChange={(e) => updateSetting("businessName", e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium"
                 placeholder="My Booking Business"
+                minLength={2}
+                maxLength={100}
+                required
               />
             </div>
 
@@ -212,7 +215,9 @@ export default function SettingsPage() {
                   value={settings.businessPhone || ""}
                   onChange={(e) => updateSetting("businessPhone", e.target.value || null)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium"
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="+1234567890"
+                  minLength={8}
+                  maxLength={15}
                 />
               </div>
 
@@ -224,6 +229,8 @@ export default function SettingsPage() {
                   onChange={(e) => updateSetting("businessEmail", e.target.value || null)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium"
                   placeholder="contact@business.com"
+                  minLength={3}
+                  maxLength={254}
                 />
               </div>
             </div>
@@ -236,7 +243,9 @@ export default function SettingsPage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium resize-none"
                 rows={2}
                 placeholder="123 Main Street, City, State, ZIP"
+                maxLength={100}
               />
+              <p className="text-xs text-gray-500 mt-1">{(settings.businessAddress || "").length}/100 characters</p>
             </div>
           </div>
         </div>
@@ -302,6 +311,7 @@ export default function SettingsPage() {
               <input
                 type="number"
                 min="0"
+                max="100000"
                 value={settings.lowStockThreshold}
                 onChange={(e) => updateSetting("lowStockThreshold", parseInt(e.target.value) || 0)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium"
@@ -318,6 +328,7 @@ export default function SettingsPage() {
               <input
                 type="number"
                 min="1"
+                max="365"
                 value={settings.defaultBookingDays}
                 onChange={(e) => updateSetting("defaultBookingDays", parseInt(e.target.value) || 1)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium"

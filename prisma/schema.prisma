@@ -9,31 +9,35 @@ datasource db {
 }
 
 model Item {
-  id             String   @id @default(cuid())
-  name           String
-  unit           String   // "pcs" etc.
-  totalQuantity  Int      // authoritative stock count
-  price          Float?   // default booking price per unit
-  notes          String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id             String    @id @default(cuid())
+  name           String    @db.VarChar(80)
+  unit           String    @db.VarChar(16) // "pcs" etc. - letters only
+  totalQuantity  Int       // authoritative stock count (0-100000)
+  price          Decimal?  @db.Decimal(12, 2) // default booking price per unit
+  notes          String?   @db.VarChar(50)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   bookingItems   BookingItem[]
+
+  @@unique([name], name: "unique_item_name")
 }
 
 model Customer {
   id        String   @id @default(cuid())
   name      String   // Will be deprecated, keeping for backward compatibility
-  firstName String?  // Will become required after migration
-  lastName  String?
-  phone     String?
-  email     String?
-  address   String?
-  notes     String?
+  firstName String?  @db.VarChar(50) // Will become required after migration
+  lastName  String?  @db.VarChar(50)
+  phone     String?  @db.VarChar(15) // E.164 format
+  email     String?  @db.VarChar(254) // RFC5322 max length
+  address   String?  @db.VarChar(200)
+  notes     String?  @db.VarChar(50)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   bookings  Booking[]
+
+  @@unique([email], name: "unique_customer_email")
 }
 
 model Booking {
@@ -41,12 +45,12 @@ model Booking {
   customerId      String
   startDate       DateTime      // store date at 00:00Z
   endDate         DateTime      // inclusive range
-  status          String        @default("CONFIRMED") // CONFIRMED, OUT, RETURNED, CANCELLED
-  reference       String?       // human-friendly code (e.g., BKG-000123)
-  notes           String?
-  color           String?       // hex color for calendar display (e.g., #3b82f6)
-  totalPrice      Float?        // total agreed booking price
-  advancePayment  Float?        // initial advance payment
+  status          String        @default("CONFIRMED") @db.VarChar(20) // CONFIRMED, OUT, RETURNED, CANCELLED
+  reference       String?       @db.VarChar(12) // human-friendly code (e.g., BKG-000123)
+  notes           String?       @db.VarChar(50)
+  color           String?       @db.VarChar(7) // hex color for calendar display (e.g., #3b82f6)
+  totalPrice      Decimal?      @db.Decimal(12, 2) // total agreed booking price
+  advancePayment  Decimal?      @db.Decimal(12, 2) // initial advance payment
   paymentDueDate  DateTime?     // date when complete payment is due
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -58,6 +62,7 @@ model Booking {
   @@index([startDate])
   @@index([endDate])
   @@index([status])
+  @@unique([reference], name: "unique_booking_reference")
   @@map("Rental")
 }
 
@@ -78,9 +83,9 @@ model BookingItem {
 model Payment {
   id          String   @id @default(cuid())
   bookingId   String   @map("rentalId")
-  amount      Float
+  amount      Decimal  @db.Decimal(12, 2)
   paymentDate DateTime @default(now())
-  notes       String?
+  notes       String?  @db.VarChar(100)
   createdAt   DateTime @default(now())
 
   booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
@@ -90,16 +95,16 @@ model Payment {
 
 model Settings {
   id                    String   @id @default(cuid())
-  businessName          String   @default("My Rental Business")
-  currency              String   @default("USD")
-  currencySymbol        String   @default("$")
-  businessPhone         String?
-  businessEmail         String?
-  businessAddress       String?
-  taxRate               Float?   // percentage (e.g., 10 for 10%)
+  businessName          String   @default("My Rental Business") @db.VarChar(100)
+  currency              String   @default("USD") @db.VarChar(3) // ISO 4217 code
+  currencySymbol        String   @default("$") @db.VarChar(5)
+  businessPhone         String?  @db.VarChar(15) // E.164 format
+  businessEmail         String?  @db.VarChar(254)
+  businessAddress       String?  @db.VarChar(100)
+  taxRate               Decimal? @db.Decimal(5, 2) // percentage (e.g., 10.00 for 10%)
   lowStockThreshold     Int      @default(5)
   defaultRentalDays     Int      @default(1)
-  dateFormat            String   @default("MM/DD/YYYY")
-  timezone              String   @default("UTC")
+  dateFormat            String   @default("MM/DD/YYYY") @db.VarChar(20)
+  timezone              String   @default("UTC") @db.VarChar(64) // IANA timezone
   updatedAt             DateTime @updatedAt
 }

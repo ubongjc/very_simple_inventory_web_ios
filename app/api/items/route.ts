@@ -22,6 +22,27 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validated = createItemSchema.parse(body);
 
+    // Check for duplicate item name (case-insensitive)
+    // The database will also enforce this via unique index, but we provide a better error message here
+    const existingItems = await prisma.item.findMany({
+      where: {
+        name: {
+          mode: "insensitive",
+          equals: validated.name,
+        },
+      },
+    });
+
+    if (existingItems.length > 0) {
+      return NextResponse.json(
+        {
+          error: "Item already exists",
+          details: `An item with the name "${validated.name}" already exists. Please use a different name.`,
+        },
+        { status: 409 } // Conflict status code
+      );
+    }
+
     const item = await prisma.item.create({
       data: validated,
     });
@@ -33,6 +54,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "Invalid input", details: error.errors },
         { status: 400 }
+      );
+    }
+    // Handle unique constraint violation from database
+    if (error.code === "P2002") {
+      return NextResponse.json(
+        {
+          error: "Item already exists",
+          details: `An item with this name already exists. Please use a different name.`,
+        },
+        { status: 409 }
       );
     }
     return NextResponse.json(

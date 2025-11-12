@@ -347,9 +347,9 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
                                 <span>Amount Due:</span>
                                 <span className="text-red-700">
                                   {formatCurrency(
-                                    booking.totalPrice -
-                                    (booking.advancePayment || 0) -
-                                    (booking.payments?.reduce((sum, p) => sum + p.amount, 0) || 0)
+                                    Number(booking.totalPrice) -
+                                    (booking.advancePayment ? Number(booking.advancePayment) : 0) -
+                                    (booking.payments?.reduce((sum, p) => sum + Number(p.amount), 0) || 0)
                                   )}
                                 </span>
                               </div>

@@ -262,9 +262,9 @@ export default function BookingsPage() {
           if (!booking.totalPrice) return false;
 
           // Calculate balance remaining
-          const totalPaid = (booking.advancePayment || 0) +
-                           (booking.payments?.reduce((sum, p) => sum + p.amount, 0) || 0);
-          const balance = booking.totalPrice - totalPaid;
+          const totalPaid = (booking.advancePayment ? Number(booking.advancePayment) : 0) +
+                           (booking.payments?.reduce((sum, p) => sum + Number(p.amount), 0) || 0);
+          const balance = Number(booking.totalPrice) - totalPaid;
 
           // Must have outstanding balance
           if (balance <= 0) return false;
@@ -457,9 +457,9 @@ export default function BookingsPage() {
     const booking = bookings.find(r => r.id === bookingId);
     if (booking && booking.totalPrice) {
       const newPaymentAmount = parseFloat(paymentAmount);
-      const totalPaid = (booking.advancePayment || 0) +
-                        (booking.payments?.reduce((sum, p) => sum + p.amount, 0) || 0);
-      const remainingBalance = booking.totalPrice - totalPaid;
+      const totalPaid = (booking.advancePayment ? Number(booking.advancePayment) : 0) +
+                        (booking.payments?.reduce((sum, p) => sum + Number(p.amount), 0) || 0);
+      const remainingBalance = Number(booking.totalPrice) - totalPaid;
 
       if (newPaymentAmount > remainingBalance) {
         setPaymentError(`Payment amount (${formatCurrency(newPaymentAmount)}) exceeds remaining balance (${formatCurrency(remainingBalance)})`);
