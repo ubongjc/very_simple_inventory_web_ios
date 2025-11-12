@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Calendar, Search, ChevronDown, ChevronUp, Trash2, Edit2, User, Package, Maximize2, Minimize2, ChevronLeft, ChevronRight, Plus, X, CheckSquare, Square, Filter, Menu } from "lucide-react";
+import { ArrowLeft, Calendar, Search, ChevronDown, ChevronUp, Trash2, Edit2, User, Package, Maximize2, Minimize2, ChevronLeft, ChevronRight, Plus, X, CheckSquare, Square, Filter, Menu, Settings } from "lucide-react";
 import EditBookingModal from "../components/EditBookingModal";
 import DatePicker from "../components/DatePicker";
 import { useSettings } from "@/app/hooks/useSettings";
@@ -87,6 +87,22 @@ export default function BookingsPage() {
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
   const [itemSearchQuery, setItemSearchQuery] = useState("");
   const [itemSortBy, setItemSortBy] = useState<"name-asc" | "name-desc" | "quantity-desc" | "quantity-asc" | "unit">("name-asc");
+  const [isDefaultFiltersOpen, setIsDefaultFiltersOpen] = useState(false);
+
+  // Load default filters from localStorage on mount
+  useEffect(() => {
+    const savedDefaults = localStorage.getItem("bookingsDefaultFilters");
+    if (savedDefaults) {
+      try {
+        const defaults = JSON.parse(savedDefaults);
+        if (defaults.dateRangeFilter) setDateRangeFilter(defaults.dateRangeFilter);
+        if (defaults.sortBy) setSortBy(defaults.sortBy);
+        if (defaults.statusFilter) setStatusFilter(defaults.statusFilter);
+      } catch (error) {
+        console.error("Error loading default filters:", error);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     fetchBookings();
@@ -508,6 +524,23 @@ export default function BookingsPage() {
     }
   };
 
+  const saveDefaultFilters = () => {
+    const defaults = {
+      dateRangeFilter,
+      sortBy,
+      statusFilter,
+    };
+    localStorage.setItem("bookingsDefaultFilters", JSON.stringify(defaults));
+    setIsDefaultFiltersOpen(false);
+    alert("Default filters saved!");
+  };
+
+  const clearDefaultFilters = () => {
+    localStorage.removeItem("bookingsDefaultFilters");
+    setIsDefaultFiltersOpen(false);
+    alert("Default filters cleared!");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
@@ -695,6 +728,99 @@ export default function BookingsPage() {
                   {filteredBookings.length} booking{filteredBookings.length !== 1 ? "s" : ""}
                 </p>
               </div>
+            </div>
+
+            {/* Default Filters Button */}
+            <div className="relative">
+              <button
+                onClick={() => setIsDefaultFiltersOpen(!isDefaultFiltersOpen)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-semibold transition-all shadow-md text-xs"
+              >
+                <Settings className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">DEFAULT FILTERS</span>
+                <span className="sm:hidden">DEFAULTS</span>
+              </button>
+
+              {/* Dropdown Menu */}
+              {isDefaultFiltersOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setIsDefaultFiltersOpen(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-2xl border-2 border-gray-200 z-20 overflow-hidden">
+                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2">
+                      <h3 className="text-sm font-bold text-white">Set Default Filters</h3>
+                      <p className="text-[10px] text-white/80">These will be applied when you open this page</p>
+                    </div>
+
+                    <div className="p-4 space-y-3">
+                      {/* Current Settings Display */}
+                      <div className="bg-gray-50 rounded-lg p-3 space-y-2">
+                        <div className="text-[10px] font-bold text-gray-700 uppercase">Current Filters</div>
+
+                        <div>
+                          <div className="text-[9px] text-gray-600 font-medium">Date Range:</div>
+                          <div className="text-xs font-semibold text-gray-900">
+                            {dateRangeFilter === "today" && "Today"}
+                            {dateRangeFilter === "current-week" && "This Week"}
+                            {dateRangeFilter === "next-week" && "Next Week"}
+                            {dateRangeFilter === "current-month" && "This Month"}
+                            {dateRangeFilter === "next-month" && "Next Month"}
+                            {dateRangeFilter === "all" && "All Time"}
+                            {dateRangeFilter === "custom" && "Custom Range"}
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="text-[9px] text-gray-600 font-medium">Sort By:</div>
+                          <div className="text-xs font-semibold text-gray-900">
+                            {sortBy === "start-newest" && "Start Date ↓"}
+                            {sortBy === "start-oldest" && "Start Date ↑"}
+                            {sortBy === "end-newest" && "End Date ↓"}
+                            {sortBy === "end-oldest" && "End Date ↑"}
+                            {sortBy === "customer-asc" && "Customer A → Z"}
+                            {sortBy === "customer-desc" && "Customer Z → A"}
+                            {sortBy === "status" && "Status"}
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="text-[9px] text-gray-600 font-medium">Status:</div>
+                          <div className="text-xs font-semibold text-gray-900">
+                            {statusFilter === "all" && "All Status"}
+                            {statusFilter === "CONFIRMED" && "Confirmed"}
+                            {statusFilter === "OUT" && "Out"}
+                            {statusFilter === "RETURNED" && "Returned"}
+                            {statusFilter === "CANCELLED" && "Cancelled"}
+                            {statusFilter === "OVERDUE" && "Overdue"}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-2">
+                        <button
+                          onClick={saveDefaultFilters}
+                          className="flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold text-xs transition-colors shadow-md"
+                        >
+                          Save as Default
+                        </button>
+                        <button
+                          onClick={clearDefaultFilters}
+                          className="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold text-xs transition-colors shadow-md"
+                        >
+                          Clear Default
+                        </button>
+                      </div>
+
+                      <div className="text-[9px] text-gray-500 text-center italic">
+                        Adjust the filters below, then save them as your default settings
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
