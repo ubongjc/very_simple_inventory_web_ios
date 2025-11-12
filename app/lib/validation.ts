@@ -22,7 +22,7 @@ export const createCustomerSchema = z.object({
 
 export const updateCustomerSchema = createCustomerSchema.partial();
 
-export const rentalItemSchema = z.object({
+export const bookingItemSchema = z.object({
   itemId: z.string().cuid(),
   quantity: z.number().int().min(1, "Quantity must be at least 1"),
 });
@@ -33,23 +33,23 @@ export const initialPaymentSchema = z.object({
   notes: z.string().optional(),
 });
 
-// Base rental schema without validation refinements
-const baseRentalSchema = z.object({
+// Base booking schema without validation refinements
+const baseBookingSchema = z.object({
   customerId: z.string().cuid(),
   startDate: z.string().or(z.date()),
   endDate: z.string().or(z.date()),
   status: z.enum(["CONFIRMED", "OUT", "RETURNED", "CANCELLED"]).optional(),
   reference: z.string().optional(),
   notes: z.string().optional(),
-  items: z.array(rentalItemSchema).min(1, "At least one item is required"),
+  items: z.array(bookingItemSchema).min(1, "At least one item is required"),
   totalPrice: z.number().min(0).optional(),
   advancePayment: z.number().min(0).optional(),
   paymentDueDate: z.string().or(z.date()).optional(),
   initialPayments: z.array(initialPaymentSchema).optional(),
 });
 
-// Create rental schema with date validation
-export const createRentalSchema = baseRentalSchema.refine(
+// Create booking schema with date validation
+export const createBookingSchema = baseBookingSchema.refine(
   (data) => {
     // Parse dates and ensure endDate >= startDate
     const start = typeof data.startDate === 'string'
@@ -67,10 +67,10 @@ export const createRentalSchema = baseRentalSchema.refine(
   }
 );
 
-// Update rental schema (partial fields, validation applied on server)
-export const updateRentalSchema = baseRentalSchema.partial();
+// Update booking schema (partial fields, validation applied on server)
+export const updateBookingSchema = baseBookingSchema.partial();
 
-export const updateRentalStatusSchema = z.object({
+export const updateBookingStatusSchema = z.object({
   status: z.enum(["CONFIRMED", "OUT", "RETURNED", "CANCELLED"]),
 });
 

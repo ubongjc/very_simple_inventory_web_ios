@@ -110,7 +110,6 @@ export function PaymentPanel({
               onChange={(date) => setDate(date)}
               label="Payment Date"
               maxDate={toYmd(new Date())}
-              disabled={loading}
             />
           </div>
         </div>
