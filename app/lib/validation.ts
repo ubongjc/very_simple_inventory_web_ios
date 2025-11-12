@@ -33,7 +33,8 @@ export const initialPaymentSchema = z.object({
   notes: z.string().optional(),
 });
 
-export const createRentalSchema = z.object({
+// Base rental schema without validation refinements
+const baseRentalSchema = z.object({
   customerId: z.string().cuid(),
   startDate: z.string().or(z.date()),
   endDate: z.string().or(z.date()),
@@ -45,7 +46,10 @@ export const createRentalSchema = z.object({
   advancePayment: z.number().min(0).optional(),
   paymentDueDate: z.string().or(z.date()).optional(),
   initialPayments: z.array(initialPaymentSchema).optional(),
-}).refine(
+});
+
+// Create rental schema with date validation
+export const createRentalSchema = baseRentalSchema.refine(
   (data) => {
     // Parse dates and ensure endDate >= startDate
     const start = typeof data.startDate === 'string'
@@ -63,7 +67,8 @@ export const createRentalSchema = z.object({
   }
 );
 
-export const updateRentalSchema = createRentalSchema.partial();
+// Update rental schema (partial fields, validation applied on server)
+export const updateRentalSchema = baseRentalSchema.partial();
 
 export const updateRentalStatusSchema = z.object({
   status: z.enum(["DRAFT", "CONFIRMED", "OUT", "RETURNED", "CANCELLED"]),
