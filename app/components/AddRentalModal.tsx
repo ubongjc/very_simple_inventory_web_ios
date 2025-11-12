@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Plus } from "lucide-react";
 import { toTitleCase } from "@/app/lib/validation";
+import { useSettings } from "@/app/hooks/useSettings";
 import DatePicker from "./DatePicker";
 
 interface AddRentalModalProps {
@@ -37,6 +38,7 @@ export default function AddRentalModal({
   onClose,
   onSuccess,
 }: AddRentalModalProps) {
+  const { settings } = useSettings();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
@@ -619,7 +621,7 @@ export default function AddRentalModal({
             )}
 
             {/* Dates */}
-            <div className="grid grid-cols-2 gap-4 px-2">
+            <div className="grid grid-cols-2 gap-4">
               <div className="min-w-0">
                 <DatePicker
                   value={startDate}
@@ -644,7 +646,7 @@ export default function AddRentalModal({
 
             {/* Date Error Warning */}
             {dateError && (
-              <div className="bg-red-50 border border-red-200 rounded p-2 mx-2">
+              <div className="bg-red-50 border border-red-200 rounded p-2">
                 <p className="text-red-600 text-xs font-semibold">⚠️ {dateError}</p>
               </div>
             )}
@@ -874,61 +876,77 @@ export default function AddRentalModal({
 
             {/* Pricing Information */}
             <div className="border-t pt-2">
-              <div className="max-w-md mx-auto w-full px-4">
-                <h4 className="text-xs font-bold mb-2 text-black">Pricing Information</h4>
-                <div className="grid grid-cols-3 gap-2">
+              <h4 className="text-xs font-bold mb-2 text-black">Pricing Information</h4>
+              <div className="space-y-3">
+                {/* Total and Advance Row */}
+                <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col min-w-0">
                     <label className="block text-xs font-bold mb-1 text-black">
                       Total
                     </label>
-                    <input
-                      type="number"
-                      value={totalPrice}
-                      onChange={(e) => {
-                        setTotalPrice(e.target.value);
-                        setManualTotalPrice(true);
-                      }}
-                      onFocus={() => setManualTotalPrice(true)}
-                      placeholder="0"
-                      step="0.01"
-                      min="0"
-                      className="h-10 w-full px-2 py-1.5 border-2 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm"
-                    />
+                    <div className="flex items-center">
+                      <div className="flex items-center justify-center h-10 px-3 bg-white border-2 border-gray-400 border-r-0 rounded-l">
+                        <span className="text-green-600 font-semibold text-base">
+                          {settings?.currencySymbol || "₦"}
+                        </span>
+                      </div>
+                      <input
+                        type="number"
+                        value={totalPrice}
+                        onChange={(e) => {
+                          setTotalPrice(e.target.value);
+                          setManualTotalPrice(true);
+                        }}
+                        onFocus={() => setManualTotalPrice(true)}
+                        placeholder="0"
+                        step="0.01"
+                        min="0"
+                        className="flex-1 h-10 px-2 py-1.5 border-2 border-gray-400 rounded-r focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm"
+                      />
+                    </div>
                   </div>
                   <div className="flex flex-col min-w-0">
                     <label className="block text-xs font-bold mb-1 text-black">
                       Advance
                     </label>
-                    <input
-                      type="number"
-                      value={advancePayment}
-                      onChange={(e) => setAdvancePayment(e.target.value)}
-                      placeholder="0"
-                      step="0.01"
-                      min="0"
-                      className="h-10 w-full px-2 py-1.5 border-2 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm"
-                    />
+                    <div className="flex items-center">
+                      <div className="flex items-center justify-center h-10 px-3 bg-white border-2 border-gray-400 border-r-0 rounded-l">
+                        <span className="text-green-600 font-semibold text-base">
+                          {settings?.currencySymbol || "₦"}
+                        </span>
+                      </div>
+                      <input
+                        type="number"
+                        value={advancePayment}
+                        onChange={(e) => setAdvancePayment(e.target.value)}
+                        placeholder="0"
+                        step="0.01"
+                        min="0"
+                        className="flex-1 h-10 px-2 py-1.5 border-2 border-gray-400 rounded-r focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm"
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col min-w-0">
-                    <DatePicker
-                      value={paymentDueDate}
-                      onChange={(date) => setPaymentDueDate(date)}
-                      label="Date"
-                    />
-                  </div>
+                </div>
+                {/* Due Date Row */}
+                <div className="flex flex-col min-w-0">
+                  <DatePicker
+                    value={paymentDueDate}
+                    onChange={(date) => setPaymentDueDate(date)}
+                    label="Due Date"
+                  />
                 </div>
               </div>
             </div>
 
             {/* Notes */}
             <div>
-              <label className="block text-[9px] font-bold mb-0.5 text-black">
+              <label className="block text-xs font-bold mb-1 text-black">
                 Notes (optional)
               </label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full px-1 py-0.5 border-2 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-[11px]"
+                className="w-full px-2 py-1.5 border-2 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm"
                 rows={2}
               />
             </div>
