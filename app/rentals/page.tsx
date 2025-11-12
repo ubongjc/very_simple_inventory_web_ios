@@ -790,6 +790,13 @@ export default function RentalsPage() {
                       />
                     </div>
                   </div>
+
+                  {/* Date Error Warning */}
+                  {startDateFilter && endDateFilter && endDateFilter < startDateFilter && (
+                    <div className="bg-red-50 border border-red-200 rounded p-2 mt-3">
+                      <p className="text-red-600 text-xs font-semibold text-center">⚠️ End date cannot be before start date</p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

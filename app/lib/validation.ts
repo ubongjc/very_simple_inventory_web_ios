@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const createItemSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  unit: z.string().min(1, "Unit is required"),
+  unit: z.string().min(1, "Unit is required").max(10, "Unit must be 10 characters or less").regex(/^[A-Za-z\s]+$/, "Unit must contain only letters"),
   totalQuantity: z.number().int().min(0, "Total quantity must be non-negative"),
   price: z.number().min(0).optional(),
   notes: z.string().optional(),
@@ -33,7 +33,8 @@ export const initialPaymentSchema = z.object({
   notes: z.string().optional(),
 });
 
-export const createRentalSchema = z.object({
+// Base rental schema without validation refinements
+const baseRentalSchema = z.object({
   customerId: z.string().cuid(),
   startDate: z.string().or(z.date()),
   endDate: z.string().or(z.date()),
@@ -47,7 +48,27 @@ export const createRentalSchema = z.object({
   initialPayments: z.array(initialPaymentSchema).optional(),
 });
 
-export const updateRentalSchema = createRentalSchema.partial();
+// Create rental schema with date validation
+export const createRentalSchema = baseRentalSchema.refine(
+  (data) => {
+    // Parse dates and ensure endDate >= startDate
+    const start = typeof data.startDate === 'string'
+      ? new Date(data.startDate)
+      : data.startDate;
+    const end = typeof data.endDate === 'string'
+      ? new Date(data.endDate)
+      : data.endDate;
+
+    return end >= start;
+  },
+  {
+    message: "Return date cannot be before start date",
+    path: ["endDate"],
+  }
+);
+
+// Update rental schema (partial fields, validation applied on server)
+export const updateRentalSchema = baseRentalSchema.partial();
 
 export const updateRentalStatusSchema = z.object({
   status: z.enum(["DRAFT", "CONFIRMED", "OUT", "RETURNED", "CANCELLED"]),
