@@ -154,7 +154,7 @@ export default function DatePicker({
       {/* Input Field */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-2 py-1.5 border-2 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm cursor-pointer bg-white flex items-center justify-between"
+        className="h-10 w-full px-2 py-1.5 border-2 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm cursor-pointer bg-white flex items-center justify-between"
       >
         <span className={value ? "text-black text-sm" : "text-gray-400 text-sm"}>
           {value ? formatDisplayDate(value) : "Select date"}
