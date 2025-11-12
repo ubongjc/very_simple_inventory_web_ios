@@ -20,16 +20,23 @@ const NOTES_CHAR_LIMIT = 50;
 
 // Zod schema for form validation
 const ItemFormSchema = z.object({
-  name: z.string().min(1, "*Enter a valid Item Name"),
+  name: z
+    .string()
+    .min(2, "*Item name must be at least 2 characters")
+    .max(80, "*Item name must be 80 characters or less"),
   unit: z
     .string()
-    .min(1, "*Enter a unit")
+    .min(2, "*Unit must be at least 2 characters")
+    .max(16, "*Unit must be 16 characters or less")
     .regex(/^[a-z\s]+$/, "*Enter letters only (no numbers)"),
   totalQuantity: z
     .string()
     .min(1, "*Enter a numeric quantity")
-    .refine((val) => !isNaN(Number(val)) && Number(val) >= 1, {
-      message: "*Enter a numeric quantity",
+    .refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
+      message: "*Quantity must be 0 or greater",
+    })
+    .refine((val) => !isNaN(Number(val)) && Number(val) <= 100000, {
+      message: "*Quantity cannot exceed 100,000",
     }),
   price: z
     .string()
@@ -37,9 +44,10 @@ const ItemFormSchema = z.object({
     .refine(
       (val) => {
         if (!val || val === "") return true;
-        return /^\d+(\.\d{1,2})?$/.test(val);
+        const num = parseFloat(val);
+        return !isNaN(num) && /^\d+(\.\d{1,2})?$/.test(val) && num <= 1000000;
       },
-      { message: "*Enter a valid price (max 2 decimals)" }
+      { message: "*Price must be valid (max 2 decimals, max 1,000,000)" }
     ),
   notes: z.string().max(NOTES_CHAR_LIMIT, "*Maximum 50 characters").optional(),
 });

@@ -28,6 +28,25 @@ export async function POST(request: NextRequest) {
     // Create full name for backward compatibility
     const fullName = `${validated.firstName}${validated.lastName ? ' ' + validated.lastName : ''}`.trim();
 
+    // Check for duplicate email (if email is provided)
+    if (validated.email) {
+      const existingEmail = await prisma.customer.findFirst({
+        where: {
+          email: validated.email,
+        },
+      });
+
+      if (existingEmail) {
+        return NextResponse.json(
+          {
+            error: "Email already exists",
+            details: `A customer with the email "${validated.email}" already exists. Please use a different email address.`,
+          },
+          { status: 409 } // Conflict status code
+        );
+      }
+    }
+
     // Check for duplicate customer by full name
     const existingCustomers = await prisma.customer.findMany({
       where: {
