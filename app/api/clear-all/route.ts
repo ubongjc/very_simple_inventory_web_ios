@@ -5,7 +5,7 @@ export async function DELETE() {
   try {
     // Delete in order: bookings first (has foreign keys to customers and items),
     // then customers and items can be deleted
-    const bookingsResult = await prisma.booking.deleteMany({});
+    const bookingsResult = await prisma.rental.deleteMany({});
     const customersResult = await prisma.customer.deleteMany({});
     const itemsResult = await prisma.item.deleteMany({});
 
