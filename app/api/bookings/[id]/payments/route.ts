@@ -26,15 +26,17 @@ export async function POST(
 
     // Validate payment doesn't exceed total price
     if (booking.totalPrice) {
-      const totalPaid = (booking.advancePayment || 0) +
-                        (booking.payments?.reduce((sum, p) => sum + p.amount, 0) || 0);
-      const remainingBalance = booking.totalPrice - totalPaid;
+      const totalPriceNum = Number(booking.totalPrice);
+      const advancePaymentNum = booking.advancePayment ? Number(booking.advancePayment) : 0;
+      const paymentsTotal = booking.payments?.reduce((sum, p) => sum + Number(p.amount), 0) || 0;
+      const totalPaid = advancePaymentNum + paymentsTotal;
+      const remainingBalance = totalPriceNum - totalPaid;
 
       if (body.amount > remainingBalance) {
         return NextResponse.json(
           {
             error: "Payment exceeds remaining balance",
-            totalPrice: booking.totalPrice,
+            totalPrice: totalPriceNum,
             totalPaid,
             remainingBalance,
             attemptedPayment: body.amount

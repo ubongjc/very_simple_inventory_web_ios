@@ -231,3 +231,6 @@ export const updateSettingsSchema = z.object({
     .max(64, "Timezone must be 64 characters or less")
     .optional(),
 }).partial();
+
+// Re-export toTitleCase for backward compatibility
+export { toTitleCase } from "./normalization";
