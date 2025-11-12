@@ -209,7 +209,7 @@ export default function Home() {
         <div className="flex flex-col h-full">
           {/* Menu Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-600">
-            <h2 className="text-lg font-bold text-white">Filter by Items</h2>
+            <h2 className="text-lg font-bold text-white">Filter Calendar by Items</h2>
             <button
               onClick={() => setIsItemFilterOpen(false)}
               className="p-1 hover:bg-white/20 rounded-lg transition-colors"
@@ -325,12 +325,12 @@ export default function Home() {
                             {item.name}
                             {itemReservations.has(item.id) && itemReservations.get(item.id)! > 0 && (
                               <span className="text-orange-600 ml-1">
-                                ({itemReservations.get(item.id)})
+                                ({itemReservations.get(item.id)} currently booked)
                               </span>
                             )}
                           </div>
                           <div className="text-[9px] text-gray-600">
-                            {item.totalQuantity} {item.unit}
+                            {item.totalQuantity} {item.unit} total
                           </div>
                         </div>
                       </button>
@@ -360,7 +360,7 @@ export default function Home() {
                 <button
                   onClick={() => setIsItemFilterOpen(true)}
                   className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-                  title="Filter by Items"
+                  title="Filter Calendar by Items"
                 >
                   <Package className="w-5 h-5 text-blue-600" />
                 </button>

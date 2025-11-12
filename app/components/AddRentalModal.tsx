@@ -727,13 +727,26 @@ export default function AddRentalModal({
                 ))}
                 {/* Check if all items are selected */}
                 {items.filter(item => !rentalItems.some(ri => ri.itemId === item.id) && (item.available ?? item.totalQuantity) > 0).length > 0 ? (
-                  <button
-                    type="button"
-                    onClick={addRentalItem}
-                    className="text-[10px] text-blue-600 hover:underline flex items-center gap-1"
-                  >
-                    <Plus className="w-3 h-3" /> Add item to rent
-                  </button>
+                  (() => {
+                    // Check if the last rental item has both itemId and quantity filled
+                    const lastItem = rentalItems[rentalItems.length - 1];
+                    const isLastItemComplete = lastItem.itemId && lastItem.quantity && lastItem.quantity !== "";
+
+                    return (
+                      <button
+                        type="button"
+                        onClick={addRentalItem}
+                        disabled={!isLastItemComplete}
+                        className={`text-[10px] flex items-center gap-1 ${
+                          isLastItemComplete
+                            ? "text-blue-600 hover:underline cursor-pointer"
+                            : "text-gray-400 cursor-not-allowed"
+                        }`}
+                      >
+                        <Plus className="w-3 h-3" /> Add item to rent
+                      </button>
+                    );
+                  })()
                 ) : (
                   <div className="text-[10px] text-gray-600 italic">
                     All available items have been selected
