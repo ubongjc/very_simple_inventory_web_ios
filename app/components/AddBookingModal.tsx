@@ -880,8 +880,8 @@ export default function AddBookingModal({
                       setCustomerError("");
                     }}
                     className={`w-full px-2 py-1.5 border-2 ${
-                      customerError ? "border-red-500" : "border-gray-400"
-                    } rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm`}
+                      customerError ? "border-red-500 ring-2 ring-red-500/40 focus:ring-red-500" : "border-gray-400 focus:ring-2 focus:ring-blue-500"
+                    } rounded outline-none text-black font-semibold text-sm transition`}
                     required={!showNewCustomer}
                   >
                     <option value="">Select a customer</option>
@@ -911,8 +911,8 @@ export default function AddBookingModal({
                       }}
                       placeholder="First Name *"
                       className={`w-full px-2 py-1.5 border-2 ${
-                        customerError ? "border-red-500" : "border-gray-400"
-                      } rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm`}
+                        customerError ? "border-red-500 ring-2 ring-red-500/40 focus:ring-red-500" : "border-gray-400 focus:ring-2 focus:ring-blue-500"
+                      } rounded outline-none text-black font-semibold text-sm transition`}
                       required
                     />
                     <input

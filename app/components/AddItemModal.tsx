@@ -1,9 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { toTitleCase } from "@/app/lib/validation";
 import { useSettings } from "@/app/hooks/useSettings";
+import { AppInput } from "@/app/components/ui/AppInput";
+import { AppTextarea } from "@/app/components/ui/AppTextarea";
 
 interface AddItemModalProps {
   isOpen: boolean;
@@ -13,100 +18,91 @@ interface AddItemModalProps {
 
 const NOTES_CHAR_LIMIT = 50;
 
+// Zod schema for form validation
+const ItemFormSchema = z.object({
+  name: z.string().min(1, "*Enter a valid Item Name"),
+  unit: z
+    .string()
+    .min(1, "*Enter a unit")
+    .regex(/^[a-z\s]+$/, "*Enter letters only (no numbers)"),
+  totalQuantity: z
+    .string()
+    .min(1, "*Enter a numeric quantity")
+    .refine((val) => !isNaN(Number(val)) && Number(val) >= 1, {
+      message: "*Enter a numeric quantity",
+    }),
+  price: z
+    .string()
+    .optional()
+    .refine(
+      (val) => {
+        if (!val || val === "") return true;
+        return /^\d+(\.\d{1,2})?$/.test(val);
+      },
+      { message: "*Enter a valid price (max 2 decimals)" }
+    ),
+  notes: z.string().max(NOTES_CHAR_LIMIT, "*Maximum 50 characters").optional(),
+});
+
+type ItemFormValues = z.infer<typeof ItemFormSchema>;
+
 export default function AddItemModal({
   isOpen,
   onClose,
   onSuccess,
 }: AddItemModalProps) {
   const { settings } = useSettings();
-  const [name, setName] = useState("");
-  const [unit, setUnit] = useState("pcs");
-  const [totalQuantity, setTotalQuantity] = useState("");
-  const [price, setPrice] = useState("");
-  const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [unitError, setUnitError] = useState("");
-  const [quantityError, setQuantityError] = useState("");
-  const [priceError, setPriceError] = useState("");
 
-  const validatePrice = (value: string): boolean => {
-    if (!value) return true; // Optional field
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch,
+    setFocus,
+  } = useForm<ItemFormValues>({
+    resolver: zodResolver(ItemFormSchema),
+    mode: "onSubmit",
+    reValidateMode: "onBlur",
+    defaultValues: {
+      name: "",
+      unit: "pcs",
+      totalQuantity: "",
+      price: "",
+      notes: "",
+    },
+  });
 
-    // Check if it matches price format with up to 2 decimal places
-    const priceRegex = /^\d+(\.\d{1,2})?$/;
-    return priceRegex.test(value);
-  };
+  const notesValue = watch("notes") || "";
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Clear all errors
-    setError("");
-    setNameError("");
-    setUnitError("");
-    setQuantityError("");
-    setPriceError("");
-
-    let hasError = false;
-
-    // Validate name
-    if (!name || name.trim() === "") {
-      setNameError("*Enter a valid Item Name");
-      hasError = true;
-    }
-
-    // Validate unit (must be alphabetic)
-    if (!unit || unit.trim() === "" || /\d/.test(unit)) {
-      setUnitError("*Enter letters only (no numbers)");
-      hasError = true;
-    }
-
-    // Validate quantity (must be a valid number)
-    const quantityNum = parseInt(totalQuantity);
-    if (isNaN(quantityNum) || totalQuantity === "" || quantityNum < 1) {
-      setQuantityError("*Enter a numeric quantity");
-      hasError = true;
-    }
-
-    // Validate price format
-    if (price && !validatePrice(price)) {
-      setPriceError("*Enter a valid price (max 2 decimals)");
-      hasError = true;
-    }
-
-    if (hasError) {
-      return;
-    }
-
+  const onSubmit = async (data: ItemFormValues) => {
     setLoading(true);
+    setError("");
 
     try {
       const response = await fetch("/api/items", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: toTitleCase(name),
-          unit,
-          totalQuantity: quantityNum,
-          price: price ? parseFloat(price) : undefined,
-          notes,
+          name: toTitleCase(data.name),
+          unit: data.unit,
+          totalQuantity: parseInt(data.totalQuantity),
+          price: data.price ? parseFloat(data.price) : undefined,
+          notes: data.notes || "",
         }),
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: "Failed to create item" }));
+        const errorData = await response
+          .json()
+          .catch(() => ({ error: "Failed to create item" }));
         throw new Error(errorData.error || "Failed to create item");
       }
 
       // Reset form
-      setName("");
-      setUnit("pcs");
-      setTotalQuantity("");
-      setPrice("");
-      setNotes("");
-
+      reset();
       onSuccess();
       onClose();
     } catch (err: any) {
@@ -114,6 +110,12 @@ export default function AddItemModal({
     } finally {
       setLoading(false);
     }
+  };
+
+  const onInvalid = () => {
+    // Focus on first error for accessibility
+    const firstError = Object.keys(errors)[0] as keyof ItemFormValues | undefined;
+    if (firstError) setFocus(firstError);
   };
 
   if (!isOpen) return null;
@@ -136,90 +138,55 @@ export default function AddItemModal({
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-4 space-y-3">
+          <form
+            onSubmit={handleSubmit(onSubmit, onInvalid)}
+            className="p-4 space-y-3"
+          >
             {error && (
               <div className="bg-red-50 text-red-600 p-2 rounded text-sm">
                 {error}
               </div>
             )}
 
-            <div>
-              <label className="block text-sm font-bold mb-1 text-black">
-                Item Name *
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                  setNameError("");
-                }}
-                className={`w-full px-3 py-2 border-2 ${
-                  nameError ? "border-red-500" : "border-gray-400"
-                } rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-base`}
-                required
-              />
-              {nameError && (
-                <p className="text-red-600 text-xs mt-1 font-semibold">{nameError}</p>
-              )}
-            </div>
+            <AppInput
+              label="Item Name"
+              requiredMark
+              {...register("name")}
+              error={errors.name?.message}
+            />
 
             <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-sm font-bold mb-1 text-black">
-                  Unit *
-                </label>
-                <input
-                  type="text"
-                  value={unit}
-                  onChange={(e) => {
-                    setUnit(e.target.value.toLowerCase());
-                    setUnitError("");
-                  }}
-                  onKeyPress={(e) => {
-                    // Prevent numbers and uppercase letters from being typed
-                    if (/[0-9A-Z]/.test(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                  className={`w-full px-3 py-2 border-2 ${
-                    unitError ? "border-red-500" : "border-gray-400"
-                  } rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-base`}
-                  required
-                />
-                {unitError && (
-                  <p className="text-red-600 text-xs mt-1 font-semibold">{unitError}</p>
-                )}
-              </div>
+              <AppInput
+                label="Unit"
+                requiredMark
+                {...register("unit", {
+                  onChange: (e) => {
+                    e.target.value = e.target.value.toLowerCase();
+                  },
+                })}
+                onKeyPress={(e) => {
+                  // Prevent numbers and uppercase letters from being typed
+                  if (/[0-9A-Z]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+                error={errors.unit?.message}
+              />
 
-              <div>
-                <label className="block text-sm font-bold mb-1 text-black">
-                  Total Quantity *
-                </label>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={totalQuantity}
-                  onChange={(e) => {
-                    setTotalQuantity(e.target.value);
-                    setQuantityError("");
-                  }}
-                  onKeyPress={(e) => {
-                    // Only allow numbers
-                    if (!/[0-9]/.test(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                  className={`w-full px-3 py-2 border-2 ${
-                    quantityError ? "border-red-500" : "border-gray-400"
-                  } rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-base`}
-                  required
-                  min="1"
-                />
-                {quantityError && (
-                  <p className="text-red-600 text-xs mt-1 font-semibold">{quantityError}</p>
-                )}
-              </div>
+              <AppInput
+                label="Total Quantity"
+                requiredMark
+                type="text"
+                inputMode="numeric"
+                {...register("totalQuantity")}
+                onKeyPress={(e) => {
+                  // Only allow numbers
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+                error={errors.totalQuantity?.message}
+              />
             </div>
 
             <div className="bg-green-50 border border-green-200 rounded-lg p-3">
@@ -234,40 +201,31 @@ export default function AddItemModal({
                 </div>
                 <input
                   type="text"
-                  value={price}
-                  onChange={(e) => {
-                    setPrice(e.target.value);
-                    setPriceError("");
-                  }}
+                  {...register("price")}
                   className={`flex-1 h-11 px-3 border-2 ${
-                    priceError ? "border-red-500" : "border-gray-400"
-                  } rounded-r focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-base`}
+                    errors.price
+                      ? "border-red-500 ring-2 ring-red-500/40 focus:ring-red-500"
+                      : "border-gray-400 focus:ring-2 focus:ring-blue-500"
+                  } rounded-r focus:outline-none text-black font-semibold text-base transition`}
                   placeholder="0.00"
                 />
               </div>
-              {priceError && (
-                <p className="text-red-600 text-xs mt-1 font-semibold">{priceError}</p>
+              {errors.price && (
+                <p className="mt-1 text-xs font-semibold text-red-600">
+                  {errors.price.message}
+                </p>
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-bold mb-1 text-black">
-                Notes (optional)
-              </label>
-              <textarea
-                value={notes}
-                onChange={(e) => {
-                  if (e.target.value.length <= NOTES_CHAR_LIMIT) {
-                    setNotes(e.target.value);
-                  }
-                }}
-                className="w-full px-3 py-2 border-2 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-base"
-                rows={2}
-              />
-              <p className="text-xs text-gray-600 mt-1">
-                {NOTES_CHAR_LIMIT - notes.length} characters remaining
-              </p>
-            </div>
+            <AppTextarea
+              label="Notes (optional)"
+              {...register("notes")}
+              rows={2}
+              maxLength={NOTES_CHAR_LIMIT}
+              showCharCount
+              currentLength={notesValue.length}
+              error={errors.notes?.message}
+            />
 
             <div className="flex gap-2 pt-2">
               <button
