@@ -60,6 +60,73 @@ if (typeof window === "undefined") {
 }
 
 /**
+ * Preset rate limit configurations
+ */
+export const RateLimitPresets = {
+  // Strict limits for authentication endpoints
+  AUTH: { maxRequests: 5, windowMs: 15 * 60 * 1000 }, // 5 requests per 15 minutes
+
+  // Standard limits for general API endpoints
+  STANDARD: { maxRequests: 100, windowMs: 60 * 1000 }, // 100 requests per minute
+
+  // Stricter limits for write operations
+  WRITE: { maxRequests: 30, windowMs: 60 * 1000 }, // 30 requests per minute
+
+  // Generous limits for read operations
+  READ: { maxRequests: 200, windowMs: 60 * 1000 }, // 200 requests per minute
+
+  // Very strict for payment operations
+  PAYMENT: { maxRequests: 10, windowMs: 60 * 1000 }, // 10 requests per minute
+
+  // Strict for password reset
+  PASSWORD_RESET: { maxRequests: 3, windowMs: 60 * 60 * 1000 }, // 3 requests per hour
+};
+
+/**
+ * Apply rate limiting to a request with automatic IP detection
+ */
+export async function applyRateLimit(
+  request: NextRequest,
+  config: RateLimitConfig = RateLimitPresets.STANDARD
+): Promise<{ success: boolean; remaining?: number; resetTime?: number }> {
+  const ip = getClientIp(request);
+  const identifier = `${ip}:${request.nextUrl.pathname}`;
+
+  const now = Date.now();
+  const record = rateLimitMap.get(identifier);
+
+  if (!record || now > record.resetTime) {
+    // Create new record or reset expired one
+    const resetTime = now + config.windowMs;
+    rateLimitMap.set(identifier, {
+      count: 1,
+      resetTime,
+    });
+    return {
+      success: true,
+      remaining: config.maxRequests - 1,
+      resetTime,
+    };
+  }
+
+  if (record.count >= config.maxRequests) {
+    return {
+      success: false,
+      remaining: 0,
+      resetTime: record.resetTime,
+    };
+  }
+
+  // Increment count
+  record.count++;
+  return {
+    success: true,
+    remaining: config.maxRequests - record.count,
+    resetTime: record.resetTime,
+  };
+}
+
+/**
  * Get client IP address from request
  */
 export function getClientIp(request: NextRequest): string {

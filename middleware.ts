@@ -1,4 +1,38 @@
-export { default } from "next-auth/middleware";
+import { withAuth } from 'next-auth/middleware';
+import { NextResponse } from 'next/server';
+
+// Enhanced middleware with role-based access control
+export default withAuth(
+  function middleware(req) {
+    const token = req.nextauth.token;
+    const path = req.nextUrl.pathname;
+
+    // Role-based access control for admin routes
+    if (path.startsWith('/api/admin') || path.startsWith('/admin')) {
+      if (!token || token.role !== 'admin') {
+        return NextResponse.json({ error: 'Forbidden. Admin access required.' }, { status: 403 });
+      }
+    }
+
+    // CSRF protection for state-changing requests
+    if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
+      const origin = req.headers.get('origin');
+      const host = req.headers.get('host');
+
+      // Check if request is from same origin
+      if (origin && !origin.includes(host || '')) {
+        return NextResponse.json({ error: 'CSRF check failed' }, { status: 403 });
+      }
+    }
+
+    return NextResponse.next();
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token,
+    },
+  }
+);
 
 export const config = {
   matcher: [
@@ -6,14 +40,15 @@ export const config = {
      * Match all request paths except for the ones starting with:
      * - / (homepage - marketing page)
      * - api/auth (authentication endpoints)
+     * - api/payment/webhook (Paystack webhooks - need to be public)
      * - auth/sign-in (login page)
      * - auth/sign-up (registration page)
      * - auth/forgot-password (password reset page)
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
+     * - favicon.ico, manifest.json, icons (PWA files)
      * - public/* (public assets)
      */
-    "/((?!$|api/auth|auth/sign-in|auth/sign-up|auth/forgot-password|_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$).*)",
+    '/((?!$|api/auth|api/payment/webhook|auth/sign-in|auth/sign-up|auth/forgot-password|_next/static|_next/image|favicon.ico|manifest.json|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$).*)',
   ],
 };

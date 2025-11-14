@@ -2,6 +2,7 @@
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useEffect, useState, useRef } from "react";
 import { textColorFor } from "@/app/lib/contrast";
@@ -15,8 +16,22 @@ interface CalendarProps {
 export default function Calendar({ onDateClick, selectedItemIds, onDateRangeChange }: CalendarProps) {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const isFetchingRef = useRef(false);
   const lastFetchRef = useRef("");
+  const calendarRef = useRef<any>(null);
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const fetchEvents = async (start: Date, end: Date) => {
     const fetchKey = `${start.toISOString()}-${end.toISOString()}-${selectedItemIds.join(',')}`;
@@ -106,8 +121,9 @@ export default function Calendar({ onDateClick, selectedItemIds, onDateRangeChan
       ) : (
         <div className="h-full">
           <FullCalendar
-            plugins={[dayGridPlugin, interactionPlugin]}
-            initialView="dayGridMonth"
+            ref={calendarRef}
+            plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
+            initialView={isMobile ? "listWeek" : "dayGridMonth"}
             events={events}
             editable={false}
             eventStartEditable={false}
@@ -153,9 +169,28 @@ export default function Calendar({ onDateClick, selectedItemIds, onDateRangeChan
             headerToolbar={{
               left: "prev,next today",
               center: "title",
-              right: "dayGridMonth,dayGridWeek,dayGridDay",
+              right: "dayGridMonth,listWeek",
+            }}
+            // Mobile-optimized settings
+            views={{
+              listWeek: {
+                buttonText: 'List',
+              },
+              dayGridMonth: {
+                buttonText: 'Month',
+              },
+            }}
+            // Better mobile experience
+            windowResize={(arg) => {
+              // Automatically switch to list view on small screens
+              if (window.innerWidth < 768 && arg.view.type !== 'listWeek') {
+                arg.view.calendar.changeView('listWeek');
+              }
             }}
             height="100%"
+            // Touch optimization
+            longPressDelay={500}
+            selectLongPressDelay={500}
             displayEventTime={false}
             displayEventEnd={false}
             nowIndicator={true}
