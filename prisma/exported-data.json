@@ -1,0 +1,257 @@
+{
+  "items": [
+    {
+      "id": "cmhvfe30d0000nmt6sqpg58ky",
+      "name": "Table 6ft",
+      "unit": "pcs",
+      "totalQuantity": 10,
+      "price": null,
+      "notes": null,
+      "createdAt": "2025-11-12T03:13:32.605Z",
+      "updatedAt": "2025-11-12T03:13:32.605Z"
+    },
+    {
+      "id": "cmhvfe34p0001nmt6v5b49huz",
+      "name": "Spoon",
+      "unit": "pcs",
+      "totalQuantity": 200,
+      "price": null,
+      "notes": null,
+      "createdAt": "2025-11-12T03:13:32.605Z",
+      "updatedAt": "2025-11-12T03:13:32.605Z"
+    },
+    {
+      "id": "cmhvfe34t0003nmt6kexbmidb",
+      "name": "Plate",
+      "unit": "pcs",
+      "totalQuantity": 200,
+      "price": null,
+      "notes": null,
+      "createdAt": "2025-11-12T03:13:32.605Z",
+      "updatedAt": "2025-11-12T03:13:32.605Z"
+    },
+    {
+      "id": "cmhvfe34t0002nmt6cdgldb01",
+      "name": "Fork",
+      "unit": "pcs",
+      "totalQuantity": 200,
+      "price": null,
+      "notes": null,
+      "createdAt": "2025-11-12T03:13:32.605Z",
+      "updatedAt": "2025-11-12T03:13:32.605Z"
+    },
+    {
+      "id": "cmhvfe35a0004nmt601phmnmk",
+      "name": "Cooler (large)",
+      "unit": "pcs",
+      "totalQuantity": 8,
+      "price": null,
+      "notes": null,
+      "createdAt": "2025-11-12T03:13:32.605Z",
+      "updatedAt": "2025-11-12T03:13:32.605Z"
+    },
+    {
+      "id": "cmhvfe35f0005nmt6xb3fhmyc",
+      "name": "Canopy 10x10",
+      "unit": "pcs",
+      "totalQuantity": 5,
+      "price": null,
+      "notes": null,
+      "createdAt": "2025-11-12T03:13:32.605Z",
+      "updatedAt": "2025-11-12T03:13:32.605Z"
+    },
+    {
+      "id": "cmhvfe35i0006nmt66f1kvngr",
+      "name": "Tablecloth (white)",
+      "unit": "pcs",
+      "totalQuantity": 15,
+      "price": null,
+      "notes": null,
+      "createdAt": "2025-11-12T03:13:32.605Z",
+      "updatedAt": "2025-11-12T03:13:32.605Z"
+    },
+    {
+      "id": "cmhvfe35m0007nmt6mx2zhppv",
+      "name": "Chair (white)",
+      "unit": "pcs",
+      "totalQuantity": 100,
+      "price": null,
+      "notes": null,
+      "createdAt": "2025-11-12T03:13:32.605Z",
+      "updatedAt": "2025-11-12T03:13:32.605Z"
+    }
+  ],
+  "customers": [
+    {
+      "id": "cmhvfe36u0009nmt6w7uvpthx",
+      "name": "Alice Johnson",
+      "firstName": null,
+      "lastName": null,
+      "phone": "555-9012",
+      "email": "alice@example.com",
+      "address": null,
+      "notes": null,
+      "createdAt": "2025-11-12T03:13:32.838Z",
+      "updatedAt": "2025-11-12T03:13:32.838Z"
+    },
+    {
+      "id": "cmhvfe36u0008nmt61z8kfsnv",
+      "name": "Jane Doe",
+      "firstName": null,
+      "lastName": null,
+      "phone": "555-1234",
+      "email": "jane@example.com",
+      "address": null,
+      "notes": "Preferred customer, always on time",
+      "createdAt": "2025-11-12T03:13:32.838Z",
+      "updatedAt": "2025-11-12T03:13:32.838Z"
+    },
+    {
+      "id": "cmhvfe36u000anmt6livvwuwd",
+      "name": "John Smith",
+      "firstName": null,
+      "lastName": null,
+      "phone": "555-5678",
+      "email": "john@example.com",
+      "address": null,
+      "notes": null,
+      "createdAt": "2025-11-12T03:13:32.839Z",
+      "updatedAt": "2025-11-12T03:13:32.839Z"
+    }
+  ],
+  "rentals": [
+    {
+      "id": "cmhvfe389000cnmt6woilelni",
+      "customerId": "cmhvfe36u0008nmt61z8kfsnv",
+      "startDate": "2025-11-11T00:00:00.000Z",
+      "endDate": "2025-11-12T00:00:00.000Z",
+      "status": "CONFIRMED",
+      "reference": "RNT-001",
+      "notes": "Birthday party setup",
+      "color": null,
+      "totalPrice": null,
+      "advancePayment": null,
+      "paymentDueDate": null,
+      "createdAt": "2025-11-12T03:13:32.889Z",
+      "updatedAt": "2025-11-12T03:13:32.889Z",
+      "items": [
+        {
+          "id": "cmhvfe389000enmt693r8jmbm",
+          "rentalId": "cmhvfe389000cnmt6woilelni",
+          "itemId": "cmhvfe30d0000nmt6sqpg58ky",
+          "quantity": 4
+        },
+        {
+          "id": "cmhvfe389000fnmt6thhr7okz",
+          "rentalId": "cmhvfe389000cnmt6woilelni",
+          "itemId": "cmhvfe35m0007nmt6mx2zhppv",
+          "quantity": 20
+        },
+        {
+          "id": "cmhvfe389000gnmt6ungqllxk",
+          "rentalId": "cmhvfe389000cnmt6woilelni",
+          "itemId": "cmhvfe34t0003nmt6kexbmidb",
+          "quantity": 25
+        },
+        {
+          "id": "cmhvfe389000hnmt63mq4xdyw",
+          "rentalId": "cmhvfe389000cnmt6woilelni",
+          "itemId": "cmhvfe35i0006nmt66f1kvngr",
+          "quantity": 4
+        }
+      ],
+      "payments": []
+    },
+    {
+      "id": "cmhvfe3d4000jnmt6wto94zb5",
+      "customerId": "cmhvfe36u000anmt6livvwuwd",
+      "startDate": "2025-11-18T00:00:00.000Z",
+      "endDate": "2025-11-21T00:00:00.000Z",
+      "status": "CONFIRMED",
+      "reference": "RNT-002",
+      "notes": "Corporate event",
+      "color": null,
+      "totalPrice": null,
+      "advancePayment": null,
+      "paymentDueDate": null,
+      "createdAt": "2025-11-12T03:13:33.064Z",
+      "updatedAt": "2025-11-12T03:13:33.064Z",
+      "items": [
+        {
+          "id": "cmhvfe3d4000lnmt6ro2rcyid",
+          "rentalId": "cmhvfe3d4000jnmt6wto94zb5",
+          "itemId": "cmhvfe30d0000nmt6sqpg58ky",
+          "quantity": 6
+        },
+        {
+          "id": "cmhvfe3d4000mnmt6lubbod76",
+          "rentalId": "cmhvfe3d4000jnmt6wto94zb5",
+          "itemId": "cmhvfe35m0007nmt6mx2zhppv",
+          "quantity": 40
+        },
+        {
+          "id": "cmhvfe3d4000nnmt628dveblm",
+          "rentalId": "cmhvfe3d4000jnmt6wto94zb5",
+          "itemId": "cmhvfe35f0005nmt6xb3fhmyc",
+          "quantity": 2
+        },
+        {
+          "id": "cmhvfe3d4000onmt6o4sq7m36",
+          "rentalId": "cmhvfe3d4000jnmt6wto94zb5",
+          "itemId": "cmhvfe35a0004nmt601phmnmk",
+          "quantity": 3
+        }
+      ],
+      "payments": []
+    },
+    {
+      "id": "cmhvfe3gj000qnmt6nb4xj6ch",
+      "customerId": "cmhvfe36u0009nmt6w7uvpthx",
+      "startDate": "2025-11-04T00:00:00.000Z",
+      "endDate": "2025-11-06T00:00:00.000Z",
+      "status": "OUT",
+      "reference": "RNT-003",
+      "notes": "Wedding reception",
+      "color": null,
+      "totalPrice": null,
+      "advancePayment": null,
+      "paymentDueDate": null,
+      "createdAt": "2025-11-12T03:13:33.187Z",
+      "updatedAt": "2025-11-12T03:13:33.187Z",
+      "items": [
+        {
+          "id": "cmhvfe3gj000snmt6jgypg5ef",
+          "rentalId": "cmhvfe3gj000qnmt6nb4xj6ch",
+          "itemId": "cmhvfe30d0000nmt6sqpg58ky",
+          "quantity": 8
+        },
+        {
+          "id": "cmhvfe3gj000tnmt6lcmo2381",
+          "rentalId": "cmhvfe3gj000qnmt6nb4xj6ch",
+          "itemId": "cmhvfe35m0007nmt6mx2zhppv",
+          "quantity": 50
+        },
+        {
+          "id": "cmhvfe3gj000unmt6nabkiwmy",
+          "rentalId": "cmhvfe3gj000qnmt6nb4xj6ch",
+          "itemId": "cmhvfe34t0003nmt6kexbmidb",
+          "quantity": 75
+        },
+        {
+          "id": "cmhvfe3gj000vnmt6e5ezn5m1",
+          "rentalId": "cmhvfe3gj000qnmt6nb4xj6ch",
+          "itemId": "cmhvfe34t0002nmt6cdgldb01",
+          "quantity": 75
+        },
+        {
+          "id": "cmhvfe3gj000wnmt6zkpas2e5",
+          "rentalId": "cmhvfe3gj000qnmt6nb4xj6ch",
+          "itemId": "cmhvfe34p0001nmt6v5b49huz",
+          "quantity": 75
+        }
+      ],
+      "payments": []
+    }
+  ],
+  "settings": []
+}
