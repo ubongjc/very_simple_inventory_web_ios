@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { hashPassword } from "@/app/lib/auth";
 import {
-  rateLimit,
+  applyRateLimit,
+  RateLimitPresets,
   getClientIp,
   sanitizeString,
   sanitizeEmail,
@@ -37,25 +38,18 @@ const signUpSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  try {
-    // Rate limiting: 5 signups per hour per IP
+  // Apply rate limiting for authentication (strict)
+  const rateLimitResult = await applyRateLimit(request, RateLimitPresets.AUTH);
+  if (!rateLimitResult.success) {
     const clientIp = getClientIp(request);
-    if (
-      !rateLimit(`signup:${clientIp}`, {
-        maxRequests: 5,
-        windowMs: 60 * 60 * 1000, // 1 hour
-      })
-    ) {
-      secureLog("[SECURITY] Sign-up rate limit exceeded", { ip: clientIp });
-      return NextResponse.json(
-        {
-          error:
-            "Too many signup attempts. Please try again in an hour.",
-        },
-        { status: 429 }
-      );
-    }
+    secureLog("[SECURITY] Sign-up rate limit exceeded", { ip: clientIp });
+    return NextResponse.json(
+      { error: "Too many signup attempts. Please try again later." },
+      { status: 429 }
+    );
+  }
 
+  try {
     const body = await request.json();
     const validated = signUpSchema.parse(body);
 

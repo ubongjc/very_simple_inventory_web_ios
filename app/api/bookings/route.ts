@@ -6,10 +6,19 @@ import { createBookingSchema } from "@/app/lib/validation";
 import { toUTCMidnight, addOneDay, formatDateISO } from "@/app/lib/dates";
 import { getRandomBookingColor } from "@/app/lib/colors";
 import { toUtcDateOnly, toYmd, addDays } from "@/app/lib/dateUtils";
-import { secureLog } from "@/app/lib/security";
+import { secureLog, applyRateLimit, RateLimitPresets } from "@/app/lib/security";
 import dayjs from "dayjs";
 
 export async function GET(request: NextRequest) {
+  // Apply rate limiting for read operations
+  const rateLimitResult = await applyRateLimit(request, RateLimitPresets.READ);
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429 }
+    );
+  }
+
   try {
     const session = await getServerSession(authOptions);
 
@@ -117,6 +126,15 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  // Apply rate limiting for write operations
+  const rateLimitResult = await applyRateLimit(request, RateLimitPresets.WRITE);
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429 }
+    );
+  }
+
   try {
     const session = await getServerSession(authOptions);
 

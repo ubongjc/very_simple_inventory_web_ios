@@ -427,3 +427,77 @@ table {
 .fc .fc-h-event {
   overflow: visible !important;
 }
+
+/* Mobile-optimized List View */
+.fc-list {
+  border-radius: 0.5rem !important;
+}
+
+.fc-list-event {
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.fc-list-event:hover {
+  background-color: #f3f4f6 !important;
+  transform: scale(1.01) !important;
+}
+
+.fc-list-event-title {
+  font-weight: 600 !important;
+  color: #1f2937 !important;
+}
+
+.fc-list-event-time {
+  font-weight: 500 !important;
+  color: #6b7280 !important;
+}
+
+/* Better touch targets for mobile list view */
+@media (max-width: 768px) {
+  .fc-list-event {
+    padding: 0.75rem !important;
+    min-height: 56px !important;
+  }
+
+  .fc-list-event-title {
+    font-size: 0.9rem !important;
+  }
+
+  .fc-list-event-dot {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  .fc-list-day-cushion {
+    padding: 0.5rem !important;
+    background: linear-gradient(to right, #f9fafb, #f3f4f6) !important;
+  }
+
+  /* Improve list view spacing */
+  .fc-list-table td {
+    padding: 0.5rem !important;
+  }
+
+  /* Make list view items more tappable */
+  .fc-list-event-graphic,
+  .fc-list-event-time {
+    padding: 0.5rem !important;
+  }
+}
+
+/* Touch-friendly event interactions */
+@media (hover: none) and (pointer: coarse) {
+  .fc .fc-event {
+    min-height: 44px !important; /* iOS recommended touch target */
+  }
+
+  .fc .fc-button {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  .fc-list-event {
+    min-height: 56px !important; /* Material Design recommendation */
+  }
+}
