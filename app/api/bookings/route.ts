@@ -107,9 +107,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(bookings);
   } catch (error: any) {
-    secureLog("[ERROR] Failed to fetch bookings", { error: error.message });
+    console.error("[ERROR] Failed to fetch bookings:", error);
+    secureLog("[ERROR] Failed to fetch bookings", { error: error.message, stack: error.stack });
     return NextResponse.json(
-      { error: "Failed to fetch bookings" },
+      { error: "Failed to fetch bookings", details: error.message },
       { status: 500 }
     );
   }

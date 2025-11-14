@@ -79,9 +79,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(summary);
   } catch (error: any) {
-    secureLog("[ERROR] Failed to fetch availability summary", { error: error.message });
+    console.error("[ERROR] Failed to fetch availability summary:", error);
+    secureLog("[ERROR] Failed to fetch availability summary", { error: error.message, stack: error.stack });
     return NextResponse.json(
-      { error: "Failed to fetch availability summary" },
+      { error: "Failed to fetch availability summary", details: error.message },
       { status: 500 }
     );
   }

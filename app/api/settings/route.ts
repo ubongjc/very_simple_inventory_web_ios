@@ -29,9 +29,10 @@ export async function GET() {
 
     return NextResponse.json(settings);
   } catch (error: any) {
-    secureLog("[ERROR] Failed to fetch settings", { error: error.message });
+    console.error("[ERROR] Failed to fetch settings:", error);
+    secureLog("[ERROR] Failed to fetch settings", { error: error.message, stack: error.stack });
     return NextResponse.json(
-      { error: "Failed to fetch settings" },
+      { error: "Failed to fetch settings", details: error.message },
       { status: 500 }
     );
   }

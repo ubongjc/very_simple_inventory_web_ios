@@ -125,15 +125,6 @@ export default function SignInPage() {
             </p>
           </div>
         </div>
-
-        <div className="mt-6 text-center">
-          <Link
-            href="/"
-            className="text-gray-600 hover:text-gray-800 text-sm font-semibold"
-          >
-            ← Back to Home
-          </Link>
-        </div>
       </div>
     </div>
   );
