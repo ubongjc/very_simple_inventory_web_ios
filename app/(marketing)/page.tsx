@@ -1,37 +1,35 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import {
   CalendarDays,
   Package,
   Users,
   TrendingUp,
-  Shield,
   CheckCircle,
   Star,
   Clock,
   Smartphone,
-  Globe,
   BarChart3,
   Zap,
   ArrowRight,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function HomePage() {
-  const { data: session, status } = useSession();
+  const { data: _session, status } = useSession();
   const router = useRouter();
 
   // Redirect authenticated users to dashboard
   useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/dashboard");
+    if (status === 'authenticated') {
+      router.push('/dashboard');
     }
   }, [status, router]);
 
-  if (status === "loading") {
+  if (status === 'loading') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600"></div>
@@ -86,8 +84,8 @@ export default function HomePage() {
             </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Manage your rental business with ease. Track inventory, bookings, and customers
-            all in one place. No complicated setup, no hidden fees.
+            Manage your rental business with ease. Track inventory, bookings, and customers all in
+            one place. No complicated setup, no hidden fees.
           </p>
           <div className="flex items-center justify-center gap-4">
             <Link
@@ -141,8 +139,8 @@ export default function HomePage() {
             </div>
             <h4 className="text-xl font-bold text-gray-900 mb-2">Inventory Tracking</h4>
             <p className="text-gray-600">
-              Manage your rental items with ease. Track quantities, availability, and get low
-              stock alerts automatically.
+              Manage your rental items with ease. Track quantities, availability, and get low stock
+              alerts automatically.
             </p>
           </div>
 
@@ -153,8 +151,8 @@ export default function HomePage() {
             </div>
             <h4 className="text-xl font-bold text-gray-900 mb-2">Customer Management</h4>
             <p className="text-gray-600">
-              Keep track of your customers and their booking history. Build better relationships
-              and improve service.
+              Keep track of your customers and their booking history. Build better relationships and
+              improve service.
             </p>
           </div>
 
@@ -177,8 +175,8 @@ export default function HomePage() {
             </div>
             <h4 className="text-xl font-bold text-gray-900 mb-2">Availability Checker</h4>
             <p className="text-gray-600">
-              Instantly check item availability for any date range. Speed up customer inquiries
-              and bookings.
+              Instantly check item availability for any date range. Speed up customer inquiries and
+              bookings.
             </p>
           </div>
 
@@ -189,8 +187,8 @@ export default function HomePage() {
             </div>
             <h4 className="text-xl font-bold text-gray-900 mb-2">Mobile Friendly</h4>
             <p className="text-gray-600">
-              Access your inventory from anywhere. Fully responsive design works perfectly on
-              phones and tablets.
+              Access your inventory from anywhere. Fully responsive design works perfectly on phones
+              and tablets.
             </p>
           </div>
         </div>
@@ -246,9 +244,7 @@ export default function HomePage() {
           <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Simple, Transparent Pricing
           </h3>
-          <p className="text-lg text-gray-600">
-            Choose the plan that fits your business needs
-          </p>
+          <p className="text-lg text-gray-600">Choose the plan that fits your business needs</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -382,8 +378,8 @@ export default function HomePage() {
                 serving their customers.
               </p>
               <p className="text-lg text-gray-600">
-                Whether you're renting equipment, party supplies, or anything in between,
-                Very Simple Inventory gives you the tools you need to succeed.
+                Whether you're renting equipment, party supplies, or anything in between, Very
+                Simple Inventory gives you the tools you need to succeed.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -419,8 +415,8 @@ export default function HomePage() {
             Ready to Simplify Your Rental Business?
           </h3>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of rental businesses already using Very Simple Inventory.
-            Start your free account today.
+            Join thousands of rental businesses already using Very Simple Inventory. Start your free
+            account today.
           </p>
           <div className="flex items-center justify-center gap-4">
             <Link
@@ -460,17 +456,26 @@ export default function HomePage() {
               <h5 className="font-bold text-gray-900 mb-4">Product</h5>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/auth/sign-up" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  <Link
+                    href="/auth/sign-up"
+                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                  >
                     Sign Up
                   </Link>
                 </li>
                 <li>
-                  <Link href="/auth/sign-in" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  <Link
+                    href="/auth/sign-in"
+                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                  >
                     Log In
                   </Link>
                 </li>
                 <li>
-                  <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  <a
+                    href="#pricing"
+                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                  >
                     Pricing
                   </a>
                 </li>
@@ -486,9 +491,12 @@ export default function HomePage() {
                   </a>
                 </li>
                 <li>
-                  <a href="#contact" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  <Link
+                    href="/contact"
+                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                  >
                     Contact
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -497,14 +505,20 @@ export default function HomePage() {
               <h5 className="font-bold text-gray-900 mb-4">Legal</h5>
               <ul className="space-y-2">
                 <li>
-                  <a href="#privacy" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  <Link
+                    href="/privacy"
+                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                  >
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#terms" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  <Link
+                    href="/terms"
+                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                  >
                     Terms of Service
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

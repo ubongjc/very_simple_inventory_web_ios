@@ -16,3 +16,6 @@ export {
   useIsDesktop,
   useIsTouchDevice,
 } from './useMediaQuery';
+
+export { useAppSettings } from './useAppSettings';
+export type { AppSettings } from './useAppSettings';
