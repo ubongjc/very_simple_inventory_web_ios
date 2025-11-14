@@ -27,9 +27,10 @@ export async function GET(request: NextRequest) {
     });
     return NextResponse.json(items);
   } catch (error: any) {
-    secureLog("[ERROR] Failed to fetch items", { error: error.message });
+    console.error("[ERROR] Failed to fetch items:", error);
+    secureLog("[ERROR] Failed to fetch items", { error: error.message, stack: error.stack });
     return NextResponse.json(
-      { error: "Failed to fetch items" },
+      { error: "Failed to fetch items", details: error.message },
       { status: 500 }
     );
   }
