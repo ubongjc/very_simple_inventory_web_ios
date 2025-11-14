@@ -21,7 +21,7 @@ export async function GET() {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Fetch all users with relevant information
+    // Fetch all users with relevant information including subscription
     const users = await prisma.user.findMany({
       select: {
         id: true,
@@ -31,15 +31,26 @@ export async function GET() {
         businessName: true,
         logoUrl: true,
         role: true,
-        plan: true,
         createdAt: true,
+        subscription: {
+          select: {
+            plan: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    return NextResponse.json(users);
+    // Transform the data to flatten the subscription plan
+    const transformedUsers = users.map((user) => ({
+      ...user,
+      plan: user.subscription?.plan || "free",
+      subscription: undefined, // Remove the nested subscription object
+    }));
+
+    return NextResponse.json(transformedUsers);
   } catch (error) {
     console.error("Error fetching users:", error);
     return NextResponse.json(
