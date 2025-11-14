@@ -5,16 +5,37 @@ const prisma = new PrismaClient();
 async function seedTestData() {
   console.log('🌱 Seeding test data...');
 
-  // Clear existing data
+  // Get or create a test user
+  const bcrypt = await import('bcrypt');
+  let user = await prisma.user.findFirst();
+
+  if (!user) {
+    const hashedPassword = await bcrypt.hash('testpassword123', 10);
+    user = await prisma.user.create({
+      data: {
+        email: 'test@example.com',
+        passwordHash: hashedPassword,
+        firstName: 'Test',
+        lastName: 'User',
+        emailVerified: true,
+      },
+    });
+    console.log('✅ Created test user');
+  } else {
+    console.log('✅ Using existing user');
+  }
+
+  // Clear existing data for this user
   await prisma.payment.deleteMany();
   await prisma.bookingItem.deleteMany();
-  await prisma.booking.deleteMany();
-  await prisma.customer.deleteMany();
-  await prisma.item.deleteMany();
+  await prisma.booking.deleteMany({ where: { userId: user.id } });
+  await prisma.customer.deleteMany({ where: { userId: user.id } });
+  await prisma.item.deleteMany({ where: { userId: user.id } });
 
   // Create test items
   const tables = await prisma.item.create({
     data: {
+      userId: user.id,
       name: 'Tables',
       unit: 'pcs',
       totalQuantity: 10,
@@ -24,6 +45,7 @@ async function seedTestData() {
 
   const chairs = await prisma.item.create({
     data: {
+      userId: user.id,
       name: 'Chairs',
       unit: 'pcs',
       totalQuantity: 100,
@@ -33,6 +55,7 @@ async function seedTestData() {
 
   const canopy = await prisma.item.create({
     data: {
+      userId: user.id,
       name: 'Canopy',
       unit: 'pcs',
       totalQuantity: 5,
@@ -42,6 +65,7 @@ async function seedTestData() {
 
   const plates = await prisma.item.create({
     data: {
+      userId: user.id,
       name: 'Plates',
       unit: 'pcs',
       totalQuantity: 200,
@@ -51,6 +75,7 @@ async function seedTestData() {
 
   const forks = await prisma.item.create({
     data: {
+      userId: user.id,
       name: 'Forks',
       unit: 'pcs',
       totalQuantity: 200,
@@ -60,6 +85,7 @@ async function seedTestData() {
 
   const spoons = await prisma.item.create({
     data: {
+      userId: user.id,
       name: 'Spoons',
       unit: 'pcs',
       totalQuantity: 200,
@@ -72,6 +98,7 @@ async function seedTestData() {
   // Create test customers
   const customer1 = await prisma.customer.create({
     data: {
+      userId: user.id,
       name: 'John Smith',
       firstName: 'John',
       lastName: 'Smith',
@@ -83,6 +110,7 @@ async function seedTestData() {
 
   const customer2 = await prisma.customer.create({
     data: {
+      userId: user.id,
       name: 'Jane Doe',
       firstName: 'Jane',
       lastName: 'Doe',
@@ -94,6 +122,7 @@ async function seedTestData() {
 
   const customer3 = await prisma.customer.create({
     data: {
+      userId: user.id,
       name: 'Bob Johnson',
       firstName: 'Bob',
       lastName: 'Johnson',
@@ -118,6 +147,7 @@ async function seedTestData() {
   // Rental A: Chairs x40 (Nov 4-8, CONFIRMED)
   const bookingA = await prisma.booking.create({
     data: {
+      userId: user.id,
       customerId: customer1.id,
       startDate: nov4,
       endDate: nov8,
@@ -148,6 +178,7 @@ async function seedTestData() {
   // Rental B: Chairs x70 (Nov 6-11, CONFIRMED) - triggers overlap
   const bookingB = await prisma.booking.create({
     data: {
+      userId: user.id,
       customerId: customer2.id,
       startDate: nov6,
       endDate: nov11,
@@ -168,6 +199,7 @@ async function seedTestData() {
   // Rental C: Tables x5, Plates x50 (Nov 9-29, OUT)
   const bookingC = await prisma.booking.create({
     data: {
+      userId: user.id,
       customerId: customer3.id,
       startDate: nov9,
       endDate: nov29,
@@ -208,6 +240,7 @@ async function seedTestData() {
   // Rental D: Canopy x1 (Nov 15, RETURNED)
   const bookingD = await prisma.booking.create({
     data: {
+      userId: user.id,
       customerId: customer1.id,
       startDate: nov15,
       endDate: nov15,
@@ -237,6 +270,7 @@ async function seedTestData() {
   // Rental E: Forks x100, Spoons x100 (Nov 4-8, CONFIRMED)
   const bookingE = await prisma.booking.create({
     data: {
+      userId: user.id,
       customerId: customer2.id,
       startDate: nov4,
       endDate: nov8,
@@ -261,6 +295,7 @@ async function seedTestData() {
   // Rental F: Tables x3 (Nov 15-20, CANCELLED)
   const bookingF = await prisma.booking.create({
     data: {
+      userId: user.id,
       customerId: customer3.id,
       startDate: nov15,
       endDate: new Date(Date.UTC(2025, 10, 20, 0, 0, 0)),

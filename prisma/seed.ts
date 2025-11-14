@@ -9,11 +9,31 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 Starting seed...");
 
+  // Get or create a test user
+  const bcrypt = await import('bcrypt');
+  let user = await prisma.user.findFirst();
+
+  if (!user) {
+    const hashedPassword = await bcrypt.hash('testpassword123', 10);
+    user = await prisma.user.create({
+      data: {
+        email: 'test@example.com',
+        passwordHash: hashedPassword,
+        firstName: 'Test',
+        lastName: 'User',
+        emailVerified: true,
+      },
+    });
+    console.log('✅ Created test user');
+  } else {
+    console.log('✅ Using existing user');
+  }
+
   // Clear existing data (optional, remove if you want to preserve data)
   await prisma.bookingItem.deleteMany();
-  await prisma.booking.deleteMany();
-  await prisma.customer.deleteMany();
-  await prisma.item.deleteMany();
+  await prisma.booking.deleteMany({ where: { userId: user.id } });
+  await prisma.customer.deleteMany({ where: { userId: user.id } });
+  await prisma.item.deleteMany({ where: { userId: user.id } });
 
   console.log("✅ Cleared existing data");
 
@@ -21,6 +41,7 @@ async function main() {
   const items = await Promise.all([
     prisma.item.create({
       data: {
+        userId: user.id,
         name: "Table 6ft",
         unit: "pcs",
         totalQuantity: 10,
@@ -28,6 +49,7 @@ async function main() {
     }),
     prisma.item.create({
       data: {
+        userId: user.id,
         name: "Chair (white)",
         unit: "pcs",
         totalQuantity: 100,
@@ -35,6 +57,7 @@ async function main() {
     }),
     prisma.item.create({
       data: {
+        userId: user.id,
         name: "Canopy 10x10",
         unit: "pcs",
         totalQuantity: 5,
@@ -42,6 +65,7 @@ async function main() {
     }),
     prisma.item.create({
       data: {
+        userId: user.id,
         name: "Plate",
         unit: "pcs",
         totalQuantity: 200,
@@ -49,6 +73,7 @@ async function main() {
     }),
     prisma.item.create({
       data: {
+        userId: user.id,
         name: "Fork",
         unit: "pcs",
         totalQuantity: 200,
@@ -56,6 +81,7 @@ async function main() {
     }),
     prisma.item.create({
       data: {
+        userId: user.id,
         name: "Spoon",
         unit: "pcs",
         totalQuantity: 200,
@@ -63,6 +89,7 @@ async function main() {
     }),
     prisma.item.create({
       data: {
+        userId: user.id,
         name: "Tablecloth (white)",
         unit: "pcs",
         totalQuantity: 15,
@@ -70,6 +97,7 @@ async function main() {
     }),
     prisma.item.create({
       data: {
+        userId: user.id,
         name: "Cooler (large)",
         unit: "pcs",
         totalQuantity: 8,
@@ -83,6 +111,7 @@ async function main() {
   const customers = await Promise.all([
     prisma.customer.create({
       data: {
+        userId: user.id,
         name: "Jane Doe",
         phone: "555-1234",
         email: "jane@example.com",
@@ -91,6 +120,7 @@ async function main() {
     }),
     prisma.customer.create({
       data: {
+        userId: user.id,
         name: "John Smith",
         phone: "555-5678",
         email: "john@example.com",
@@ -98,6 +128,7 @@ async function main() {
     }),
     prisma.customer.create({
       data: {
+        userId: user.id,
         name: "Alice Johnson",
         phone: "555-9012",
         email: "alice@example.com",
@@ -134,6 +165,7 @@ async function main() {
   // Rental 1: Starting today
   const booking1 = await prisma.booking.create({
     data: {
+      userId: user.id,
       customerId: customers[0].id,
       startDate: toUTC(today),
       endDate: toUTC(tomorrow),
@@ -154,6 +186,7 @@ async function main() {
   // Rental 2: Next week
   const booking2 = await prisma.booking.create({
     data: {
+      userId: user.id,
       customerId: customers[1].id,
       startDate: toUTC(nextWeek),
       endDate: toUTC(nextWeekEnd),
@@ -174,6 +207,7 @@ async function main() {
   // Rental 3: Last week (already out)
   const booking3 = await prisma.booking.create({
     data: {
+      userId: user.id,
       customerId: customers[2].id,
       startDate: toUTC(lastWeek),
       endDate: toUTC(lastWeekEnd),
