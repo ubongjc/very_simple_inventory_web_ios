@@ -39,7 +39,9 @@ export const config = {
     /*
      * Match all request paths except for the ones starting with:
      * - / (homepage - marketing page)
+     * - /contact, /privacy, /terms (public marketing pages)
      * - api/auth (authentication endpoints)
+     * - api/contact (contact form endpoint)
      * - api/payment/webhook (Paystack webhooks - need to be public)
      * - auth/sign-in (login page)
      * - auth/sign-up (registration page)
@@ -49,6 +51,6 @@ export const config = {
      * - favicon.ico, manifest.json, icons (PWA files)
      * - public/* (public assets)
      */
-    '/((?!$|api/auth|api/payment/webhook|auth/sign-in|auth/sign-up|auth/forgot-password|_next/static|_next/image|favicon.ico|manifest.json|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$).*)',
+    '/((?!$|contact|privacy|terms|api/auth|api/contact|api/payment/webhook|auth/sign-in|auth/sign-up|auth/forgot-password|_next/static|_next/image|favicon.ico|manifest.json|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$).*)',
   ],
 };
