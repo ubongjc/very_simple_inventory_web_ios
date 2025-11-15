@@ -63,12 +63,15 @@ table {
   --fc-small-font-size: 0.85rem;
 }
 
-/* Let the toolbar wrap nicely on narrow screens */
+/* Keep the toolbar on a single line */
 .fc .fc-toolbar {
-  flex-wrap: wrap !important;
-  row-gap: 8px !important;
+  flex-wrap: nowrap !important;
   margin-bottom: 1rem !important;
   padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 4px !important;
 }
 
 .fc .fc-header-toolbar,
@@ -81,19 +84,27 @@ table {
 .fc .fc-toolbar-chunk {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: 4px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Center chunk can grow to keep title centered */
+.fc .fc-toolbar-chunk:nth-child(2) {
+  flex: 1 !important;
+  display: flex !important;
+  justify-content: center !important;
 }
 
 /* Buttons auto-size to text; no giant boxes */
 .fc .fc-button {
-  padding: 6px 12px !important;
+  padding: 4px 8px !important;
   height: auto !important;
   min-height: 0 !important;
   min-width: 0 !important;
-  border-radius: 10px !important;
+  border-radius: 8px !important;
   font-weight: 600 !important;
   line-height: 1 !important;
-  font-size: 0.9rem !important;
+  font-size: 0.75rem !important;
   transition: all 0.2s ease !important;
   border: none !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
@@ -102,6 +113,14 @@ table {
   align-items: center !important;
   justify-content: center !important;
   box-sizing: border-box !important;
+}
+
+@media (min-width: 768px) {
+  .fc .fc-button {
+    padding: 6px 12px !important;
+    font-size: 0.9rem !important;
+    border-radius: 10px !important;
+  }
 }
 
 .fc .fc-button-primary {
@@ -120,9 +139,15 @@ table {
 }
 
 .fc .fc-button-group {
-  gap: 6px !important;
+  gap: 3px !important;
   display: flex !important;
   align-items: center !important;
+}
+
+@media (min-width: 768px) {
+  .fc .fc-button-group {
+    gap: 6px !important;
+  }
 }
 
 .fc .fc-button-group > .fc-button {
@@ -135,12 +160,19 @@ table {
   margin: 0 !important;
   padding: 0 !important;
   font-weight: 700 !important;
-  font-size: clamp(0.95rem, 1.6vw, 1.15rem) !important;
+  font-size: 0.75rem !important;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+@media (min-width: 768px) {
+  .fc .fc-toolbar-title {
+    font-size: clamp(0.95rem, 1.6vw, 1.15rem) !important;
+  }
 }
 
 .fc .fc-daygrid-day-number {

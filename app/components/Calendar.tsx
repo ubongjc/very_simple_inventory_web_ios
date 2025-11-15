@@ -286,7 +286,7 @@ export default function Calendar({
               right: 'dayGridMonth,dayGridWeek,dayGridDay',
             }}
             buttonText={{
-              today: 'today',
+              today: 'Today',
               month: 'Month',
               week: 'Week',
               day: 'Day',
