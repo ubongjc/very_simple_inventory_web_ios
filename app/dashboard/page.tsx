@@ -501,7 +501,7 @@ export default function Home() {
 
               <div className="pt-0.5 flex-1 min-w-0 max-w-[60%]">
                 <h2 className="text-lg md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight break-words">
-                  Hi, {(settings?.businessName || 'there').slice(0, 25)}!
+                  Hi, {settings?.businessName || 'there'}!
                 </h2>
                 <p className="text-[11px] md:text-sm text-gray-600 font-medium whitespace-nowrap leading-tight mt-2">
                   Manage your bookings with ease
