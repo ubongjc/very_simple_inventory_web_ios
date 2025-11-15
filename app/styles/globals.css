@@ -67,7 +67,7 @@ table {
 .fc .fc-toolbar {
   flex-wrap: nowrap !important;
   margin-bottom: 0.5rem !important;
-  padding: 0 !important;
+  padding: 0.25rem 0 0 0 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -186,7 +186,11 @@ table {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-transform: uppercase !important;
-  white-space: nowrap !important;
+  white-space: normal !important;
+  text-align: center !important;
+  line-height: 1.1 !important;
+  max-width: 100% !important;
+  overflow-wrap: break-word !important;
 }
 
 @media (min-width: 768px) {
