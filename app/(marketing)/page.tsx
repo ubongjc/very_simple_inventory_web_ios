@@ -44,23 +44,23 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                <Package className="w-6 h-6 text-white" />
+              <div className="p-1.5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                <Package className="w-4 h-4 text-white" />
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">
+              <h1 className="text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">
                 Very Simple Inventory
               </h1>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ml-4">
               <Link
                 href="/auth/sign-in"
-                className="px-2 py-1 md:px-4 md:py-2 text-gray-700 hover:text-blue-600 font-semibold transition-colors text-xs md:text-base whitespace-nowrap"
+                className="px-3 py-1.5 md:px-4 md:py-2 bg-white border-2 border-blue-500 text-blue-600 hover:bg-blue-50 font-bold rounded-lg transition-all shadow-sm text-xs md:text-base whitespace-nowrap"
               >
                 Log In
               </Link>
               <Link
                 href="/auth/sign-up"
-                className="px-2 py-1 md:px-6 md:py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-md text-xs md:text-base whitespace-nowrap"
+                className="px-3 py-1.5 md:px-6 md:py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-md text-xs md:text-base whitespace-nowrap"
               >
                 <span className="md:hidden">Sign Up</span>
                 <span className="hidden md:inline">Sign Up Free</span>
@@ -399,85 +399,17 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="bg-white border-t-2 border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                  <Package className="w-5 h-5 text-white" />
-                </div>
-                <h4 className="font-bold text-gray-900">Very Simple Inventory</h4>
-              </div>
-              <p className="text-gray-600 text-sm">
-                Simple rental inventory management for businesses of all sizes.
-              </p>
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+              <Package className="w-5 h-5 text-white" />
             </div>
-
-            <div>
-              <h5 className="font-bold text-gray-900 mb-4">Product</h5>
-              <ul className="space-y-2">
-                <li>
-                  <Link
-                    href="/auth/sign-up"
-                    className="text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    Sign Up
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/auth/sign-in"
-                    className="text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    Log In
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h5 className="font-bold text-gray-900 mb-4">Company</h5>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#about" className="text-gray-600 hover:text-blue-600 transition-colors">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <Link
-                    href="/contact"
-                    className="text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h5 className="font-bold text-gray-900 mb-4">Legal</h5>
-              <ul className="space-y-2">
-                <li>
-                  <Link
-                    href="/privacy"
-                    className="text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/terms"
-                    className="text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    Terms of Service
-                  </Link>
-                </li>
-              </ul>
-            </div>
+            <h4 className="font-bold text-gray-900">Very Simple Inventory</h4>
           </div>
-
-          <div className="border-t border-gray-200 pt-8 text-center">
+          <p className="text-gray-600 text-sm text-center mb-4">
+            Simple rental inventory management for businesses of all sizes.
+          </p>
+          <div className="border-t border-gray-200 pt-4 text-center">
             <p className="text-gray-600 text-sm">
               © 2025 Very Simple Inventory. All rights reserved.
             </p>
