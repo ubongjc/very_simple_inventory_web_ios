@@ -63,6 +63,18 @@ table {
   --fc-small-font-size: 0.85rem;
 }
 
+/* Add breathing room above toolbar to prevent button clipping */
+.calendar-root .fc .fc-header-toolbar {
+  margin-top: 10px !important;
+  overflow: visible !important;
+}
+
+@media (min-width: 768px) {
+  .calendar-root .fc .fc-header-toolbar {
+    margin-top: 12px !important;
+  }
+}
+
 /* Keep the toolbar on a single line */
 .fc .fc-toolbar {
   flex-wrap: nowrap !important;
