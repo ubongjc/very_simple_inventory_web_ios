@@ -65,7 +65,7 @@ table {
 
 /* Calendar root with normalized button heights */
 .calendar-root {
-  --fc-toolbar-btn-h: 38px;
+  --fc-toolbar-btn-h: 24px;
 }
 
 /* Add breathing room above toolbar to prevent button clipping */
