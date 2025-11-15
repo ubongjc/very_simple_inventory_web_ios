@@ -109,12 +109,24 @@ export default function Home() {
 
   const fetchUserProfile = async () => {
     try {
+      // Try to get cached business name from localStorage first
+      const cachedBusinessName = localStorage.getItem('businessName');
+      if (cachedBusinessName && !userProfile) {
+        setUserProfile({ businessName: cachedBusinessName } as UserProfile);
+      }
+
       const response = await fetch('/api/user/profile', {
         cache: 'no-store', // Prevent caching to always get fresh data
       });
       if (response.ok) {
         const data = await response.json();
         setUserProfile(data);
+
+        // Cache business name in localStorage
+        if (data.businessName) {
+          localStorage.setItem('businessName', data.businessName);
+        }
+
         console.log('User profile loaded:', data.businessName || 'No business name set');
       } else if (response.status === 401) {
         console.log('User not authenticated - personalization features unavailable');
@@ -128,12 +140,23 @@ export default function Home() {
 
   const fetchSettings = async () => {
     try {
+      // Try to get cached settings business name from localStorage first
+      const cachedSettingsBusinessName = localStorage.getItem('settingsBusinessName');
+      if (cachedSettingsBusinessName && !settings) {
+        setSettings({ businessName: cachedSettingsBusinessName } as Settings);
+      }
+
       const response = await fetch('/api/settings', {
         cache: 'no-store',
       });
       if (response.ok) {
         const data = await response.json();
         setSettings(data);
+
+        // Cache settings business name in localStorage
+        if (data.businessName) {
+          localStorage.setItem('settingsBusinessName', data.businessName);
+        }
       } else {
         console.error('Failed to fetch settings:', response.status);
       }
