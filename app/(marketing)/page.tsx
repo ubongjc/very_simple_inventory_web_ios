@@ -54,13 +54,13 @@ export default function HomePage() {
             <div className="flex items-center gap-2">
               <Link
                 href="/auth/sign-in"
-                className="px-2 py-1.5 md:px-4 md:py-2 text-gray-700 hover:text-blue-600 font-semibold transition-colors text-xs md:text-base"
+                className="px-2 py-1 md:px-4 md:py-2 text-gray-700 hover:text-blue-600 font-semibold transition-colors text-xs md:text-base"
               >
                 Log In
               </Link>
               <Link
                 href="/auth/sign-up"
-                className="px-3 py-1.5 md:px-6 md:py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-md text-xs md:text-base"
+                className="px-2 py-1 md:px-6 md:py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-md text-xs md:text-base"
               >
                 Sign Up Free
               </Link>
@@ -87,17 +87,17 @@ export default function HomePage() {
             Manage your rental business with ease. Track inventory, bookings, and customers all in
             one place. No complicated setup, no hidden fees.
           </p>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4">
             <Link
               href="/auth/sign-up"
-              className="w-full md:w-auto px-4 py-2.5 md:px-8 md:py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg md:rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl text-sm md:text-lg flex items-center justify-center gap-2"
+              className="w-full md:w-auto px-3 py-2 md:px-8 md:py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg md:rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl text-sm md:text-lg flex items-center justify-center gap-2"
             >
               Get Started Free
               <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
             </Link>
             <Link
               href="/auth/sign-in"
-              className="w-full md:w-auto px-4 py-2.5 md:px-8 md:py-4 bg-white text-gray-700 font-bold rounded-lg md:rounded-xl hover:bg-gray-50 transition-all shadow-md border-2 border-gray-200 text-sm md:text-lg"
+              className="w-full md:w-auto px-3 py-2 md:px-8 md:py-4 bg-white text-gray-700 font-bold rounded-lg md:rounded-xl hover:bg-gray-50 transition-all shadow-md border-2 border-gray-200 text-sm md:text-lg"
             >
               Log In
             </Link>
@@ -416,17 +416,17 @@ export default function HomePage() {
             Join thousands of rental businesses already using Very Simple Inventory. Start your free
             account today.
           </p>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4">
             <Link
               href="/auth/sign-up"
-              className="w-full md:w-auto px-4 py-2.5 md:px-8 md:py-4 bg-white text-blue-600 font-bold rounded-lg md:rounded-xl hover:bg-gray-100 transition-all shadow-lg text-sm md:text-lg flex items-center justify-center gap-2"
+              className="w-full md:w-auto px-3 py-2 md:px-8 md:py-4 bg-white text-blue-600 font-bold rounded-lg md:rounded-xl hover:bg-gray-100 transition-all shadow-lg text-sm md:text-lg flex items-center justify-center gap-2"
             >
               Get Started Free
               <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
             </Link>
             <Link
               href="/auth/sign-in"
-              className="w-full md:w-auto px-4 py-2.5 md:px-8 md:py-4 bg-blue-700 text-white font-bold rounded-lg md:rounded-xl hover:bg-blue-800 transition-all text-sm md:text-lg border-2 border-white/20"
+              className="w-full md:w-auto px-3 py-2 md:px-8 md:py-4 bg-blue-700 text-white font-bold rounded-lg md:rounded-xl hover:bg-blue-800 transition-all text-sm md:text-lg border-2 border-white/20"
             >
               Log In
             </Link>
