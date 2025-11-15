@@ -84,7 +84,10 @@ table {
 .fc .fc-header-toolbar,
 .fc .fc-toolbar-ltr {
   padding: 0 !important;
-  margin: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 0 !important;
+  /* margin-bottom is controlled by .fc-toolbar rule above */
 }
 
 /* Keep chunks tight with small gaps */
