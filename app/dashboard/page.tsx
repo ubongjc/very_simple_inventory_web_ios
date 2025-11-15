@@ -514,7 +514,7 @@ export default function Home() {
               </div>
               <div>
                 <h2 className="text-sm md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Hi {settings?.businessName || 'there'}!
+                  Hi {userProfile?.businessName || 'there'}!
                 </h2>
                 <p className="text-[10px] md:text-xs text-gray-600 font-medium">
                   Manage your bookings with ease
