@@ -500,10 +500,10 @@ export default function Home() {
               </div>
 
               <div>
-                <h2 className="text-sm md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h2 className="text-base md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
                   Hi {settings?.businessName || 'there'}!
                 </h2>
-                <p className="text-[10px] md:text-xs text-gray-600 font-medium whitespace-nowrap">
+                <p className="text-[11px] md:text-sm text-gray-600 font-medium whitespace-nowrap leading-tight">
                   Manage your bookings with ease
                 </p>
               </div>

@@ -86,9 +86,9 @@ table {
 }
 
 .fc .fc-button {
-  padding: 0.25rem 0.5rem !important;
-  font-size: 0.7rem !important;
-  border-radius: 0.375rem !important;
+  padding: 0.15rem 0.3rem !important;
+  font-size: 0.6rem !important;
+  border-radius: 0.25rem !important;
   font-weight: 600 !important;
   transition: all 0.2s ease !important;
   border: none !important;
@@ -97,7 +97,7 @@ table {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  height: 28px !important;
+  height: 22px !important;
   line-height: 1 !important;
 }
 
@@ -108,7 +108,7 @@ table {
   }
 
   .fc-toolbar-title {
-    font-size: 0.65rem !important;
+    font-size: 0.55rem !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
@@ -128,36 +128,36 @@ table {
   }
 
   .fc .fc-toolbar-chunk:nth-child(2) {
-    flex-shrink: 2 !important;
+    flex-shrink: 1 !important;
     min-width: 0 !important;
     flex-grow: 0 !important;
-    max-width: 40% !important;
+    max-width: 50% !important;
   }
 
   /* Navigation buttons (prev, next, today) */
   .fc .fc-toolbar-chunk:first-child .fc-button {
-    padding: 0.15rem 0.3rem !important;
-    font-size: 0.6rem !important;
-    border-radius: 0.375rem !important;
-    height: 22px !important;
+    padding: 0.1rem 0.2rem !important;
+    font-size: 0.5rem !important;
+    border-radius: 0.25rem !important;
+    height: 18px !important;
     line-height: 1 !important;
   }
 
   .fc .fc-toolbar-chunk:first-child .fc-button .fc-icon {
-    font-size: 0.6rem !important;
+    font-size: 0.5rem !important;
   }
 
   /* Reduce gap between prev/next on mobile */
   .fc .fc-toolbar-chunk:first-child {
-    gap: 0.08rem !important;
+    gap: 0.05rem !important;
   }
 
   /* View buttons (month, week, day) - make even smaller */
   .fc .fc-toolbar-chunk:last-child .fc-button {
-    padding: 0.12rem 0.2rem !important;
-    font-size: 0.48rem !important;
-    border-radius: 0.25rem !important;
-    height: 22px !important;
+    padding: 0.08rem 0.15rem !important;
+    font-size: 0.42rem !important;
+    border-radius: 0.2rem !important;
+    height: 18px !important;
     line-height: 1 !important;
   }
 
@@ -165,9 +165,9 @@ table {
     gap: 0.08rem !important;
   }
 
-  /* Reduce day cell height on mobile */
+  /* Adjust day cell height on mobile to fit 5 rentals */
   .fc-daygrid-day-frame {
-    min-height: 55px !important;
+    min-height: 80px !important;
   }
 
   /* Smaller day numbers on mobile */
@@ -184,8 +184,11 @@ table {
 
   /* Smaller rental bars on mobile */
   .fc .fc-event {
-    padding: 0px 2px !important;
-    font-size: 0.6rem !important;
+    padding: 0px 1px !important;
+    font-size: 0.5rem !important;
+    line-height: 1.1 !important;
+    min-height: 14px !important;
+    height: 14px !important;
   }
 }
 
@@ -260,16 +263,19 @@ table {
 
 .fc .fc-event {
   cursor: pointer !important;
-  border-radius: 0.2rem !important;
-  margin: 1px !important;
-  padding: 0px 3px !important;
+  border-radius: 0.15rem !important;
+  margin: 0.5px !important;
+  padding: 0px 2px !important;
   font-weight: 500 !important;
-  font-size: 0.65rem !important;
+  font-size: 0.6rem !important;
+  line-height: 1.2 !important;
   transition: all 0.2s ease !important;
   border: 1px solid transparent !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
   position: relative !important;
   z-index: 200 !important;
+  min-height: 16px !important;
+  height: 16px !important;
   /* Background color is set dynamically from the API based on rental.color */
 }
 
