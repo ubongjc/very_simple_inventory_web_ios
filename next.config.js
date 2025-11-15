@@ -8,7 +8,7 @@ const withPWA = require('next-pwa')({
       urlPattern: /^https:\/\/api\.paystack\.co\/.*/i,
       handler: 'NetworkFirst',
       options: {
-        cacheName: 'paystack-api',
+        cacheName: 'paystack-api-v2',
         expiration: {
           maxEntries: 16,
           maxAgeSeconds: 24 * 60 * 60, // 24 hours
@@ -17,10 +17,10 @@ const withPWA = require('next-pwa')({
       },
     },
     {
-      urlPattern: /^\/api\/(items|bookings|customers).*/i,
+      urlPattern: /^\/api\/(items|bookings|customers|user\/profile|settings).*/i,
       handler: 'NetworkFirst',
       options: {
-        cacheName: 'api-cache',
+        cacheName: 'api-cache-v2',
         expiration: {
           maxEntries: 32,
           maxAgeSeconds: 5 * 60, // 5 minutes
@@ -32,7 +32,7 @@ const withPWA = require('next-pwa')({
       urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
       handler: 'CacheFirst',
       options: {
-        cacheName: 'images',
+        cacheName: 'images-v2',
         expiration: {
           maxEntries: 64,
           maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days

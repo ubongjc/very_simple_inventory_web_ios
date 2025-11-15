@@ -1,6 +1,7 @@
 {
   "name": "Rental Inventory Manager",
   "short_name": "Rental Inventory",
+  "version": "2.0.0",
   "description": "Professional rental inventory and booking management system",
   "start_url": "/",
   "display": "standalone",
