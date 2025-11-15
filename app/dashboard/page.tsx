@@ -1,15 +1,29 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import Calendar from "../components/Calendar";
-import DayDrawer from "../components/DayDrawer";
-import AddItemModal from "../components/AddItemModal";
-import AddBookingModal from "../components/AddBookingModal";
-import CheckAvailabilityModal from "../components/CheckAvailabilityModal";
-import { CalendarDays, Package, Plus, Settings, Menu, X, Filter, CheckSquare, Square, Search, Star, Shield, LogOut } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import Calendar from '../components/Calendar';
+import DayDrawer from '../components/DayDrawer';
+import AddItemModal from '../components/AddItemModal';
+import AddBookingModal from '../components/AddBookingModal';
+import CheckAvailabilityModal from '../components/CheckAvailabilityModal';
+import {
+  CalendarDays,
+  Package,
+  Plus,
+  Settings,
+  Menu,
+  X,
+  Filter,
+  CheckSquare,
+  Square,
+  Search,
+  Star,
+  Shield,
+  LogOut,
+} from 'lucide-react';
+import { signOut } from 'next-auth/react';
 
 interface Item {
   id: string;
@@ -33,6 +47,10 @@ interface UserProfile {
   role: string;
 }
 
+interface Settings {
+  businessName: string;
+}
+
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -44,23 +62,30 @@ export default function Home() {
   const [isItemFilterOpen, setIsItemFilterOpen] = useState(false);
   const [items, setItems] = useState<Item[]>([]);
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
-  const [itemSearchQuery, setItemSearchQuery] = useState("");
-  const [itemSortBy, setItemSortBy] = useState<"name-asc" | "name-desc" | "quantity-desc" | "quantity-asc" | "unit">("name-asc");
+  const [itemSearchQuery, setItemSearchQuery] = useState('');
+  const [itemSortBy, setItemSortBy] = useState<
+    'name-asc' | 'name-desc' | 'quantity-desc' | 'quantity-asc' | 'unit'
+  >('name-asc');
   const [itemReservations, setItemReservations] = useState<Map<string, number>>(new Map());
-  const [calendarDateRange, setCalendarDateRange] = useState<{ start: string; end: string } | null>(null);
+  const [calendarDateRange, setCalendarDateRange] = useState<{ start: string; end: string } | null>(
+    null
+  );
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [settings, setSettings] = useState<Settings | null>(null);
 
-  // Fetch items and user profile on mount
+  // Fetch items, user profile, and settings on mount
   useEffect(() => {
     fetchItems();
     fetchUserProfile();
+    fetchSettings();
   }, [refreshKey]);
 
-  // Refresh user profile when page becomes visible (e.g., navigating back from settings)
+  // Refresh user profile and settings when page becomes visible
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         fetchUserProfile();
+        fetchSettings();
       }
     };
 
@@ -72,32 +97,71 @@ export default function Home() {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch("/api/items");
+      const response = await fetch('/api/items');
       const data = await response.json();
       setItems(data);
       // Select all items by default
       setSelectedItemIds(data.map((item: Item) => item.id));
     } catch (error) {
-      console.error("Error fetching items:", error);
+      console.error('Error fetching items:', error);
     }
   };
 
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch("/api/user/profile", {
+      // Try to get cached business name from localStorage first
+      const cachedBusinessName = localStorage.getItem('businessName');
+      if (cachedBusinessName && !userProfile) {
+        setUserProfile({ businessName: cachedBusinessName } as UserProfile);
+      }
+
+      const response = await fetch('/api/user/profile', {
         cache: 'no-store', // Prevent caching to always get fresh data
       });
       if (response.ok) {
         const data = await response.json();
         setUserProfile(data);
-        console.log("User profile loaded:", data.businessName || "No business name set");
+
+        // Cache business name in localStorage
+        if (data.businessName) {
+          localStorage.setItem('businessName', data.businessName);
+        }
+
+        console.log('User profile loaded:', data.businessName || 'No business name set');
       } else if (response.status === 401) {
-        console.log("User not authenticated - personalization features unavailable");
+        console.log('User not authenticated - personalization features unavailable');
       } else {
-        console.error("Failed to fetch user profile:", response.status);
+        console.error('Failed to fetch user profile:', response.status);
       }
     } catch (error) {
-      console.error("Error fetching user profile:", error);
+      console.error('Error fetching user profile:', error);
+    }
+  };
+
+  const fetchSettings = async () => {
+    try {
+      // Try to get cached settings business name from localStorage first
+      const cachedSettingsBusinessName = localStorage.getItem('settingsBusinessName');
+      if (cachedSettingsBusinessName && !settings) {
+        setSettings({ businessName: cachedSettingsBusinessName } as Settings);
+      }
+
+      const response = await fetch('/api/settings', {
+        cache: 'no-store',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSettings(data);
+
+        // Cache settings business name in localStorage
+        if (data.businessName) {
+          localStorage.setItem('settingsBusinessName', data.businessName);
+        }
+      } else {
+        console.error('Failed to fetch settings:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error);
     }
   };
 
@@ -111,7 +175,7 @@ export default function Home() {
       });
       setItemReservations(reservationMap);
     } catch (error) {
-      console.error("Error fetching item reservations:", error);
+      console.error('Error fetching item reservations:', error);
     }
   };
 
@@ -123,15 +187,13 @@ export default function Home() {
   }, [calendarDateRange, refreshKey]);
 
   const toggleItem = (itemId: string) => {
-    setSelectedItemIds(prev =>
-      prev.includes(itemId)
-        ? prev.filter(id => id !== itemId)
-        : [...prev, itemId]
+    setSelectedItemIds((prev) =>
+      prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId]
     );
   };
 
   const selectAllItems = () => {
-    setSelectedItemIds(items.map(item => item.id));
+    setSelectedItemIds(items.map((item) => item.id));
   };
 
   const deselectAllItems = () => {
@@ -175,7 +237,7 @@ export default function Home() {
       {/* Main Menu (Actions) */}
       <div
         className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+          isMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
@@ -275,7 +337,7 @@ export default function Home() {
 
               <button
                 onClick={() => {
-                  signOut({ callbackUrl: "/" });
+                  signOut({ callbackUrl: '/' });
                 }}
                 className="w-full flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-gray-500 to-gray-700 text-white rounded-xl hover:from-gray-600 hover:to-gray-800 font-semibold shadow-lg transition-all"
               >
@@ -290,7 +352,7 @@ export default function Home() {
       {/* Item Filter Menu */}
       <div
         className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
-          isItemFilterOpen ? "translate-x-0" : "-translate-x-full"
+          isItemFilterOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
@@ -341,7 +403,16 @@ export default function Home() {
               </div>
               <select
                 value={itemSortBy}
-                onChange={(e) => setItemSortBy(e.target.value as "name-asc" | "name-desc" | "quantity-desc" | "quantity-asc" | "unit")}
+                onChange={(e) =>
+                  setItemSortBy(
+                    e.target.value as
+                      | 'name-asc'
+                      | 'name-desc'
+                      | 'quantity-desc'
+                      | 'quantity-asc'
+                      | 'unit'
+                  )
+                }
                 className="px-2 py-1 border border-gray-300 rounded-lg text-[10px] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="name-asc">Name: A-Z</option>
@@ -356,26 +427,23 @@ export default function Home() {
           {/* Item List */}
           <div className="flex-1 overflow-y-auto px-3 py-2">
             {items.length === 0 ? (
-              <div className="text-center text-gray-500 py-8 text-sm">
-                No items yet
-              </div>
-            ) : (() => {
+              <div className="text-center text-gray-500 py-8 text-sm">No items yet</div>
+            ) : (
+              (() => {
                 // Filter and sort items
                 const filteredItems = items
-                  .filter(item =>
-                    item.name.toLowerCase().includes(itemSearchQuery.toLowerCase())
-                  )
+                  .filter((item) => item.name.toLowerCase().includes(itemSearchQuery.toLowerCase()))
                   .sort((a, b) => {
                     switch (itemSortBy) {
-                      case "name-asc":
+                      case 'name-asc':
                         return a.name.localeCompare(b.name);
-                      case "name-desc":
+                      case 'name-desc':
                         return b.name.localeCompare(a.name);
-                      case "quantity-desc":
+                      case 'quantity-desc':
                         return b.totalQuantity - a.totalQuantity;
-                      case "quantity-asc":
+                      case 'quantity-asc':
                         return a.totalQuantity - b.totalQuantity;
-                      case "unit":
+                      case 'unit':
                         return a.unit.localeCompare(b.unit);
                       default:
                         return a.name.localeCompare(b.name);
@@ -398,8 +466,8 @@ export default function Home() {
                         onClick={() => toggleItem(item.id)}
                         className={`w-full flex items-center gap-1.5 p-1.5 rounded-lg border transition-all ${
                           selectedItemIds.includes(item.id)
-                            ? "bg-blue-50 border-blue-500"
-                            : "bg-white border-gray-300 hover:border-gray-400"
+                            ? 'bg-blue-50 border-blue-500'
+                            : 'bg-white border-gray-300 hover:border-gray-400'
                         }`}
                       >
                         {selectedItemIds.includes(item.id) ? (
@@ -410,11 +478,12 @@ export default function Home() {
                         <div className="flex-1 text-left min-w-0">
                           <div className="font-bold text-black text-[10px] leading-tight break-words">
                             <span className="break-all">{item.name}</span>
-                            {itemReservations.has(item.id) && itemReservations.get(item.id)! > 0 && (
-                              <span className="text-orange-600 ml-1 whitespace-normal">
-                                ({itemReservations.get(item.id)} currently booked)
-                              </span>
-                            )}
+                            {itemReservations.has(item.id) &&
+                              itemReservations.get(item.id)! > 0 && (
+                                <span className="text-orange-600 ml-1 whitespace-normal">
+                                  ({itemReservations.get(item.id)} currently booked)
+                                </span>
+                              )}
                           </div>
                           <div className="text-[9px] text-gray-600">
                             {item.totalQuantity} {item.unit} total
@@ -425,16 +494,16 @@ export default function Home() {
                   </div>
                 );
               })()
-            }
+            )}
           </div>
         </div>
       </div>
 
       {/* Compact Header */}
       <header className="bg-white shadow-lg border-b-2 border-gradient flex-shrink-0">
-        <div className="max-w-7xl mx-auto px-4 py-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+        <div className="max-w-7xl mx-auto px-4 py-1">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start gap-2 flex-1 min-w-0">
               {/* Menu buttons stacked vertically */}
               <div className="flex flex-col gap-1">
                 <button
@@ -453,39 +522,30 @@ export default function Home() {
                 </button>
               </div>
 
-              <div className="relative w-10 h-10 rounded-xl shadow-lg overflow-hidden flex-shrink-0">
-                {userProfile?.logoUrl ? (
-                  <img
-                    src={userProfile.logoUrl}
-                    alt="Company Logo"
-                    className="w-full h-full object-contain bg-white"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                    <Package className="w-6 h-6 text-white" />
-                  </div>
-                )}
-              </div>
-              <div>
-                <h2 className="text-sm md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Hi {userProfile?.businessName || "there"}!
+              <div className="pt-0.5 flex-1 overflow-visible">
+                <h2 className="text-lg md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight whitespace-nowrap">
+                  Hi,
+                  {(settings?.businessName || userProfile?.businessName) && (
+                    <>
+                      <br />
+                      {settings?.businessName || userProfile?.businessName}!
+                    </>
+                  )}
+                  {!(settings?.businessName || userProfile?.businessName) && '!'}
                 </h2>
-                <p className="text-[10px] md:text-xs text-gray-600 font-medium">
+                <p className="text-[11px] md:text-sm text-gray-600 font-medium whitespace-nowrap leading-tight mt-2">
                   Manage your bookings with ease
                 </p>
               </div>
             </div>
 
-            {/* Right side - App Title with Premium Link */}
+            {/* Right side - Premium Link */}
             <Link
               href="/premium"
-              className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+              className="flex items-center hover:opacity-80 transition-opacity"
               title="Premium Features"
             >
-              <h1 className="text-sm md:text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">
-                Very Simple Inventory
-              </h1>
-              <Star className="w-4 h-4 md:w-5 md:h-5 text-yellow-500 fill-yellow-400 flex-shrink-0" />
+              <Star className="w-10 h-10 md:w-12 md:h-12 text-yellow-500 fill-yellow-400 flex-shrink-0" />
             </Link>
           </div>
           {/* Check Availability Button */}

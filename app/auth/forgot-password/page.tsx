@@ -16,9 +16,18 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      // TODO: Implement password reset endpoint
-      // For now, just show success message
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send reset email');
+      }
+
       setSent(true);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
@@ -52,18 +61,24 @@ export default function ForgotPasswordPage() {
                 <div>
                   <p className="text-lg font-bold text-green-800 mb-2">Email Sent!</p>
                   <p className="text-sm text-green-700">
-                    We've sent a password reset link to <strong>{email}</strong>
+                    We&apos;ve sent a password reset link to <strong>{email}</strong>
                   </p>
                 </div>
               </div>
 
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <p className="text-sm text-yellow-800 font-medium">
+                  ⚠️ <strong>Check your spam/junk folder</strong> if you don&apos;t see the email in a few minutes.
+                </p>
+              </div>
+
               <p className="text-sm text-gray-600">
-                Didn't receive the email? Check your spam folder or{" "}
+                Didn&apos;t receive it?{" "}
                 <button
                   onClick={() => setSent(false)}
                   className="text-blue-600 hover:text-blue-700 font-bold"
                 >
-                  try again
+                  Try again
                 </button>
               </p>
 

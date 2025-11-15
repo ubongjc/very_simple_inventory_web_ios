@@ -85,7 +85,9 @@ export default function SettingsPage() {
   const fetchSettings = async () => {
     try {
       const response = await fetch("/api/settings");
-      if (!response.ok) throw new Error("Failed to fetch settings");
+      if (!response.ok) {
+        throw new Error("Failed to fetch settings");
+      }
       const data = await response.json();
       setSettings(data);
     } catch (error) {
@@ -109,7 +111,9 @@ export default function SettingsPage() {
   };
 
   const handleSave = async () => {
-    if (!settings) return;
+    if (!settings) {
+      return;
+    }
 
     setSaving(true);
     setMessage(null);
@@ -121,10 +125,18 @@ export default function SettingsPage() {
         body: JSON.stringify(settings),
       });
 
-      if (!response.ok) throw new Error("Failed to save settings");
+      if (!response.ok) {
+        throw new Error("Failed to save settings");
+      }
 
       const updatedSettings = await response.json();
       setSettings(updatedSettings);
+
+      // Update localStorage cache when settings are saved
+      if (updatedSettings.businessName) {
+        localStorage.setItem('settingsBusinessName', updatedSettings.businessName);
+      }
+
       setMessage({ type: "success", text: "Settings saved successfully!" });
 
       // Clear success message after 3 seconds
@@ -138,7 +150,9 @@ export default function SettingsPage() {
   };
 
   const updateSetting = <K extends keyof Settings>(key: K, value: Settings[K]) => {
-    if (!settings) return;
+    if (!settings) {
+      return;
+    }
     setSettings({ ...settings, [key]: value });
   };
 
@@ -154,12 +168,16 @@ export default function SettingsPage() {
   };
 
   const updateProfile = <K extends keyof UserProfile>(key: K, value: UserProfile[K]) => {
-    if (!userProfile) return;
+    if (!userProfile) {
+      return;
+    }
     setUserProfile({ ...userProfile, [key]: value });
   };
 
   const handleSaveProfile = async () => {
-    if (!userProfile) return;
+    if (!userProfile) {
+      return;
+    }
 
     setSavingProfile(true);
     setMessage(null);
@@ -176,10 +194,18 @@ export default function SettingsPage() {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to save profile");
+      if (!response.ok) {
+        throw new Error("Failed to save profile");
+      }
 
       const updatedProfile = await response.json();
       setUserProfile(updatedProfile);
+
+      // Update localStorage cache when profile is saved
+      if (updatedProfile.businessName) {
+        localStorage.setItem('businessName', updatedProfile.businessName);
+      }
+
       setMessage({ type: "success", text: "Business branding saved successfully!" });
 
       // Clear success message after 3 seconds
@@ -255,85 +281,6 @@ export default function SettingsPage() {
           </div>
         )}
 
-        {/* Business Branding (Personal Settings) */}
-        {userProfile && (
-          <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl shadow-xl p-6 mb-6 border-2 border-blue-300">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <User className="w-6 h-6 text-blue-600" />
-                <h2 className="text-xl font-bold text-black">Business Branding</h2>
-              </div>
-              <button
-                onClick={handleSaveProfile}
-                disabled={savingProfile}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Save className="w-4 h-4" />
-                {savingProfile ? "Saving..." : "Save Branding"}
-              </button>
-            </div>
-
-            <div className="bg-white rounded-xl p-4 space-y-4">
-              <div>
-                <label className="block text-sm font-bold text-black mb-2">
-                  Your Business Name
-                </label>
-                <input
-                  type="text"
-                  value={userProfile.businessName || ""}
-                  onChange={(e) => updateProfile("businessName", e.target.value || null)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium"
-                  placeholder="Enter your business name (e.g., Acme Rentals)"
-                  maxLength={100}
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  This name will appear throughout the app and make it feel personalized to your business
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-black mb-2">
-                  Company Logo URL <span className="flex items-center gap-1"><ImageIcon className="w-4 h-4" /></span>
-                </label>
-                <input
-                  type="url"
-                  value={userProfile.logoUrl || ""}
-                  onChange={(e) => updateProfile("logoUrl", e.target.value || null)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium"
-                  placeholder="https://example.com/your-logo.png"
-                  maxLength={500}
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Paste the URL of your company logo. It will be displayed on the home page and throughout the app.
-                </p>
-              </div>
-
-              {/* Logo Preview */}
-              {userProfile.logoUrl && (
-                <div>
-                  <label className="block text-sm font-bold text-black mb-2">Logo Preview</label>
-                  <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <img
-                      src={userProfile.logoUrl}
-                      alt="Company Logo"
-                      className="w-16 h-16 object-contain rounded-lg bg-white p-2 border border-gray-300"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
-                    <div>
-                      <p className="text-sm font-semibold text-black">
-                        {userProfile.businessName || "Your Business"}
-                      </p>
-                      <p className="text-xs text-gray-500">This is how your logo will appear</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
         {/* Business Information */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-200">
           <div className="flex items-center gap-2 mb-4">
@@ -353,9 +300,12 @@ export default function SettingsPage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium"
                 placeholder="My Booking Business"
                 minLength={2}
-                maxLength={100}
+                maxLength={25}
                 required
               />
+              <p className="text-xs text-gray-600 mt-1">
+                {settings.businessName.length}/25 characters
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
