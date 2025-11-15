@@ -478,9 +478,9 @@ export default function Home() {
 
       {/* Compact Header */}
       <header className="bg-white shadow-lg border-b-2 border-gradient flex-shrink-0">
-        <div className="max-w-7xl mx-auto px-4 py-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+        <div className="max-w-7xl mx-auto px-4 py-1">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start gap-2">
               {/* Menu buttons stacked vertically */}
               <div className="flex flex-col gap-1">
                 <button
@@ -499,9 +499,9 @@ export default function Home() {
                 </button>
               </div>
 
-              <div>
-                <h2 className="text-base md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
-                  Hi {settings?.businessName || 'there'}!
+              <div className="pt-0.5">
+                <h2 className="text-lg md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
+                  Hi, {settings?.businessName || 'there'}!
                 </h2>
                 <p className="text-[11px] md:text-sm text-gray-600 font-medium whitespace-nowrap leading-tight">
                   Manage your bookings with ease
