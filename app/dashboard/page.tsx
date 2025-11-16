@@ -48,7 +48,7 @@ interface UserProfile {
 }
 
 interface Settings {
-  businessName: string;
+  businessName: string | null;
 }
 
 export default function Home() {
@@ -284,9 +284,9 @@ export default function Home() {
                     setIsMenuOpen(false);
                   }
                 }}
-                disabled={items.length === 0}
+                disabled={!itemsLoading && items.length === 0}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold shadow-lg transition-all ${
-                  items.length === 0
+                  !itemsLoading && items.length === 0
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     : 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700'
                 }`}
@@ -543,13 +543,19 @@ export default function Home() {
               <div className="pt-0.5 flex-1 overflow-visible">
                 <h2 className="text-lg md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight whitespace-nowrap">
                   Hi,
-                  {(settings?.businessName || userProfile?.businessName) && (
+                  {(settings?.businessName || userProfile?.businessName) ? (
                     <>
                       <br />
                       {settings?.businessName || userProfile?.businessName}!
                     </>
+                  ) : userProfile?.firstName ? (
+                    <>
+                      <br />
+                      {userProfile.firstName}!
+                    </>
+                  ) : (
+                    '!'
                   )}
-                  {!(settings?.businessName || userProfile?.businessName) && '!'}
                 </h2>
                 <p className="text-[11px] md:text-sm text-gray-600 font-medium whitespace-nowrap leading-tight mt-2">
                   Manage your bookings with ease
@@ -570,9 +576,9 @@ export default function Home() {
           <div className="mt-2">
             <button
               onClick={() => setIsCheckAvailabilityOpen(true)}
-              disabled={items.length === 0}
+              disabled={!itemsLoading && items.length === 0}
               className={`w-full px-3 py-1.5 rounded font-semibold shadow-md transition-all flex items-center justify-center gap-2 text-sm ${
-                items.length === 0
+                !itemsLoading && items.length === 0
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700'
               }`}
