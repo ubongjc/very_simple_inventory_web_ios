@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Calendar, Search, ChevronDown, ChevronUp, Trash2, Edit2, User, Package, Maximize2, Minimize2, ChevronLeft, ChevronRight, Plus, X, CheckSquare, Square, Filter, Menu, Settings } from "lucide-react";
+import { ArrowLeft, Calendar, Search, ChevronDown, ChevronUp, Trash2, Edit2, User, Package, Maximize2, Minimize2, ChevronLeft, ChevronRight, Plus, X, CheckSquare, Square, Filter, Menu, Settings, AlertTriangle } from "lucide-react";
 import EditBookingModal from "../components/EditBookingModal";
 import DatePicker from "../components/DatePicker";
+import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { useSettings } from "@/app/hooks/useSettings";
 import { toZonedTime } from "date-fns-tz";
 
@@ -88,6 +89,7 @@ export default function BookingsPage() {
   const [itemSearchQuery, setItemSearchQuery] = useState("");
   const [itemSortBy, setItemSortBy] = useState<"name-asc" | "name-desc" | "quantity-desc" | "quantity-asc" | "unit">("name-asc");
   const [isDefaultFiltersOpen, setIsDefaultFiltersOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Temporary state for editing defaults in the dropdown
   const [tempDateRangeFilter, setTempDateRangeFilter] = useState<DateRangeFilter>(dateRangeFilter);
@@ -504,6 +506,24 @@ export default function BookingsPage() {
     }
   };
 
+  const handleDeleteAllBookings = async () => {
+    try {
+      const response = await fetch("/api/bookings/bulk", { method: "DELETE" });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete all bookings");
+      }
+
+      // Refresh bookings
+      await fetchBookings();
+      setIsDeleteModalOpen(false);
+      alert("All bookings deleted successfully");
+    } catch (error) {
+      console.error("Error deleting all bookings:", error);
+      alert("Failed to delete all bookings. Please try again.");
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "CONFIRMED":
@@ -758,18 +778,28 @@ export default function BookingsPage() {
               </div>
             </div>
 
-            {/* Default Filters Button */}
-            <div className="relative">
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2">
               <button
-                onClick={() => setIsDefaultFiltersOpen(!isDefaultFiltersOpen)}
-                className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-semibold transition-all shadow-md text-[10px]"
+                onClick={() => setIsDeleteModalOpen(true)}
+                className="flex items-center gap-1 px-2 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold transition-colors text-xs"
+                title="Delete all bookings"
               >
-                <Settings className="w-3 h-3" />
-                <span className="flex flex-col items-center leading-tight">
-                  <span>DEFAULT</span>
-                  <span>FILTERS</span>
-                </span>
+                <AlertTriangle className="w-3 h-3" />
+                <span className="hidden sm:inline">Delete All</span>
               </button>
+
+              <div className="relative">
+                <button
+                  onClick={() => setIsDefaultFiltersOpen(!isDefaultFiltersOpen)}
+                  className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-semibold transition-all shadow-md text-[10px]"
+                >
+                  <Settings className="w-3 h-3" />
+                  <span className="flex flex-col items-center leading-tight">
+                    <span>DEFAULT</span>
+                    <span>FILTERS</span>
+                  </span>
+                </button>
 
               {/* Dropdown Menu */}
               {isDefaultFiltersOpen && (
@@ -1350,6 +1380,16 @@ export default function BookingsPage() {
         onClose={() => setIsEditModalOpen(false)}
         onSuccess={handleEditSuccess}
         booking={selectedBooking}
+      />
+
+      {/* Delete All Bookings Modal */}
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteAllBookings}
+        title="Delete All Bookings"
+        message="This will permanently delete all your bookings. This action cannot be undone!"
+        count={bookings.length}
       />
     </div>
   );

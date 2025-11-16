@@ -61,6 +61,7 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isItemFilterOpen, setIsItemFilterOpen] = useState(false);
   const [items, setItems] = useState<Item[]>([]);
+  const [itemsLoading, setItemsLoading] = useState(true);
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
   const [itemSearchQuery, setItemSearchQuery] = useState('');
   const [itemSortBy, setItemSortBy] = useState<
@@ -97,6 +98,7 @@ export default function Home() {
 
   const fetchItems = async () => {
     try {
+      setItemsLoading(true);
       const response = await fetch('/api/items');
       const data = await response.json();
       setItems(data);
@@ -104,6 +106,8 @@ export default function Home() {
       setSelectedItemIds(data.map((item: Item) => item.id));
     } catch (error) {
       console.error('Error fetching items:', error);
+    } finally {
+      setItemsLoading(false);
     }
   };
 
@@ -576,8 +580,8 @@ export default function Home() {
       {/* Main Content - Full height calendar */}
       <main className="flex-1 w-full mx-auto px-4 py-4">
         <div className="h-full max-w-7xl mx-auto">
-          {/* Empty State Message */}
-          {items.length === 0 && (
+          {/* Empty State Message - Only show when not loading and no items */}
+          {!itemsLoading && items.length === 0 && (
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg p-4 mb-4 text-center">
               <p className="text-lg font-bold text-gray-800">
                 📦 Welcome! Add an item to begin. Click the menu icon (☰) and Add Item

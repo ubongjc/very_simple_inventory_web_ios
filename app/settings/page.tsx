@@ -76,6 +76,8 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchSettings();
@@ -215,6 +217,40 @@ export default function SettingsPage() {
       setMessage({ type: "error", text: "Failed to save business branding" });
     } finally {
       setSavingProfile(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== "delete account") {
+      setMessage({ type: "error", text: 'Please type "delete account" to confirm' });
+      return;
+    }
+
+    if (!confirm("Are you absolutely sure? This will permanently delete your account and all your data. This action CANNOT be undone!")) {
+      return;
+    }
+
+    setIsDeleting(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/user/account", {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete account");
+      }
+
+      // Clear all localStorage
+      localStorage.clear();
+
+      // Redirect to sign-in page
+      window.location.href = "/auth/sign-in?deleted=true";
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      setMessage({ type: "error", text: "Failed to delete account. Please try again." });
+      setIsDeleting(false);
     }
   };
 
@@ -482,6 +518,52 @@ export default function SettingsPage() {
                 ))}
               </select>
             </div>
+          </div>
+        </div>
+
+        {/* Danger Zone - Account Deletion */}
+        <div className="bg-red-50 rounded-2xl shadow-xl p-6 mb-6 border-2 border-red-300">
+          <div className="flex items-center gap-2 mb-4">
+            <AlertTriangle className="w-6 h-6 text-red-600" />
+            <h2 className="text-xl font-bold text-red-900">Danger Zone</h2>
+          </div>
+
+          <div className="bg-white rounded-lg p-4 border-2 border-red-200">
+            <h3 className="text-lg font-bold text-red-900 mb-2">Delete Account</h3>
+            <p className="text-sm text-gray-700 mb-4">
+              Once you delete your account, there is no going back. This will permanently delete:
+            </p>
+            <ul className="list-disc list-inside text-sm text-gray-700 mb-4 space-y-1">
+              <li>Your account and profile</li>
+              <li>All your items, customers, and bookings</li>
+              <li>All your settings and data</li>
+              <li>All payment records</li>
+            </ul>
+            <p className="text-sm font-bold text-red-900 mb-4">
+              This action is permanent and cannot be undone!
+            </p>
+
+            <div className="mb-4">
+              <label className="block text-sm font-bold text-black mb-2">
+                Type "delete account" to confirm:
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                placeholder="delete account"
+                className="w-full px-4 py-2 border-2 border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none text-black font-medium"
+              />
+            </div>
+
+            <button
+              onClick={handleDeleteAccount}
+              disabled={isDeleting || deleteConfirmText !== "delete account"}
+              className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              <AlertTriangle className="w-5 h-5" />
+              {isDeleting ? "Deleting Account..." : "Delete My Account Permanently"}
+            </button>
           </div>
         </div>
 
