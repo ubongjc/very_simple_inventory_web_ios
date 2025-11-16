@@ -5,6 +5,8 @@ import { X, Edit2 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import EditBookingModal from "./EditBookingModal";
+import NotesDisplay from "./NotesDisplay";
+import NotesModal from "./NotesModal";
 import { useSettings } from "@/app/hooks/useSettings";
 
 interface DayDrawerProps {
@@ -78,6 +80,8 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
   const [loading, setLoading] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [bookingNotesModalOpen, setBookingNotesModalOpen] = useState(false);
+  const [currentBookingNotes, setCurrentBookingNotes] = useState<{ id: string; notes: string } | null>(null);
   const { formatCurrency } = useSettings();
 
   // Format date without timezone conversion
@@ -155,6 +159,38 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
 
   const handleEditSuccess = () => {
     fetchDayData(); // Refresh the data
+  };
+
+  // Notes handlers
+  const handleOpenBookingNotes = (booking: Booking) => {
+    setCurrentBookingNotes({ id: booking.id, notes: booking.notes || "" });
+    setBookingNotesModalOpen(true);
+  };
+
+  const handleSaveBookingNotes = async (notes: string) => {
+    if (!currentBookingNotes) return;
+
+    try {
+      const response = await fetch(`/api/bookings/${currentBookingNotes.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notes }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update booking notes");
+      }
+
+      await fetchDayData();
+      setBookingNotesModalOpen(false);
+      setCurrentBookingNotes(null);
+      if (onDataChange) {
+        onDataChange();
+      }
+    } catch (error) {
+      console.error("Error updating booking notes:", error);
+      alert("Failed to update booking notes");
+    }
   };
 
   const handleUpdateBookingStatus = async (bookingId: string, newStatus: string) => {
@@ -365,6 +401,15 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
                             </div>
                           </div>
                         )}
+
+                        {/* Notes */}
+                        <div className="mt-2 bg-yellow-50 border border-yellow-200 rounded p-1.5 pl-3.5 text-xs">
+                          <div className="text-[10px] font-bold text-gray-700 mb-1">NOTES</div>
+                          <NotesDisplay
+                            notes={booking.notes || ""}
+                            onClick={() => handleOpenBookingNotes(booking)}
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -435,6 +480,18 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
         onClose={() => setIsEditModalOpen(false)}
         onSuccess={handleEditSuccess}
         booking={selectedBooking}
+      />
+
+      {/* Booking Notes Modal */}
+      <NotesModal
+        isOpen={bookingNotesModalOpen}
+        onClose={() => {
+          setBookingNotesModalOpen(false);
+          setCurrentBookingNotes(null);
+        }}
+        notes={currentBookingNotes?.notes || ""}
+        onSave={handleSaveBookingNotes}
+        title="Booking Notes"
       />
     </>
   );

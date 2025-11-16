@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ArrowLeft, Calendar, Search, ChevronDown, ChevronUp, Trash2, Edit2, User, Package, Maximize2, Minimize2, ChevronLeft, ChevronRight, Plus, X, CheckSquare, Square, Filter, Menu, Settings } from "lucide-react";
 import EditBookingModal from "../components/EditBookingModal";
 import DatePicker from "../components/DatePicker";
+import NotesDisplay from "../components/NotesDisplay";
+import NotesModal from "../components/NotesModal";
 import { useSettings } from "@/app/hooks/useSettings";
 import { toZonedTime } from "date-fns-tz";
 
@@ -93,6 +95,10 @@ export default function BookingsPage() {
   const [tempDateRangeFilter, setTempDateRangeFilter] = useState<DateRangeFilter>(dateRangeFilter);
   const [tempSortBy, setTempSortBy] = useState<SortOption>(sortBy);
   const [tempStatusFilter, setTempStatusFilter] = useState<StatusFilter>(statusFilter);
+
+  // Notes modal state
+  const [bookingNotesModalOpen, setBookingNotesModalOpen] = useState(false);
+  const [currentBookingNotes, setCurrentBookingNotes] = useState<{ id: string; notes: string } | null>(null);
 
   // Load default filters from localStorage on mount
   useEffect(() => {
@@ -411,6 +417,35 @@ export default function BookingsPage() {
 
   const handleEditSuccess = () => {
     fetchBookings(); // Refresh the bookings list
+  };
+
+  // Notes handlers
+  const handleOpenBookingNotes = (booking: Booking) => {
+    setCurrentBookingNotes({ id: booking.id, notes: booking.notes || "" });
+    setBookingNotesModalOpen(true);
+  };
+
+  const handleSaveBookingNotes = async (notes: string) => {
+    if (!currentBookingNotes) return;
+
+    try {
+      const response = await fetch(`/api/bookings/${currentBookingNotes.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notes }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update booking notes");
+      }
+
+      await fetchBookings();
+      setBookingNotesModalOpen(false);
+      setCurrentBookingNotes(null);
+    } catch (error) {
+      console.error("Error updating booking notes:", error);
+      alert("Failed to update booking notes");
+    }
   };
 
   const handleUpdateBookingColor = async (bookingId: string, color: string) => {
@@ -1269,12 +1304,13 @@ export default function BookingsPage() {
                         )}
 
                         {/* Notes */}
-                        {booking.notes && (
-                          <div className="bg-yellow-50 border border-yellow-200 rounded p-2">
-                            <div className="text-[9px] font-bold text-gray-700 mb-1">NOTES</div>
-                            <p className="text-[10px] text-black font-medium">{booking.notes}</p>
-                          </div>
-                        )}
+                        <div className="bg-yellow-50 border border-yellow-200 rounded p-2">
+                          <div className="text-[9px] font-bold text-gray-700 mb-1">NOTES</div>
+                          <NotesDisplay
+                            notes={booking.notes || ""}
+                            onClick={() => handleOpenBookingNotes(booking)}
+                          />
+                        </div>
 
                         {/* Actions */}
                         <div className="flex gap-1">
@@ -1350,6 +1386,18 @@ export default function BookingsPage() {
         onClose={() => setIsEditModalOpen(false)}
         onSuccess={handleEditSuccess}
         booking={selectedBooking}
+      />
+
+      {/* Booking Notes Modal */}
+      <NotesModal
+        isOpen={bookingNotesModalOpen}
+        onClose={() => {
+          setBookingNotesModalOpen(false);
+          setCurrentBookingNotes(null);
+        }}
+        notes={currentBookingNotes?.notes || ""}
+        onSave={handleSaveBookingNotes}
+        title="Booking Notes"
       />
     </div>
   );
