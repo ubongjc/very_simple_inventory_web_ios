@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/lib/auth";
+import { authOptions } from "@/app/lib/auth.config";
 import { prisma } from "@/app/lib/prisma";
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -27,7 +27,7 @@ export async function DELETE(
       );
     }
 
-    const userId = params.id;
+    const { id: userId } = await params;
 
     // Prevent deleting yourself
     if (userId === session.user.id) {

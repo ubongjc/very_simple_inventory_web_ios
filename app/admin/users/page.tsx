@@ -394,7 +394,7 @@ export default function AdminUsersPage() {
               {/* Confirmation Input */}
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <p className="text-sm font-bold text-yellow-800 mb-2">
-                  Type "confirm" to enable actions below
+                  Type &quot;confirm&quot; to enable actions below
                 </p>
                 <input
                   type="text"

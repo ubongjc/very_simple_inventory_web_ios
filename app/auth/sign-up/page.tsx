@@ -26,6 +26,14 @@ export default function SignUpPage() {
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpFormSchema),
     mode: 'onChange',
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      businessName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 
   const password = watch('password');

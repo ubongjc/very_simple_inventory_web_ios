@@ -436,11 +436,16 @@ export default function SettingsPage() {
                 onChange={(e) => {
                   const val = e.target.value || null;
                   updateSetting("businessPhone", val);
-                  if (val) validateBusinessPhone(val);
-                  else setErrors((prev) => ({ ...prev, businessPhone: "" }));
+                  if (val) {
+                    validateBusinessPhone(val);
+                  } else {
+                    setErrors((prev) => ({ ...prev, businessPhone: "" }));
+                  }
                 }}
                 onBlur={(e) => {
-                  if (e.target.value) validateBusinessPhone(e.target.value);
+                  if (e.target.value) {
+                    validateBusinessPhone(e.target.value);
+                  }
                 }}
                 className={`w-full px-3 sm:px-4 py-2 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm sm:text-base ${
                   errors.businessPhone ? 'border-red-500' : 'border-gray-300'
@@ -464,11 +469,16 @@ export default function SettingsPage() {
                 onChange={(e) => {
                   const val = e.target.value || null;
                   updateSetting("businessEmail", val);
-                  if (val) validateBusinessEmail(val);
-                  else setErrors((prev) => ({ ...prev, businessEmail: "" }));
+                  if (val) {
+                    validateBusinessEmail(val);
+                  } else {
+                    setErrors((prev) => ({ ...prev, businessEmail: "" }));
+                  }
                 }}
                 onBlur={(e) => {
-                  if (e.target.value) validateBusinessEmail(e.target.value);
+                  if (e.target.value) {
+                    validateBusinessEmail(e.target.value);
+                  }
                 }}
                 className={`w-full px-3 sm:px-4 py-2 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm sm:text-base ${
                   errors.businessEmail ? 'border-red-500' : 'border-gray-300'

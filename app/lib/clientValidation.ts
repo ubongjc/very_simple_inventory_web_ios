@@ -27,9 +27,8 @@ export const lastNameValidation = z
   .string()
   .max(50, "Last name must be less than 50 characters")
   .regex(/^[A-Za-zÀ-ÖØ-öø-ÿ' -]*$/, "Last name can only contain letters, spaces, hyphens, and apostrophes")
-  .optional()
-  .or(z.literal(""))
-  .transform((val) => (val ? sanitizeInput(val) : ""));
+  .transform((val) => (val ? sanitizeInput(val) : ""))
+  .catch("");
 
 export const emailValidation = z
   .string()
@@ -63,12 +62,14 @@ export const passwordValidation = z
 export const signUpFormSchema = z
   .object({
     firstName: firstNameValidation,
-    lastName: lastNameValidation,
+    lastName: z
+      .string()
+      .max(50, "Last name must be less than 50 characters")
+      .regex(/^[A-Za-zÀ-ÖØ-öø-ÿ' -]*$/, "Last name can only contain letters, spaces, hyphens, and apostrophes")
+      .transform((val) => (val ? sanitizeInput(val) : "")),
     businessName: z
       .string()
       .max(25, "Business name must be less than 25 characters")
-      .optional()
-      .or(z.literal(""))
       .transform((val) => (val ? sanitizeInput(val) : "")),
     email: emailValidation,
     password: passwordValidation,
@@ -102,14 +103,26 @@ export const calculatePasswordStrength = (password: string): {
   let score = 0;
 
   // Length scoring
-  if (password.length >= 7) score++;
-  if (password.length >= 10) score++;
-  if (password.length >= 12) score++;
+  if (password.length >= 7) {
+    score++;
+  }
+  if (password.length >= 10) {
+    score++;
+  }
+  if (password.length >= 12) {
+    score++;
+  }
 
   // Character variety (optional bonuses)
-  if (/[a-z]/.test(password)) score++;
-  if (/[A-Z]/.test(password)) score++;
-  if (/\d/.test(password)) score++;
+  if (/[a-z]/.test(password)) {
+    score++;
+  }
+  if (/[A-Z]/.test(password)) {
+    score++;
+  }
+  if (/\d/.test(password)) {
+    score++;
+  }
 
   // Simple classification
   if (score <= 2) {
