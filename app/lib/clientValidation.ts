@@ -15,9 +15,6 @@ export const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 // Name validation regex (letters, spaces, hyphens, apostrophes)
 export const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/;
 
-// Password validation - at least 8 chars, 1 uppercase, 1 lowercase, 1 number
-export const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-
 // Shared validation schemas
 export const firstNameValidation = z
   .string()
@@ -57,13 +54,10 @@ export const addressValidation = z
   .or(z.literal(""))
   .transform((val) => (val ? sanitizeInput(val) : ""));
 
+// Simple password validation - just require 7+ characters (easy for non-tech users)
 export const passwordValidation = z
   .string()
-  .min(8, "Password must be at least 8 characters")
-  .regex(
-    passwordRegex,
-    "Password must contain at least one uppercase letter, one lowercase letter, and one number"
-  );
+  .min(7, "Password must be at least 7 characters");
 
 // Sign-up form schema
 export const signUpFormSchema = z
@@ -99,7 +93,7 @@ export const newCustomerFormSchema = z.object({
   address: addressValidation,
 });
 
-// Password strength calculator
+// Password strength calculator (lenient for non-tech users)
 export const calculatePasswordStrength = (password: string): {
   score: number;
   label: string;
@@ -107,18 +101,22 @@ export const calculatePasswordStrength = (password: string): {
 } => {
   let score = 0;
 
-  if (password.length >= 8) score++;
+  // Length scoring
+  if (password.length >= 7) score++;
+  if (password.length >= 10) score++;
   if (password.length >= 12) score++;
+
+  // Character variety (optional bonuses)
   if (/[a-z]/.test(password)) score++;
   if (/[A-Z]/.test(password)) score++;
   if (/\d/.test(password)) score++;
-  if (/[^a-zA-Z\d]/.test(password)) score++;
 
+  // Simple classification
   if (score <= 2) {
-    return { score, label: "Weak", color: "red" };
+    return { score, label: "Weak", color: "yellow" };
   }
   if (score <= 4) {
-    return { score, label: "Medium", color: "yellow" };
+    return { score, label: "Good", color: "green" };
   }
   return { score, label: "Strong", color: "green" };
 };

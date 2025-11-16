@@ -259,7 +259,7 @@ export default function SignUpPage() {
               )}
 
               <p className="text-[10px] md:text-xs text-gray-500 mt-1">
-                At least 8 characters with uppercase, lowercase, and number
+                At least 7 characters (letters and/or numbers)
               </p>
               {errors.password && (
                 <div className="mt-1 bg-red-50 border border-red-200 rounded p-1">
