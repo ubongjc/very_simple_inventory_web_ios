@@ -13,10 +13,21 @@ export default function NotesDisplay({
   onClick,
   maxPreviewLength = 20,
 }: NotesDisplayProps) {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onClick();
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   if (!notes || notes.trim() === '') {
     return (
       <button
-        onClick={onClick}
+        onClick={handleClick}
+        onMouseDown={handleMouseDown}
         className="text-[10px] text-gray-400 hover:text-blue-600 transition-colors flex items-center gap-1"
       >
         <FileText className="w-3 h-3" />
@@ -30,7 +41,8 @@ export default function NotesDisplay({
 
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
+      onMouseDown={handleMouseDown}
       className="text-[10px] text-gray-700 hover:text-blue-600 transition-colors flex items-center gap-1 group max-w-full"
     >
       <FileText className="w-3 h-3 flex-shrink-0" />

@@ -103,6 +103,11 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
   // Add escape key handler to close drawer
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
+      // Don't close drawer if notes modal is open
+      if (bookingNotesModalOpen) {
+        return;
+      }
+
       if (e.key === 'Escape' && isOpen) {
         e.preventDefault();
         e.stopPropagation();
@@ -114,7 +119,7 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
       document.addEventListener('keydown', handleEscape);
       return () => document.removeEventListener('keydown', handleEscape);
     }
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, bookingNotesModalOpen]);
 
   const fetchDayData = async () => {
     if (!date) {
@@ -163,8 +168,11 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
 
   // Notes handlers
   const handleOpenBookingNotes = (booking: Booking) => {
-    setCurrentBookingNotes({ id: booking.id, notes: booking.notes || "" });
-    setBookingNotesModalOpen(true);
+    // Defer opening to next frame to avoid race with click handlers
+    requestAnimationFrame(() => {
+      setCurrentBookingNotes({ id: booking.id, notes: booking.notes || "" });
+      setBookingNotesModalOpen(true);
+    });
   };
 
   const handleSaveBookingNotes = async (notes: string) => {
@@ -258,12 +266,21 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
     }
   };
 
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    // Don't close drawer if notes modal is open
+    if (bookingNotesModalOpen) {
+      e.stopPropagation();
+      return;
+    }
+    onClose();
+  };
+
   return (
     <>
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black bg-opacity-50 z-40"
-        onClick={onClose}
+        onClick={handleBackdropClick}
       />
 
       {/* Drawer */}
