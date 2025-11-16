@@ -7,6 +7,7 @@ import EditBookingModal from "../components/EditBookingModal";
 import DatePicker from "../components/DatePicker";
 import NotesDisplay from "../components/NotesDisplay";
 import NotesModal from "../components/NotesModal";
+import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { useSettings } from "@/app/hooks/useSettings";
 import { toZonedTime } from "date-fns-tz";
 
@@ -98,6 +99,9 @@ export default function BookingsPage() {
 
   // Notes modal state
   const [bookingNotesModalOpen, setBookingNotesModalOpen] = useState(false);
+
+  // Delete all modal state
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentBookingNotes, setCurrentBookingNotes] = useState<{ id: string; notes: string } | null>(null);
 
   // Load default filters from localStorage on mount
@@ -417,6 +421,24 @@ export default function BookingsPage() {
 
   const handleEditSuccess = () => {
     fetchBookings(); // Refresh the bookings list
+  };
+
+  const handleDeleteAllBookings = async () => {
+    try {
+      const response = await fetch("/api/bookings/bulk", {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete bookings");
+      }
+
+      await fetchBookings();
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      console.error("Error deleting all bookings:", error);
+      alert("Failed to delete all bookings. Please try again.");
+    }
   };
 
   // Notes handlers
@@ -1406,6 +1428,16 @@ export default function BookingsPage() {
         initialNotes={currentBookingNotes?.notes || ""}
         onSave={handleSaveBookingNotes}
         title="Booking Notes"
+      />
+
+      {/* Delete All Bookings Modal */}
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteAllBookings}
+        title="Delete All Bookings"
+        message={`Are you sure you want to delete all ${bookings.length} booking${bookings.length !== 1 ? 's' : ''}? This action cannot be undone.`}
+        itemCount={bookings.length}
       />
     </div>
   );
