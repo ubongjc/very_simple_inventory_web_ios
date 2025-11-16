@@ -300,7 +300,7 @@ export default function AnalyticsPage() {
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
-                  label={(entry) => `${entry.status}: ${entry.count}`}
+                  label
                   labelStyle={{ fontSize: "10px", fontWeight: "bold" }}
                 >
                   {analytics?.bookings.byStatus.map((entry, index) => (
