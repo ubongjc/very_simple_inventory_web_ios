@@ -210,42 +210,42 @@ export default function AdminUsersPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Header */}
-      <header className="bg-white shadow-lg border-b-2">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/admin"
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gray-600 to-gray-800 hover:from-gray-700 hover:to-gray-900 text-white rounded-lg font-semibold transition-all duration-200 shadow-md text-sm"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Link>
-            <div className="flex-1">
-              <h1 className="text-2xl font-bold text-black flex items-center gap-2">
-                <Users className="w-7 h-7 text-blue-600" />
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-2 py-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Link
+                href="/admin"
+                className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-gray-600 to-gray-800 hover:from-gray-700 hover:to-gray-900 text-white rounded-lg font-semibold transition-all duration-200 shadow-md text-xs"
+              >
+                <ArrowLeft className="w-3 h-3" />
+                Back
+              </Link>
+              <Users className="w-5 h-5 text-blue-600" />
+              <h1 className="text-sm font-bold text-black">
                 User Management
               </h1>
-              <p className="text-sm text-gray-600">
-                {filteredUsers.length} of {users.length} users
-              </p>
+            </div>
+            <div className="text-[10px] text-gray-600 font-medium">
+              {filteredUsers.length}/{users.length}
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-6">
-        {/* Search and Filters - Single Line */}
-        <div className="bg-white rounded-xl shadow-lg p-4 mb-6 border border-gray-200">
-          <div className="flex gap-3">
+      <main className="max-w-7xl mx-auto px-2 py-2">
+        {/* Search and Filters */}
+        <div className="bg-white rounded-lg shadow-sm p-2 mb-2 border border-gray-200">
+          <div className="flex gap-2">
             {/* Search */}
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search users..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black"
+                placeholder="Search..."
+                className="w-full pl-7 pr-2 py-1 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-black font-medium text-xs"
               />
             </div>
 
@@ -253,9 +253,9 @@ export default function AdminUsersPage() {
             <select
               value={filterPlan}
               onChange={(e) => setFilterPlan(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold"
+              className="px-2 py-1 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-[10px]"
             >
-              <option value="all">All Plans</option>
+              <option value="all">Plans</option>
               <option value="free">Free</option>
               <option value="pro">Pro</option>
             </select>
@@ -264,9 +264,9 @@ export default function AdminUsersPage() {
             <select
               value={filterRole}
               onChange={(e) => setFilterRole(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold"
+              className="px-2 py-1 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-[10px]"
             >
-              <option value="all">All Roles</option>
+              <option value="all">Roles</option>
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
@@ -275,125 +275,129 @@ export default function AdminUsersPage() {
 
         {/* Simple Users List */}
         {filteredUsers.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-lg p-12 text-center border border-gray-200">
-            <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No Users Found</h3>
-            <p className="text-base text-gray-600">
+          <div className="bg-white rounded-lg shadow-sm p-6 text-center border border-gray-200">
+            <Users className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+            <h3 className="text-sm font-bold text-gray-900 mb-1">No Users Found</h3>
+            <p className="text-xs text-gray-600">
               {searchQuery || filterPlan !== "all" || filterRole !== "all"
                 ? "Try adjusting your search or filters"
                 : "No users in the system yet"}
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b-2 border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Username
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Plan
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Role
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredUsers.map((user) => (
-                  <tr
-                    key={user.id}
-                    onClick={() => setSelectedUser(user)}
-                    className="hover:bg-blue-50 cursor-pointer transition-colors"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-semibold text-gray-900">{getUserName(user)}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold ${
-                          user.plan === "pro"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-gray-100 text-gray-800"
-                        }`}
-                      >
-                        {user.plan.toUpperCase()}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold ${
-                          user.role === "admin"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-blue-100 text-blue-800"
-                        }`}
-                      >
-                        {user.role.toUpperCase()}
-                      </span>
-                    </td>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                      User
+                    </th>
+                    <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                      Plan
+                    </th>
+                    <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                      Role
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {filteredUsers.map((user) => (
+                    <tr
+                      key={user.id}
+                      onClick={() => setSelectedUser(user)}
+                      className="hover:bg-blue-50 cursor-pointer transition-colors"
+                    >
+                      <td className="px-2 py-1">
+                        <div className="text-[10px] font-bold text-black truncate max-w-[150px]" title={getUserName(user)}>
+                          {getUserName(user)}
+                        </div>
+                      </td>
+                      <td className="px-2 py-1">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[9px] font-bold whitespace-nowrap ${
+                            user.plan === "pro"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {user.plan.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="px-2 py-1">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[9px] font-bold whitespace-nowrap ${
+                            user.role === "admin"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-blue-100 text-blue-800"
+                          }`}
+                        >
+                          {user.role.toUpperCase()}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </main>
 
       {/* User Details Modal */}
       {selectedUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2">
+          <div className="bg-white rounded-lg shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-600">
-              <h2 className="text-2xl font-bold text-white">User Details</h2>
+            <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-600">
+              <h2 className="text-sm font-bold text-white">User Details</h2>
               <button
                 onClick={() => {
                   setSelectedUser(null);
                   setConfirmText("");
                 }}
-                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                className="p-1 hover:bg-white/20 rounded-lg transition-colors"
               >
-                <X className="w-6 h-6 text-white" />
+                <X className="w-4 h-4 text-white" />
               </button>
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 space-y-4">
+            <div className="p-3 space-y-3">
               {/* User Info */}
-              <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <User className="w-5 h-5 text-gray-600" />
-                  <span className="text-sm font-bold text-gray-700">Name:</span>
-                  <span className="text-sm text-gray-900">{getUserName(selectedUser)}</span>
+              <div className="bg-gray-50 rounded-lg p-2 space-y-1.5">
+                <div className="flex items-center gap-1.5">
+                  <User className="w-3 h-3 text-gray-600 flex-shrink-0" />
+                  <span className="text-[10px] font-bold text-gray-700">Name:</span>
+                  <span className="text-[10px] text-gray-900 truncate">{getUserName(selectedUser)}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Mail className="w-5 h-5 text-gray-600" />
-                  <span className="text-sm font-bold text-gray-700">Email:</span>
-                  <span className="text-sm text-gray-900">{selectedUser.email}</span>
+                <div className="flex items-center gap-1.5">
+                  <Mail className="w-3 h-3 text-gray-600 flex-shrink-0" />
+                  <span className="text-[10px] font-bold text-gray-700">Email:</span>
+                  <span className="text-[10px] text-gray-900 truncate">{selectedUser.email}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-gray-600" />
-                  <span className="text-sm font-bold text-gray-700">Joined:</span>
-                  <span className="text-sm text-gray-900">
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="w-3 h-3 text-gray-600 flex-shrink-0" />
+                  <span className="text-[10px] font-bold text-gray-700">Joined:</span>
+                  <span className="text-[10px] text-gray-900">
                     {new Date(selectedUser.createdAt).toLocaleDateString()}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Crown className="w-5 h-5 text-gray-600" />
-                  <span className="text-sm font-bold text-gray-700">Plan:</span>
-                  <span className="text-sm text-gray-900">{selectedUser.plan.toUpperCase()}</span>
+                <div className="flex items-center gap-1.5">
+                  <Crown className="w-3 h-3 text-gray-600 flex-shrink-0" />
+                  <span className="text-[10px] font-bold text-gray-700">Plan:</span>
+                  <span className="text-[10px] text-gray-900">{selectedUser.plan.toUpperCase()}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-gray-600" />
-                  <span className="text-sm font-bold text-gray-700">Role:</span>
-                  <span className="text-sm text-gray-900">{selectedUser.role.toUpperCase()}</span>
+                <div className="flex items-center gap-1.5">
+                  <Shield className="w-3 h-3 text-gray-600 flex-shrink-0" />
+                  <span className="text-[10px] font-bold text-gray-700">Role:</span>
+                  <span className="text-[10px] text-gray-900">{selectedUser.role.toUpperCase()}</span>
                 </div>
               </div>
 
               {/* Confirmation Input */}
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <p className="text-sm font-bold text-yellow-800 mb-2">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2">
+                <p className="text-[10px] font-bold text-yellow-800 mb-1.5">
                   Type &quot;confirm&quot; to enable actions below
                 </p>
                 <input
@@ -401,19 +405,19 @@ export default function AdminUsersPage() {
                   value={confirmText}
                   onChange={(e) => setConfirmText(e.target.value)}
                   placeholder="Type confirm"
-                  className="w-full px-4 py-2 border border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none text-black"
+                  className="w-full px-2 py-1 border border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none text-black text-xs"
                 />
               </div>
 
               {/* Action Buttons */}
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {selectedUser.role !== "admin" && (
                   <button
                     onClick={() => handleMakeAdmin(selectedUser.id)}
                     disabled={confirmText !== "confirm" || actionLoading}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-red-600 hover:to-pink-700 transition-all"
+                    className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-red-600 hover:to-pink-700 transition-all text-[10px]"
                   >
-                    <UserCog className="w-5 h-5" />
+                    <UserCog className="w-3 h-3" />
                     Make Admin
                   </button>
                 )}
@@ -422,9 +426,9 @@ export default function AdminUsersPage() {
                   <button
                     onClick={() => handleUpgradeToPremium(selectedUser.id)}
                     disabled={confirmText !== "confirm" || actionLoading}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-yellow-600 hover:to-orange-700 transition-all"
+                    className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-yellow-600 hover:to-orange-700 transition-all text-[10px]"
                   >
-                    <Crown className="w-5 h-5" />
+                    <Crown className="w-3 h-3" />
                     Upgrade to Premium
                   </button>
                 )}
@@ -432,9 +436,9 @@ export default function AdminUsersPage() {
                 <button
                   onClick={() => handleDeleteUser(selectedUser.id)}
                   disabled={confirmText !== "confirm" || actionLoading}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-700 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-gray-600 hover:to-gray-800 transition-all"
+                  className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-gray-500 to-gray-700 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-gray-600 hover:to-gray-800 transition-all text-[10px]"
                 >
-                  <Trash2 className="w-5 h-5" />
+                  <Trash2 className="w-3 h-3" />
                   Delete User
                 </button>
               </div>
