@@ -789,18 +789,29 @@ export default function BookingsPage() {
               </div>
             </div>
 
-            {/* Default Filters Button */}
-            <div className="relative">
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2">
               <button
-                onClick={() => setIsDefaultFiltersOpen(!isDefaultFiltersOpen)}
-                className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-semibold transition-all shadow-md text-[10px]"
+                onClick={() => setIsDeleteModalOpen(true)}
+                disabled={bookings.length === 0}
+                className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-red-600 to-red-800 hover:from-red-700 hover:to-red-900 text-white rounded-lg font-semibold transition-all shadow-md text-[10px] disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Delete all bookings"
               >
-                <Settings className="w-3 h-3" />
-                <span className="flex flex-col items-center leading-tight">
-                  <span>DEFAULT</span>
-                  <span>FILTERS</span>
-                </span>
+                <Trash2 className="w-3 h-3" />
+                <span className="hidden sm:inline">Delete All</span>
               </button>
+
+              <div className="relative">
+                <button
+                  onClick={() => setIsDefaultFiltersOpen(!isDefaultFiltersOpen)}
+                  className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-semibold transition-all shadow-md text-[10px]"
+                >
+                  <Settings className="w-3 h-3" />
+                  <span className="flex flex-col items-center leading-tight">
+                    <span>DEFAULT</span>
+                    <span>FILTERS</span>
+                  </span>
+                </button>
 
               {/* Dropdown Menu */}
               {isDefaultFiltersOpen && (
@@ -894,6 +905,7 @@ export default function BookingsPage() {
                   </div>
                 </>
               )}
+              </div>
             </div>
           </div>
         </div>
