@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
         },
       },
       include: {
-        bookingItems: {
+        items: {
           include: {
             item: true,
           },
@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
         acc[date] = 0;
       }
       // Calculate booking revenue
-      const revenue = booking.bookingItems.reduce((sum: number, bi: any) => {
+      const revenue = booking.items.reduce((sum: number, bi: any) => {
         return sum + (bi.item?.price || 0);
       }, 0);
       acc[date] += revenue;
