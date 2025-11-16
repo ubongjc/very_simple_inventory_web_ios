@@ -183,7 +183,7 @@ export default function AnalyticsPage() {
               </h3>
             </div>
             <p className="text-base md:text-2xl font-bold text-black">
-              {analytics?.userGrowth.reduce((sum, d) => sum + d.users, 0) || 0}
+              {analytics?.userGrowth?.reduce((sum: number, d: any) => sum + d.users, 0) || 0}
             </p>
           </div>
 
@@ -207,7 +207,7 @@ export default function AnalyticsPage() {
               </h3>
             </div>
             <p className="text-base md:text-2xl font-bold text-black">
-              ${analytics?.revenue.reduce((sum, d) => sum + d.amount, 0).toFixed(2) || "0.00"}
+              ${analytics?.revenue?.reduce((sum: number, d: any) => sum + d.amount, 0).toFixed(2) || "0.00"}
             </p>
           </div>
 
@@ -219,7 +219,7 @@ export default function AnalyticsPage() {
               </h3>
             </div>
             <p className="text-base md:text-2xl font-bold text-black">
-              {analytics?.inquiries.reduce((sum, d) => sum + d.count, 0) || 0}
+              {analytics?.inquiries?.reduce((sum: number, d: any) => sum + d.count, 0) || 0}
             </p>
           </div>
         </div>

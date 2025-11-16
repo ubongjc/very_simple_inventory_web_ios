@@ -162,6 +162,64 @@ export default function AdminUsersPage() {
     }
   };
 
+  const handleDowngradeToFree = async (userId: string) => {
+    if (confirmText !== "confirm") {
+      alert("Please type 'confirm' to proceed");
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/plan`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: "free" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to downgrade user");
+      }
+
+      await fetchUsers();
+      setSelectedUser(null);
+      setConfirmText("");
+      alert("User downgraded to free successfully!");
+    } catch (error) {
+      alert("Failed to downgrade user");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleRemoveAdmin = async (userId: string) => {
+    if (confirmText !== "confirm") {
+      alert("Please type 'confirm' to proceed");
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/role`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role: "user" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to remove admin role");
+      }
+
+      await fetchUsers();
+      setSelectedUser(null);
+      setConfirmText("");
+      alert("Admin role removed successfully!");
+    } catch (error) {
+      alert("Failed to remove admin role");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   if (status === "loading" || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
@@ -430,6 +488,17 @@ export default function AdminUsersPage() {
                   </button>
                 )}
 
+                {selectedUser.role === "admin" && selectedUser.id !== session?.user?.id && (
+                  <button
+                    onClick={() => handleRemoveAdmin(selectedUser.id)}
+                    disabled={confirmText !== "confirm" || actionLoading}
+                    className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-orange-600 hover:to-red-700 transition-all text-[10px]"
+                  >
+                    <UserCog className="w-3 h-3" />
+                    Remove Admin Role
+                  </button>
+                )}
+
                 {selectedUser.plan === "free" && (
                   <button
                     onClick={() => handleUpgradeToPremium(selectedUser.id)}
@@ -441,14 +510,27 @@ export default function AdminUsersPage() {
                   </button>
                 )}
 
-                <button
-                  onClick={() => handleDeleteUser(selectedUser.id)}
-                  disabled={confirmText !== "confirm" || actionLoading}
-                  className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-gray-500 to-gray-700 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-gray-600 hover:to-gray-800 transition-all text-[10px]"
-                >
-                  <Trash2 className="w-3 h-3" />
-                  Delete User
-                </button>
+                {selectedUser.plan === "premium" && (
+                  <button
+                    onClick={() => handleDowngradeToFree(selectedUser.id)}
+                    disabled={confirmText !== "confirm" || actionLoading}
+                    className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-gray-600 to-gray-800 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-gray-700 hover:to-gray-900 transition-all text-[10px]"
+                  >
+                    <X className="w-3 h-3" />
+                    Downgrade to Free
+                  </button>
+                )}
+
+                {selectedUser.id !== session?.user?.id && (
+                  <button
+                    onClick={() => handleDeleteUser(selectedUser.id)}
+                    disabled={confirmText !== "confirm" || actionLoading}
+                    className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-red-600 to-red-800 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-red-700 hover:to-red-900 transition-all text-[10px]"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    Delete User
+                  </button>
+                )}
               </div>
             </div>
           </div>
