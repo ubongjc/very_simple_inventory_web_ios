@@ -16,13 +16,6 @@ import {
   BarChart3,
   Zap,
   ArrowRight,
-  Globe,
-  MapPin,
-  Bell,
-  CreditCard,
-  Headphones,
-  Calculator,
-  MessageSquare,
 } from 'lucide-react';
 
 export default function HomePage() {

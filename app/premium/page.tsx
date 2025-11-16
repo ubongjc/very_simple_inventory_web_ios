@@ -45,7 +45,7 @@ export default function PremiumPage() {
             Free vs Premium
           </div>
           <h2 className="text-lg md:text-4xl font-bold text-black mb-2 md:mb-4">
-            Upgrade When You're Ready to Grow
+            Upgrade When You&apos;re Ready to Grow
           </h2>
           <p className="text-xs md:text-lg text-gray-700">
             Start with our generous free plan. Upgrade to Premium when your business outgrows the free limits.
@@ -341,7 +341,7 @@ export default function PremiumPage() {
             Premium Features Coming Soon
           </h3>
           <p className="text-xs md:text-base mb-2 md:mb-4">
-            We're working hard to bring you Premium features. Keep using the free plan and we'll notify you when Premium is ready!
+            We&apos;re working hard to bring you Premium features. Keep using the free plan and we&apos;ll notify you when Premium is ready!
           </p>
           <div className="inline-flex items-center gap-1 md:gap-2 bg-white/20 px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-semibold">
             <ShoppingCart className="w-3 h-3 md:w-4 md:h-4" />

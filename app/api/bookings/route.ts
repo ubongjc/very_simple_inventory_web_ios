@@ -3,12 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth.config";
 import { prisma } from "@/app/lib/prisma";
 import { createBookingSchema } from "@/app/lib/validation";
-import { toUTCMidnight, addOneDay, formatDateISO } from "@/app/lib/dates";
+import { toUTCMidnight } from "@/app/lib/dates";
 import { getRandomBookingColor } from "@/app/lib/colors";
 import { toUtcDateOnly, toYmd, addDays } from "@/app/lib/dateUtils";
 import { secureLog, applyRateLimit, RateLimitPresets } from "@/app/lib/security";
 import { checkActiveBookingLimit, checkMonthlyBookingLimit, getBookingHistoryCutoff } from "@/app/lib/limits";
-import dayjs from "dayjs";
 
 export async function GET(request: NextRequest) {
   // Apply rate limiting for read operations
