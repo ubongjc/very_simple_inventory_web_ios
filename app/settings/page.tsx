@@ -95,6 +95,7 @@ export default function SettingsPage() {
   const [savingProfile, setSavingProfile] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [errors, setErrors] = useState({
+    businessName: "",
     businessPhone: "",
     businessEmail: "",
   });
@@ -137,10 +138,48 @@ export default function SettingsPage() {
       return;
     }
 
-    if (errors.businessPhone || errors.businessEmail) {
+    // Validate all fields before saving
+    let hasErrors = false;
+    const newErrors = {
+      businessName: "",
+      businessPhone: "",
+      businessEmail: "",
+    };
+
+    // Validate business name
+    if (!settings.businessName || settings.businessName.trim().length < 2) {
+      newErrors.businessName = "Business name is required (minimum 2 characters)";
+      hasErrors = true;
+    } else if (settings.businessName.length > 25) {
+      newErrors.businessName = "Business name must be less than 25 characters";
+      hasErrors = true;
+    }
+
+    // Validate business phone if provided
+    if (settings.businessPhone) {
+      if (!validateBusinessPhone(settings.businessPhone)) {
+        hasErrors = true;
+      }
+    }
+
+    // Validate business email if provided
+    if (settings.businessEmail) {
+      if (!validateBusinessEmail(settings.businessEmail)) {
+        hasErrors = true;
+      }
+    }
+
+    setErrors(newErrors);
+
+    if (hasErrors || errors.businessPhone || errors.businessEmail) {
+      const errorMessages = [];
+      if (newErrors.businessName) errorMessages.push(newErrors.businessName);
+      if (errors.businessPhone) errorMessages.push(errors.businessPhone);
+      if (errors.businessEmail) errorMessages.push(errors.businessEmail);
+
       setMessage({
         type: "error",
-        text: "Please fix all validation errors before saving",
+        text: errorMessages.join(". "),
       });
       return;
     }
@@ -416,16 +455,29 @@ export default function SettingsPage() {
               <input
                 type="text"
                 value={settings.businessName}
-                onChange={(e) => updateSetting("businessName", e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm sm:text-base"
-                placeholder="My Booking Business"
+                onChange={(e) => {
+                  updateSetting("businessName", e.target.value);
+                  // Clear error when user starts typing
+                  if (errors.businessName) {
+                    setErrors((prev) => ({ ...prev, businessName: "" }));
+                  }
+                }}
+                className={`w-full px-3 sm:px-4 py-2 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm sm:text-base ${
+                  errors.businessName ? 'border-red-500' : 'border-gray-300'
+                }`}
                 minLength={2}
                 maxLength={25}
                 required
               />
-              <p className="text-xs text-gray-600 mt-1">
-                {settings.businessName.length}/25 characters
-              </p>
+              {errors.businessName ? (
+                <div className="mt-1 bg-red-50 border border-red-200 rounded p-1">
+                  <p className="text-xs text-red-700 font-medium">{errors.businessName}</p>
+                </div>
+              ) : (
+                <p className="text-xs text-gray-600 mt-1">
+                  {settings.businessName.length}/25 characters
+                </p>
+              )}
             </div>
 
             <div>
@@ -450,7 +502,6 @@ export default function SettingsPage() {
                 className={`w-full px-3 sm:px-4 py-2 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm sm:text-base ${
                   errors.businessPhone ? 'border-red-500' : 'border-gray-300'
                 }`}
-                placeholder="+1234567890 or +2341234567890"
                 minLength={8}
                 maxLength={15}
               />
@@ -483,7 +534,6 @@ export default function SettingsPage() {
                 className={`w-full px-3 sm:px-4 py-2 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm sm:text-base ${
                   errors.businessEmail ? 'border-red-500' : 'border-gray-300'
                 }`}
-                placeholder="contact@business.com"
                 minLength={3}
                 maxLength={254}
               />
@@ -501,7 +551,6 @@ export default function SettingsPage() {
                 onChange={(e) => updateSetting("businessAddress", e.target.value || null)}
                 className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium resize-none text-sm sm:text-base"
                 rows={2}
-                placeholder="123 Main Street, City, State, ZIP"
                 maxLength={100}
               />
               <p className="text-xs text-gray-500 mt-1">{(settings.businessAddress || "").length}/100 characters</p>

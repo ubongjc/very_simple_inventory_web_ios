@@ -31,7 +31,7 @@ export async function PATCH(
     const body = await request.json();
     const { plan } = body;
 
-    if (!plan || (plan !== "free" && plan !== "pro" && plan !== "business")) {
+    if (!plan || (plan !== "free" && plan !== "premium")) {
       return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
     }
 
