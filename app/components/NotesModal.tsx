@@ -2,11 +2,12 @@
 
 import { X } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 
 interface NotesModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (notes: string) => void;
+  onSave: (notes: string) => void | Promise<void>;
   initialNotes: string;
   title?: string;
   maxLength?: number;
@@ -21,23 +22,80 @@ export default function NotesModal({
   maxLength = 50,
 }: NotesModalProps) {
   const [notes, setNotes] = useState(initialNotes);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     setNotes(initialNotes);
+    setSaving(false);
   }, [initialNotes, isOpen]);
 
-  const handleSave = () => {
-    onSave(notes);
-    onClose();
+  // Handle Escape key
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape, true);
+    return () => document.removeEventListener('keydown', handleEscape, true);
+  }, [isOpen, onClose]);
+
+  const handleSave = async () => {
+    if (saving) {
+      return;
+    }
+
+    try {
+      setSaving(true);
+      await onSave(notes);
+      // Close modal after successful save
+      setSaving(false);
+      onClose();
+    } catch (error) {
+      console.error('Error saving notes:', error);
+      setSaving(false);
+      // Don't close modal on error - let user try again
+    }
+  };
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Optional: close on backdrop click
+    // onClose();
+  };
+
+  const handleDialogClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
   };
 
   if (!isOpen) {
     return null;
   }
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+  const modal = (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4"
+      onClick={handleBackdropClick}
+      onMouseDown={handleMouseDown}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        onClick={handleDialogClick}
+        onMouseDown={handleMouseDown}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-600">
           <h2 className="text-2xl font-bold text-white">{title}</h2>
@@ -75,18 +133,25 @@ export default function NotesModal({
         <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-50">
           <button
             onClick={onClose}
-            className="flex-1 px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 font-semibold transition-colors"
+            disabled={saving}
+            className="flex-1 px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 font-semibold transition-all shadow-lg"
+            disabled={saving}
+            className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 font-semibold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Save Notes
+            {saving ? 'Saving...' : 'Save Notes'}
           </button>
         </div>
       </div>
     </div>
   );
+
+  // Render in a portal to avoid parent listeners capturing
+  return typeof window !== 'undefined'
+    ? ReactDOM.createPortal(modal, document.body)
+    : null;
 }

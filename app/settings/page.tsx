@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Settings as SettingsIcon, Save, Building2, DollarSign, Globe, Calendar, AlertTriangle, ArrowLeft, Home, Package, CalendarDays, Image as ImageIcon, User } from "lucide-react";
+import { sanitizeInput, phoneRegex, emailRegex } from "@/app/lib/clientValidation";
 
 interface Settings {
   id: string;
@@ -56,17 +57,34 @@ const DATE_FORMAT_OPTIONS = [
 const TIMEZONE_OPTIONS = [
   { value: "UTC", label: "UTC (Coordinated Universal Time)" },
   { value: "America/New_York", label: "Eastern Time (US & Canada)" },
+  { value: "America/Toronto", label: "Toronto (Canada)" },
   { value: "America/Chicago", label: "Central Time (US & Canada)" },
   { value: "America/Denver", label: "Mountain Time (US & Canada)" },
   { value: "America/Los_Angeles", label: "Pacific Time (US & Canada)" },
+  { value: "America/Vancouver", label: "Vancouver (Canada)" },
+  { value: "America/Phoenix", label: "Phoenix (US)" },
+  { value: "America/Anchorage", label: "Alaska" },
+  { value: "Pacific/Honolulu", label: "Hawaii" },
+  { value: "America/Mexico_City", label: "Mexico City" },
+  { value: "America/Sao_Paulo", label: "São Paulo" },
+  { value: "America/Buenos_Aires", label: "Buenos Aires" },
   { value: "Europe/London", label: "London" },
   { value: "Europe/Paris", label: "Paris" },
+  { value: "Europe/Berlin", label: "Berlin" },
+  { value: "Europe/Rome", label: "Rome" },
+  { value: "Europe/Madrid", label: "Madrid" },
+  { value: "Europe/Moscow", label: "Moscow" },
   { value: "Asia/Tokyo", label: "Tokyo" },
   { value: "Asia/Shanghai", label: "Shanghai" },
   { value: "Asia/Dubai", label: "Dubai" },
+  { value: "Asia/Singapore", label: "Singapore" },
+  { value: "Asia/Hong_Kong", label: "Hong Kong" },
+  { value: "Asia/Kolkata", label: "Mumbai/Kolkata" },
   { value: "Africa/Lagos", label: "Lagos" },
+  { value: "Africa/Cairo", label: "Cairo" },
   { value: "Africa/Johannesburg", label: "Johannesburg" },
   { value: "Australia/Sydney", label: "Sydney" },
+  { value: "Pacific/Auckland", label: "Auckland" },
 ];
 
 export default function SettingsPage() {
@@ -76,6 +94,10 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [errors, setErrors] = useState({
+    businessPhone: "",
+    businessEmail: "",
+  });
 
   useEffect(() => {
     fetchSettings();
@@ -112,6 +134,14 @@ export default function SettingsPage() {
 
   const handleSave = async () => {
     if (!settings) {
+      return;
+    }
+
+    if (errors.businessPhone || errors.businessEmail) {
+      setMessage({
+        type: "error",
+        text: "Please fix all validation errors before saving",
+      });
       return;
     }
 
@@ -154,6 +184,50 @@ export default function SettingsPage() {
       return;
     }
     setSettings({ ...settings, [key]: value });
+  };
+
+  const validateBusinessPhone = (value: string) => {
+    if (!value) {
+      setErrors((prev) => ({ ...prev, businessPhone: "" }));
+      return true;
+    }
+    const sanitized = sanitizeInput(value);
+    if (sanitized.length < 8) {
+      setErrors((prev) => ({ ...prev, businessPhone: "Phone number must be at least 8 digits" }));
+      return false;
+    }
+    if (sanitized.length > 15) {
+      setErrors((prev) => ({ ...prev, businessPhone: "Phone number must be less than 15 digits" }));
+      return false;
+    }
+    if (!phoneRegex.test(sanitized)) {
+      setErrors((prev) => ({ ...prev, businessPhone: "Please enter a valid phone number (e.g., +2341234567890 or +11234567890)" }));
+      return false;
+    }
+    setErrors((prev) => ({ ...prev, businessPhone: "" }));
+    return true;
+  };
+
+  const validateBusinessEmail = (value: string) => {
+    if (!value) {
+      setErrors((prev) => ({ ...prev, businessEmail: "" }));
+      return true;
+    }
+    const sanitized = sanitizeInput(value);
+    if (sanitized.length < 3) {
+      setErrors((prev) => ({ ...prev, businessEmail: "Email must be at least 3 characters" }));
+      return false;
+    }
+    if (sanitized.length > 254) {
+      setErrors((prev) => ({ ...prev, businessEmail: "Email must be less than 254 characters" }));
+      return false;
+    }
+    if (!emailRegex.test(sanitized)) {
+      setErrors((prev) => ({ ...prev, businessEmail: "Please enter a valid email address (e.g., business@example.com)" }));
+      return false;
+    }
+    setErrors((prev) => ({ ...prev, businessEmail: "" }));
+    return true;
   };
 
   const updateCurrency = (code: string) => {
@@ -359,12 +433,32 @@ export default function SettingsPage() {
               <input
                 type="tel"
                 value={settings.businessPhone || ""}
-                onChange={(e) => updateSetting("businessPhone", e.target.value || null)}
-                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm sm:text-base"
-                placeholder="+1234567890"
+                onChange={(e) => {
+                  const val = e.target.value || null;
+                  updateSetting("businessPhone", val);
+                  if (val) {
+                    validateBusinessPhone(val);
+                  } else {
+                    setErrors((prev) => ({ ...prev, businessPhone: "" }));
+                  }
+                }}
+                onBlur={(e) => {
+                  if (e.target.value) {
+                    validateBusinessPhone(e.target.value);
+                  }
+                }}
+                className={`w-full px-3 sm:px-4 py-2 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm sm:text-base ${
+                  errors.businessPhone ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="+1234567890 or +2341234567890"
                 minLength={8}
                 maxLength={15}
               />
+              {errors.businessPhone && (
+                <div className="mt-1 bg-red-50 border border-red-200 rounded p-1">
+                  <p className="text-xs text-red-700 font-medium">{errors.businessPhone}</p>
+                </div>
+              )}
             </div>
 
             <div>
@@ -372,12 +466,32 @@ export default function SettingsPage() {
               <input
                 type="email"
                 value={settings.businessEmail || ""}
-                onChange={(e) => updateSetting("businessEmail", e.target.value || null)}
-                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm sm:text-base"
+                onChange={(e) => {
+                  const val = e.target.value || null;
+                  updateSetting("businessEmail", val);
+                  if (val) {
+                    validateBusinessEmail(val);
+                  } else {
+                    setErrors((prev) => ({ ...prev, businessEmail: "" }));
+                  }
+                }}
+                onBlur={(e) => {
+                  if (e.target.value) {
+                    validateBusinessEmail(e.target.value);
+                  }
+                }}
+                className={`w-full px-3 sm:px-4 py-2 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm sm:text-base ${
+                  errors.businessEmail ? 'border-red-500' : 'border-gray-300'
+                }`}
                 placeholder="contact@business.com"
                 minLength={3}
                 maxLength={254}
               />
+              {errors.businessEmail && (
+                <div className="mt-1 bg-red-50 border border-red-200 rounded p-1">
+                  <p className="text-xs text-red-700 font-medium">{errors.businessEmail}</p>
+                </div>
+              )}
             </div>
 
             <div>
@@ -417,31 +531,6 @@ export default function SettingsPage() {
                 </option>
               ))}
             </select>
-          </div>
-        </div>
-
-        {/* Inventory Settings */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
-          <div className="flex items-center gap-2 mb-3 sm:mb-4">
-            <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
-            <h2 className="text-lg sm:text-xl font-bold text-black">Inventory Settings</h2>
-          </div>
-
-          <div>
-            <label className="block text-sm font-bold text-black mb-2">
-              Low Stock Threshold <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="number"
-              min="0"
-              max="100000"
-              value={settings.lowStockThreshold}
-              onChange={(e) => updateSetting("lowStockThreshold", parseInt(e.target.value) || 0)}
-              className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm sm:text-base"
-            />
-            <p className="text-xs text-gray-500 mt-1 font-medium">
-              Show warning when stock is below this number
-            </p>
           </div>
         </div>
 
