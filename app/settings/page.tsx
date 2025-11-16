@@ -146,13 +146,15 @@ export default function SettingsPage() {
       businessEmail: "",
     };
 
-    // Validate business name
-    if (!settings.businessName || settings.businessName.trim().length < 2) {
-      newErrors.businessName = "Business name is required (minimum 2 characters)";
-      hasErrors = true;
-    } else if (settings.businessName.length > 25) {
-      newErrors.businessName = "Business name must be less than 25 characters";
-      hasErrors = true;
+    // Validate business name (optional)
+    if (settings.businessName && settings.businessName.trim().length > 0) {
+      if (settings.businessName.trim().length < 2) {
+        newErrors.businessName = "Business name must be at least 2 characters if provided";
+        hasErrors = true;
+      } else if (settings.businessName.length > 25) {
+        newErrors.businessName = "Business name must be less than 25 characters";
+        hasErrors = true;
+      }
     }
 
     // Validate business phone if provided
@@ -456,7 +458,7 @@ export default function SettingsPage() {
           <div className="space-y-3 sm:space-y-4">
             <div>
               <label className="block text-sm font-bold text-black mb-2">
-                Business Name <span className="text-red-500">*</span>
+                Business Name <span className="text-gray-500 font-normal">(Optional)</span>
               </label>
               <input
                 type="text"
@@ -471,9 +473,8 @@ export default function SettingsPage() {
                 className={`w-full px-3 sm:px-4 py-2 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black font-medium text-sm sm:text-base ${
                   errors.businessName ? 'border-red-500' : 'border-gray-300'
                 }`}
-                minLength={2}
                 maxLength={25}
-                required
+                placeholder="My Rental Business"
               />
               {errors.businessName ? (
                 <div className="mt-1 bg-red-50 border border-red-200 rounded p-1">

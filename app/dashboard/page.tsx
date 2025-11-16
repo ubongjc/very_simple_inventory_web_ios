@@ -543,13 +543,19 @@ export default function Home() {
               <div className="pt-0.5 flex-1 overflow-visible">
                 <h2 className="text-lg md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight whitespace-nowrap">
                   Hi,
-                  {(settings?.businessName || userProfile?.businessName) && (
+                  {(settings?.businessName || userProfile?.businessName) ? (
                     <>
                       <br />
                       {settings?.businessName || userProfile?.businessName}!
                     </>
+                  ) : userProfile?.firstName ? (
+                    <>
+                      <br />
+                      {userProfile.firstName}!
+                    </>
+                  ) : (
+                    '!'
                   )}
-                  {!(settings?.businessName || userProfile?.businessName) && '!'}
                 </h2>
                 <p className="text-[11px] md:text-sm text-gray-600 font-medium whitespace-nowrap leading-tight mt-2">
                   Manage your bookings with ease
