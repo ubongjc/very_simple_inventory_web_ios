@@ -1397,7 +1397,7 @@ export default function BookingsPage() {
           setBookingNotesModalOpen(false);
           setCurrentBookingNotes(null);
         }}
-        notes={currentBookingNotes?.notes || ""}
+        initialNotes={currentBookingNotes?.notes || ""}
         onSave={handleSaveBookingNotes}
         title="Booking Notes"
       />

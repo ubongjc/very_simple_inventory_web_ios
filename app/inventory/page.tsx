@@ -1006,7 +1006,7 @@ export default function InventoryPage() {
           setItemNotesModalOpen(false);
           setCurrentItemNotes(null);
         }}
-        notes={currentItemNotes?.notes || ""}
+        initialNotes={currentItemNotes?.notes || ""}
         onSave={handleSaveItemNotes}
         title="Item Notes"
       />
@@ -1018,7 +1018,7 @@ export default function InventoryPage() {
           setCustomerNotesModalOpen(false);
           setCurrentCustomerNotes(null);
         }}
-        notes={currentCustomerNotes?.notes || ""}
+        initialNotes={currentCustomerNotes?.notes || ""}
         onSave={handleSaveCustomerNotes}
         title="Customer Notes"
       />

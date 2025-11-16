@@ -491,7 +491,7 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
           setBookingNotesModalOpen(false);
           setCurrentBookingNotes(null);
         }}
-        notes={currentBookingNotes?.notes || ""}
+        initialNotes={currentBookingNotes?.notes || ""}
         onSave={handleSaveBookingNotes}
         title="Booking Notes"
       />
