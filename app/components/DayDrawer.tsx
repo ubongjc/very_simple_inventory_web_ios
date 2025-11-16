@@ -300,8 +300,9 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
                           )}
 
                           {/* First Line - Always Visible */}
-                          <div className="flex items-center justify-between pl-2">
-                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <div className="flex flex-col gap-1.5 pl-2">
+                            {/* Top Row: Name and Date */}
+                            <div className="flex items-center gap-2 min-w-0">
                               {/* Expand/Collapse Button */}
                               <button
                                 onClick={() => toggleBookingExpanded(booking.id)}
@@ -321,19 +322,19 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
                               </h4>
 
                               {/* Date Range */}
-                              <span className="text-xs text-gray-600 font-medium whitespace-nowrap">
+                              <span className="text-xs text-gray-600 font-medium">
                                 {formatDate(booking.startDate)} - {formatDate(booking.endDate)}
                               </span>
                             </div>
 
-                            {/* Actions */}
-                            <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
+                            {/* Bottom Row: Actions */}
+                            <div className="flex items-center gap-1.5 pl-7">
                               {/* Color Picker */}
                               <input
                                 type="color"
                                 value={booking.color || "#3b82f6"}
                                 onChange={(e) => handleUpdateBookingColor(booking.id, e.target.value)}
-                                className="w-7 h-7 border border-gray-300 rounded cursor-pointer hover:border-blue-500 transition-colors"
+                                className="w-6 h-6 border border-gray-300 rounded cursor-pointer hover:border-blue-500 transition-colors"
                                 title="Change booking color"
                                 onClick={(e) => e.stopPropagation()}
                               />
@@ -341,7 +342,7 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
                               {/* Edit Button */}
                               <button
                                 onClick={() => handleEditBooking(booking)}
-                                className="px-2 py-1 text-xs font-bold text-blue-600 hover:text-white hover:bg-blue-600 border border-blue-600 rounded transition-colors"
+                                className="px-2 py-0.5 text-xs font-bold text-blue-600 hover:text-white hover:bg-blue-600 border border-blue-600 rounded transition-colors"
                               >
                                 EDIT
                               </button>
@@ -350,7 +351,7 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
                               <select
                                 value={booking.status}
                                 onChange={(e) => handleUpdateBookingStatus(booking.id, e.target.value)}
-                                className={`px-2 py-1 rounded text-xs font-bold border cursor-pointer min-w-[100px] ${getStatusColor(
+                                className={`px-2 py-0.5 rounded text-xs font-bold border cursor-pointer ${getStatusColor(
                                   booking.status
                                 )}`}
                                 onClick={(e) => e.stopPropagation()}
