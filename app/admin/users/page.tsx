@@ -144,7 +144,7 @@ export default function AdminUsersPage() {
       const response = await fetch(`/api/admin/users/${userId}/plan`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: "pro" }),
+        body: JSON.stringify({ plan: "premium" }),
       });
 
       if (!response.ok) {
@@ -257,7 +257,7 @@ export default function AdminUsersPage() {
             >
               <option value="all">Plans</option>
               <option value="free">Free</option>
-              <option value="pro">Pro</option>
+              <option value="premium">Premium</option>
             </select>
 
             {/* Filter by Role */}
@@ -290,14 +290,18 @@ export default function AdminUsersPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                    <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase align-top">
                       User
                     </th>
-                    <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
-                      Plan
+                    <th className="px-2 py-1 text-[9px] font-bold text-black uppercase align-top">
+                      <div className="flex flex-col items-start">
+                        <span>Plan</span>
+                      </div>
                     </th>
-                    <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
-                      Role
+                    <th className="px-2 py-1 text-[9px] font-bold text-black uppercase align-top">
+                      <div className="flex flex-col items-start">
+                        <span>Role</span>
+                      </div>
                     </th>
                   </tr>
                 </thead>
@@ -308,32 +312,36 @@ export default function AdminUsersPage() {
                       onClick={() => setSelectedUser(user)}
                       className="hover:bg-blue-50 cursor-pointer transition-colors"
                     >
-                      <td className="px-2 py-1">
+                      <td className="px-2 py-1 align-top">
                         <div className="text-[10px] font-bold text-black truncate max-w-[150px]" title={getUserName(user)}>
                           {getUserName(user)}
                         </div>
                       </td>
-                      <td className="px-2 py-1">
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-[9px] font-bold whitespace-nowrap ${
-                            user.plan === "pro"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {user.plan.toUpperCase()}
-                        </span>
+                      <td className="px-2 py-1 align-top">
+                        <div className="flex items-start">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[9px] font-bold whitespace-nowrap ${
+                              user.plan === "premium"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {user.plan.toUpperCase()}
+                          </span>
+                        </div>
                       </td>
-                      <td className="px-2 py-1">
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-[9px] font-bold whitespace-nowrap ${
-                            user.role === "admin"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-blue-100 text-blue-800"
-                          }`}
-                        >
-                          {user.role.toUpperCase()}
-                        </span>
+                      <td className="px-2 py-1 align-top">
+                        <div className="flex items-start">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[9px] font-bold whitespace-nowrap ${
+                              user.role === "admin"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-blue-100 text-blue-800"
+                            }`}
+                          >
+                            {user.role.toUpperCase()}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   ))}
