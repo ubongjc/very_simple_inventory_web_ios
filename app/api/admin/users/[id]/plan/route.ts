@@ -48,6 +48,7 @@ export async function PATCH(
       },
       create: {
         userId,
+        stripeCustomerId: `admin_${userId}`, // Placeholder for admin-created subscriptions
         status,
         currentPeriodStart: new Date(),
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
