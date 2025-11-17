@@ -321,23 +321,36 @@ This document outlines the implementation status of Premium features for Very Si
 
 ## 🎯 Deployment Checklist
 
+### ✨ Graceful Degradation (NEW!)
+
+The application **fails gracefully** if premium API keys are missing:
+
+- ✅ **Stripe not configured**: Upgrade buttons show "Billing not configured. Please contact support." (503 status)
+- ✅ **Resend not configured**: Emails are skipped with warning logs (no crashes)
+- ✅ **Optional APIs missing**: Features are disabled but app continues working
+- ✅ **Users can navigate back**: No crashes, clear error messages, redirect to previous page
+
+**You can deploy without premium keys!** The free plan works perfectly without Stripe or Resend. Add keys later when ready.
+
 ### Before Deployment
 
 1. **Environment Variables** (Vercel):
    ```bash
-   # Required
+   # ===== REQUIRED (Core App) =====
    DATABASE_URL=postgresql://...
    DATABASE_URL_UNPOOLED=postgresql://...
    NEXTAUTH_SECRET=...
    NEXTAUTH_URL=https://verysimpleinventory.com
    APP_URL=https://verysimpleinventory.com
 
-   # Stripe (Premium billing)
+   # ===== OPTIONAL (Add later for Premium features) =====
+
+   # Stripe (Premium billing) - Can add later
    STRIPE_SECRET_KEY=sk_live_...
    STRIPE_PRICE_ID=price_... # Monthly subscription product
    STRIPE_WEBHOOK_SECRET=whsec_...
 
-   # Resend (Emails)
+   # Resend (Email reminders) - Can add later
    RESEND_API_KEY=re_...
    EMAIL_FROM_ADDRESS=noreply@verysimpleinventory.com
    ```
