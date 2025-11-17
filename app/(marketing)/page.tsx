@@ -491,132 +491,102 @@ export default function HomePage() {
             isComparisonOpen ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'
           }`}
         >
-          <div className="grid md:grid-cols-3 gap-3 md:gap-6">
+          <div className="grid md:grid-cols-2 gap-4 md:gap-8">
             {/* Free Plan */}
-            <div className="bg-white rounded-xl md:rounded-2xl shadow-lg p-3 md:p-8 border-2 border-gray-200">
-              <div className="mb-3 md:mb-6">
-                <h4 className="text-base md:text-2xl font-bold text-gray-900 mb-1 md:mb-2">Free</h4>
+            <div className="bg-white rounded-xl md:rounded-2xl shadow-lg p-4 md:p-8 border-2 border-gray-200">
+              <div className="mb-4 md:mb-6">
+                <h4 className="text-xl md:text-3xl font-bold text-gray-900 mb-2 md:mb-3">Free</h4>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-2xl md:text-4xl font-bold text-gray-900">$0</span>
-                  <span className="text-xs md:text-base text-gray-600">forever</span>
+                  <span className="text-3xl md:text-5xl font-bold text-gray-900">$0</span>
+                  <span className="text-sm md:text-lg text-gray-600">forever</span>
                 </div>
               </div>
-              <ul className="space-y-2 md:space-y-3">
+              <ul className="space-y-3 md:space-y-4">
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Unlimited items & customers</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Unlimited items & customers</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Calendar booking management</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Calendar booking management</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Inventory tracking</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Inventory tracking</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Basic reporting</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Basic reporting</span>
                 </li>
               </ul>
               <button
                 disabled
-                className="w-full mt-4 md:mt-6 px-3 py-2 md:px-6 md:py-3 bg-gray-300 text-gray-600 font-bold rounded-lg cursor-not-allowed text-xs md:text-base"
+                className="w-full mt-6 md:mt-8 px-4 py-3 md:px-6 md:py-4 bg-gray-300 text-gray-600 font-bold rounded-lg cursor-not-allowed text-sm md:text-lg"
               >
                 Current Plan
               </button>
             </div>
 
-            {/* Pro Plan */}
-            <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl md:rounded-2xl shadow-xl p-3 md:p-8 border-4 border-yellow-400 relative">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <span className="bg-gradient-to-r from-yellow-500 to-amber-600 text-white px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-bold shadow-lg">
-                  Popular
+            {/* Premium Plan */}
+            <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl md:rounded-2xl shadow-xl p-4 md:p-8 border-4 border-yellow-400 relative">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <span className="bg-gradient-to-r from-yellow-500 to-amber-600 text-white px-4 py-1.5 md:px-6 md:py-2 rounded-full text-sm md:text-base font-bold shadow-lg">
+                  Coming Soon
                 </span>
               </div>
-              <div className="mb-3 md:mb-6 mt-2 md:mt-4">
-                <h4 className="text-base md:text-2xl font-bold text-gray-900 mb-1 md:mb-2">Pro</h4>
+              <div className="mb-4 md:mb-6 mt-3 md:mt-6">
+                <h4 className="text-xl md:text-3xl font-bold text-gray-900 mb-2 md:mb-3">Premium</h4>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-2xl md:text-4xl font-bold text-gray-900">$29</span>
-                  <span className="text-xs md:text-base text-gray-600">per month</span>
+                  <span className="text-3xl md:text-5xl font-bold text-gray-900">TBD</span>
                 </div>
               </div>
-              <ul className="space-y-2 md:space-y-3">
+              <ul className="space-y-3 md:space-y-4">
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700 font-semibold">Everything in Free</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700 font-semibold">Everything in Free</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Public booking page</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Tax calculator</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Events near you</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Events near you</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Email & SMS notifications</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Custom analytics dashboard</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Custom analytics dashboard</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Online payments</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Online payments (Stripe)</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Customer reminders & notifications</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Priority support</span>
-                </li>
-              </ul>
-              <button className="w-full mt-4 md:mt-6 px-3 py-2 md:px-6 md:py-3 bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all text-xs md:text-base">
-                Start 14-Day Free Trial
-              </button>
-            </div>
-
-            {/* Business Plan */}
-            <div className="bg-white rounded-xl md:rounded-2xl shadow-lg p-3 md:p-8 border-2 border-purple-200">
-              <div className="mb-3 md:mb-6">
-                <h4 className="text-base md:text-2xl font-bold text-gray-900 mb-1 md:mb-2">Business</h4>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-2xl md:text-4xl font-bold text-gray-900">$79</span>
-                  <span className="text-xs md:text-base text-gray-600">per month</span>
-                </div>
-              </div>
-              <ul className="space-y-2 md:space-y-3">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700 font-semibold">Everything in Pro</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Public booking page</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Multiple public pages</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Team collaboration</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Team member accounts</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Wholesale supplier connection</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Advanced analytics & exports</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">API access & webhooks</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Custom branding</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs md:text-base text-gray-700">Dedicated account manager</span>
+                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-lg text-gray-700">Data export & reports</span>
                 </li>
               </ul>
-              <button className="w-full mt-4 md:mt-6 px-3 py-2 md:px-6 md:py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all text-xs md:text-base">
-                Contact Sales
+              <button
+                disabled
+                className="w-full mt-6 md:mt-8 px-4 py-3 md:px-6 md:py-4 bg-gray-400 text-gray-200 font-bold rounded-lg cursor-not-allowed text-sm md:text-lg"
+              >
+                Coming Soon
               </button>
             </div>
           </div>
