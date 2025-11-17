@@ -113,6 +113,29 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
     }
   }, [isOpen, onClose]);
 
+  // Lock body scroll when drawer is open (especially important for mobile)
+  useEffect(() => {
+    if (isOpen) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      // Lock body scroll
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+
+      return () => {
+        // Restore body scroll
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        // Restore scroll position
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
+
   const fetchDayData = async () => {
     if (!date) {
       return;
@@ -282,7 +305,7 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
                     No bookings for this date
                   </p>
                 ) : (
-                  <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
+                  <div className="space-y-2 max-h-[35vh] md:max-h-[45vh] overflow-y-auto pr-2">
                     {bookings.map((booking) => {
                       const isExpanded = expandedBookings.has(booking.id);
 
