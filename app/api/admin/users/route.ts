@@ -92,13 +92,19 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "User ID is required" }, { status: 400 });
     }
 
-    // Validate plan if provided
-    if (plan && !["free", "pro", "business"].includes(plan)) {
-      return NextResponse.json({ error: "Invalid plan. Must be: free, pro, or business" }, { status: 400 });
+    // Validate plan if provided (convert to status)
+    if (plan && !["free", "premium"].includes(plan)) {
+      return NextResponse.json({ error: "Invalid plan. Must be: free or premium" }, { status: 400 });
+    }
+
+    // Derive status from plan if plan is provided
+    let derivedStatus = status;
+    if (plan) {
+      derivedStatus = plan === "premium" ? "active" : "canceled";
     }
 
     // Validate status if provided
-    if (status && !["active", "trialing", "past_due", "canceled"].includes(status)) {
+    if (derivedStatus && !["active", "trialing", "past_due", "canceled"].includes(derivedStatus)) {
       return NextResponse.json({ error: "Invalid status. Must be: active, trialing, past_due, or canceled" }, { status: 400 });
     }
 
@@ -129,8 +135,11 @@ export async function PATCH(request: Request) {
       subscription = await prisma.subscription.update({
         where: { userId },
         data: {
-          ...(plan && { plan }),
-          ...(status && { status }),
+          ...(derivedStatus && { status: derivedStatus }),
+          ...(derivedStatus && {
+            currentPeriodStart: new Date(),
+            currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          }),
           updatedAt: new Date(),
         },
       });
@@ -139,11 +148,20 @@ export async function PATCH(request: Request) {
       subscription = await prisma.subscription.create({
         data: {
           userId,
-          plan: plan || "free",
-          status: status || "active",
+          stripeCustomerId: `admin_${userId}`, // Placeholder for admin-created subscriptions
+          status: derivedStatus || "canceled",
+          currentPeriodStart: new Date(),
+          currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         },
       });
     }
+
+    // Update user's isPremium flag
+    const isPremium = subscription.status && ["active", "trialing"].includes(subscription.status);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isPremium },
+    });
 
     return NextResponse.json({
       success: true,
