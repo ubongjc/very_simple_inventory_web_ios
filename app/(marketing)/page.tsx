@@ -541,10 +541,9 @@ export default function HomePage() {
               <div className="grid grid-cols-3 gap-0">
                 <div className="p-2 md:p-4">
                   <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Active Bookings</h5>
-                  <p className="text-[8px] md:text-xs text-gray-500">CONFIRMED + OUT</p>
                 </div>
                 <div className="p-2 md:p-4 text-center border-l border-gray-200">
-                  <p className="text-[10px] md:text-base font-bold text-gray-900">15 concurrent</p>
+                  <p className="text-[10px] md:text-base font-bold text-gray-900">15 active bookings</p>
                 </div>
                 <div className="p-2 md:p-4 text-center border-l border-gray-200 bg-purple-50/50">
                   <p className="text-[10px] md:text-base font-bold text-purple-700">Unlimited</p>
@@ -558,7 +557,7 @@ export default function HomePage() {
                   <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Bookings Per Month</h5>
                 </div>
                 <div className="p-2 md:p-4 text-center border-l border-gray-200">
-                  <p className="text-[10px] md:text-base font-bold text-gray-900">25/month</p>
+                  <p className="text-[10px] md:text-base font-bold text-gray-900">25 per month</p>
                 </div>
                 <div className="p-2 md:p-4 text-center border-l border-gray-200 bg-purple-50/50">
                   <p className="text-[10px] md:text-base font-bold text-purple-700">Unlimited</p>
@@ -614,13 +613,98 @@ export default function HomePage() {
             <div className="border-b border-gray-200">
               <div className="grid grid-cols-3 gap-0">
                 <div className="p-2 md:p-4">
-                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Notifications</h5>
+                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Support</h5>
                 </div>
                 <div className="p-2 md:p-4 text-center border-l border-gray-200">
-                  <p className="text-[10px] md:text-base font-bold text-gray-500">Manual only</p>
+                  <p className="text-[10px] md:text-base font-bold text-gray-900">Email only</p>
                 </div>
                 <div className="p-2 md:p-4 text-center border-l border-gray-200 bg-purple-50/50">
-                  <p className="text-[10px] md:text-base font-bold text-purple-700">Automated</p>
+                  <p className="text-[10px] md:text-base font-bold text-purple-700">Priority email + WhatsApp</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Premium Features */}
+            <div className="border-b border-gray-200">
+              <div className="grid grid-cols-3 gap-0">
+                <div className="p-2 md:p-4">
+                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Tax Calculator</h5>
+                </div>
+                <div className="p-2 md:p-4 text-center border-l border-gray-200">
+                  <p className="text-[10px] md:text-base font-bold text-gray-500">Not available</p>
+                </div>
+                <div className="p-2 md:p-4 text-center border-l border-gray-200 bg-purple-50/50">
+                  <CheckCircle className="w-3 h-3 md:w-5 md:h-5 inline text-purple-700" />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-b border-gray-200">
+              <div className="grid grid-cols-3 gap-0">
+                <div className="p-2 md:p-4">
+                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Events Near You</h5>
+                </div>
+                <div className="p-2 md:p-4 text-center border-l border-gray-200">
+                  <p className="text-[10px] md:text-base font-bold text-gray-500">Not available</p>
+                </div>
+                <div className="p-2 md:p-4 text-center border-l border-gray-200 bg-purple-50/50">
+                  <CheckCircle className="w-3 h-3 md:w-5 md:h-5 inline text-purple-700" />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-b border-gray-200">
+              <div className="grid grid-cols-3 gap-0">
+                <div className="p-2 md:p-4">
+                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Custom Analytics</h5>
+                </div>
+                <div className="p-2 md:p-4 text-center border-l border-gray-200">
+                  <p className="text-[10px] md:text-base font-bold text-gray-500">Not available</p>
+                </div>
+                <div className="p-2 md:p-4 text-center border-l border-gray-200 bg-purple-50/50">
+                  <CheckCircle className="w-3 h-3 md:w-5 md:h-5 inline text-purple-700" />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-b border-gray-200">
+              <div className="grid grid-cols-3 gap-0">
+                <div className="p-2 md:p-4">
+                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Online Payments</h5>
+                </div>
+                <div className="p-2 md:p-4 text-center border-l border-gray-200">
+                  <p className="text-[10px] md:text-base font-bold text-gray-500">Not available</p>
+                </div>
+                <div className="p-2 md:p-4 text-center border-l border-gray-200 bg-purple-50/50">
+                  <CheckCircle className="w-3 h-3 md:w-5 md:h-5 inline text-purple-700" />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-b border-gray-200">
+              <div className="grid grid-cols-3 gap-0">
+                <div className="p-2 md:p-4">
+                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Customer Reminders</h5>
+                </div>
+                <div className="p-2 md:p-4 text-center border-l border-gray-200">
+                  <p className="text-[10px] md:text-base font-bold text-gray-500">Not available</p>
+                </div>
+                <div className="p-2 md:p-4 text-center border-l border-gray-200 bg-purple-50/50">
+                  <CheckCircle className="w-3 h-3 md:w-5 md:h-5 inline text-purple-700" />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-b border-gray-200">
+              <div className="grid grid-cols-3 gap-0">
+                <div className="p-2 md:p-4">
+                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Automated Notifications</h5>
+                </div>
+                <div className="p-2 md:p-4 text-center border-l border-gray-200">
+                  <p className="text-[10px] md:text-base font-bold text-gray-500">Not available</p>
+                </div>
+                <div className="p-2 md:p-4 text-center border-l border-gray-200 bg-purple-50/50">
+                  <CheckCircle className="w-3 h-3 md:w-5 md:h-5 inline text-purple-700" />
                 </div>
               </div>
             </div>
@@ -642,22 +726,7 @@ export default function HomePage() {
             <div className="border-b border-gray-200">
               <div className="grid grid-cols-3 gap-0">
                 <div className="p-2 md:p-4">
-                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Team Members</h5>
-                </div>
-                <div className="p-2 md:p-4 text-center border-l border-gray-200">
-                  <p className="text-[10px] md:text-base font-bold text-gray-900">1 user</p>
-                </div>
-                <div className="p-2 md:p-4 text-center border-l border-gray-200 bg-purple-50/50">
-                  <p className="text-[10px] md:text-base font-bold text-purple-700">Up to 5 users</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-b-2 border-gray-300">
-              <div className="grid grid-cols-3 gap-0">
-                <div className="p-2 md:p-4">
-                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Wholesale Supplier Connection</h5>
-                  <p className="text-[8px] md:text-xs text-gray-500">Connect with suppliers for cheaper rental materials</p>
+                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Team Collaboration</h5>
                 </div>
                 <div className="p-2 md:p-4 text-center border-l border-gray-200">
                   <p className="text-[10px] md:text-base font-bold text-gray-500">Not available</p>
@@ -668,17 +737,16 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Support */}
             <div className="border-b border-gray-200">
               <div className="grid grid-cols-3 gap-0">
                 <div className="p-2 md:p-4">
-                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Support</h5>
+                  <h5 className="text-[10px] md:text-base font-semibold text-gray-900">Wholesale Supplier Connection</h5>
                 </div>
                 <div className="p-2 md:p-4 text-center border-l border-gray-200">
-                  <p className="text-[10px] md:text-base font-bold text-gray-900">Email only</p>
+                  <p className="text-[10px] md:text-base font-bold text-gray-500">Not available</p>
                 </div>
                 <div className="p-2 md:p-4 text-center border-l border-gray-200 bg-purple-50/50">
-                  <p className="text-[10px] md:text-base font-bold text-purple-700">Priority + WhatsApp</p>
+                  <CheckCircle className="w-3 h-3 md:w-5 md:h-5 inline text-purple-700" />
                 </div>
               </div>
             </div>
@@ -700,16 +768,6 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Additional Info */}
-          <div className="mt-4 md:mt-8 p-3 md:p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg md:rounded-2xl border md:border-2 border-blue-200 text-center">
-            <p className="text-xs md:text-base text-gray-700 font-semibold mb-1 md:mb-2">
-              15 items is enough for micro-businesses to test the system. Most growing rental businesses will need Premium.
-            </p>
-            <p className="text-[10px] md:text-base text-gray-600">
-              Start with our free plan today and upgrade when you're ready to scale.
-            </p>
           </div>
         </div>
       </section>
