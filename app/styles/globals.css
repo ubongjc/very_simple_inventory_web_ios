@@ -61,11 +61,15 @@ table {
   overflow: hidden !important;
   max-width: 100% !important;
   --fc-small-font-size: 0.85rem;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 /* Calendar root with normalized button heights */
 .calendar-root {
   --fc-toolbar-btn-h: 24px;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 /* Add breathing room above toolbar to prevent button clipping */
