@@ -176,6 +176,24 @@ export default function Calendar({
               // Stop propagation to prevent dateClick from firing
               info.jsEvent.stopPropagation();
               info.jsEvent.preventDefault();
+
+              // Find which day cell was clicked by looking at the clicked element's parent
+              const target = info.jsEvent.target as HTMLElement;
+              const dayCell = target.closest('.fc-daygrid-day');
+
+              if (dayCell) {
+                // Get the date from the day cell's data attribute
+                const dateStr = dayCell.getAttribute('data-date');
+                if (dateStr) {
+                  // Parse the date string (YYYY-MM-DD) and create a date for that day
+                  const [year, month, day] = dateStr.split('-').map(Number);
+                  const clickedDate = new Date(year, month - 1, day);
+                  onDateClick(clickedDate);
+                  return;
+                }
+              }
+
+              // Fallback to event start date if we can't determine the clicked day
               const eventDate = new Date(info.event.start!);
               onDateClick(eventDate);
             }}
