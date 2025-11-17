@@ -1,6 +1,11 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Check for email configuration
+if (!process.env.RESEND_API_KEY) {
+  console.warn('RESEND_API_KEY not configured. Email features will be disabled.');
+}
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export interface SendEmailOptions {
   to: string;
@@ -11,8 +16,23 @@ export interface SendEmailOptions {
 
 /**
  * Send an email using Resend
+ * Fails gracefully if email is not configured
  */
 export async function sendEmail({ to, subject, html, text }: SendEmailOptions) {
+  // If Resend is not configured, log and skip
+  if (!resend || !process.env.RESEND_API_KEY) {
+    console.warn('[EMAIL] Skipping email send - RESEND_API_KEY not configured:', {
+      to,
+      subject,
+    });
+    return { success: false, messageId: null, skipped: true };
+  }
+
+  if (!process.env.EMAIL_FROM_ADDRESS) {
+    console.error('[EMAIL] EMAIL_FROM_ADDRESS not configured');
+    return { success: false, messageId: null, error: 'Email sender not configured' };
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: `${process.env.EMAIL_FROM_NAME || 'VerySimple Inventory'} <${process.env.EMAIL_FROM_ADDRESS}>`,
@@ -24,14 +44,14 @@ export async function sendEmail({ to, subject, html, text }: SendEmailOptions) {
 
     if (error) {
       console.error('[EMAIL] Send error:', error);
-      throw new Error('Failed to send email');
+      return { success: false, messageId: null, error: error.message };
     }
 
     console.log('[EMAIL] Message sent:', data?.id);
     return { success: true, messageId: data?.id };
-  } catch (error) {
+  } catch (error: any) {
     console.error('[EMAIL] Send error:', error);
-    throw new Error('Failed to send email');
+    return { success: false, messageId: null, error: error.message || 'Failed to send email' };
   }
 }
 

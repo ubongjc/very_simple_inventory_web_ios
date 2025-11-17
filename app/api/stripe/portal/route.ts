@@ -4,12 +4,30 @@ import { authOptions } from "@/app/lib/auth.config";
 import { prisma } from "@/app/lib/prisma";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2024-11-20.acacia",
-});
+// Check for required Stripe configuration
+if (!process.env.STRIPE_SECRET_KEY) {
+  console.warn("STRIPE_SECRET_KEY not configured. Billing portal will be disabled.");
+}
+
+const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2024-11-20.acacia",
+    })
+  : null;
 
 export async function POST(req: NextRequest) {
   try {
+    // Check if Stripe is configured
+    if (!stripe || !process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        {
+          error: "Billing not configured",
+          message: "Billing portal is not available at this time. Please contact support."
+        },
+        { status: 503 }
+      );
+    }
+
     // Get authenticated user
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {

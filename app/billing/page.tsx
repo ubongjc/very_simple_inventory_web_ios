@@ -50,14 +50,16 @@ export default function BillingPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to create checkout session');
+        // Show detailed message if available (e.g., "Billing not configured")
+        const errorMessage = data.message || data.error || 'Failed to create checkout session';
+        throw new Error(errorMessage);
       }
 
       if (data.url) {
         window.location.href = data.url;
       }
     } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+      setError(err.message || 'Something went wrong. Please try again later.');
       setLoading(false);
     }
   };
@@ -77,14 +79,16 @@ export default function BillingPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to create portal session');
+        // Show detailed message if available (e.g., "Billing portal not configured")
+        const errorMessage = data.message || data.error || 'Failed to create portal session';
+        throw new Error(errorMessage);
       }
 
       if (data.url) {
         window.location.href = data.url;
       }
     } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+      setError(err.message || 'Something went wrong. Please try again later.');
       setLoading(false);
     }
   };
