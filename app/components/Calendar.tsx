@@ -112,11 +112,19 @@ export default function Calendar({
   };
 
   useEffect(() => {
-    // Fetch events for the current month on mount and when selectedItemIds changes
-    const now = new Date();
-    const start = new Date(now.getFullYear(), now.getMonth(), 1);
-    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    fetchEvents(start, end);
+    // Fetch events for the currently displayed date range when selectedItemIds changes
+    if (hasLoadedOnce.current && calendarRef.current) {
+      // If calendar has loaded, refetch for the currently visible date range
+      const calendarApi = calendarRef.current.getApi();
+      const currentView = calendarApi.view;
+      fetchEvents(currentView.activeStart, currentView.activeEnd);
+    } else {
+      // On initial mount, fetch for the current month
+      const now = new Date();
+      const start = new Date(now.getFullYear(), now.getMonth(), 1);
+      const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      fetchEvents(start, end);
+    }
   }, [selectedItemIds]);
 
   return (
