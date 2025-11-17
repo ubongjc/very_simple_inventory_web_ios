@@ -305,7 +305,7 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
                     No bookings for this date
                   </p>
                 ) : (
-                  <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
+                  <div className="space-y-2 max-h-[35vh] md:max-h-[45vh] overflow-y-auto pr-2">
                     {bookings.map((booking) => {
                       const isExpanded = expandedBookings.has(booking.id);
 
