@@ -157,7 +157,7 @@ export async function PATCH(request: Request) {
     }
 
     // Update user's isPremium flag
-    const isPremium = subscription.status && ["active", "trialing"].includes(subscription.status);
+    const isPremium = Boolean(subscription.status && ["active", "trialing"].includes(subscription.status));
     await prisma.user.update({
       where: { id: userId },
       data: { isPremium },
