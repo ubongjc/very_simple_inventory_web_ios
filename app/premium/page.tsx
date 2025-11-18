@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -16,7 +15,6 @@ import {
   Lock,
   Calculator,
   BellRing,
-  Truck,
   FileDown,
   MapPin,
   Loader2,
@@ -26,7 +24,6 @@ import {
 
 export default function PremiumPage() {
   const { data: session, status } = useSession();
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const isPremium = session?.user?.isPremium || false;
 
@@ -167,7 +164,7 @@ export default function PremiumPage() {
                 </div>
               </div>
               <div className="text-xs text-orange-600 font-semibold">Coming Soon</div>
-            </Link>
+            </div>
 
             {/* Customer Reminders */}
             <Link
@@ -227,7 +224,7 @@ export default function PremiumPage() {
                 </div>
               </div>
               <div className="text-xs text-cyan-600 font-semibold">Coming Soon</div>
-            </Link>
+            </div>
 
             {/* Team Collaboration */}
             <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-rose-200">
@@ -243,7 +240,7 @@ export default function PremiumPage() {
                 </div>
               </div>
               <div className="text-xs text-rose-600 font-semibold">Coming Soon</div>
-            </Link>
+            </div>
 
             {/* Data Export */}
             <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-emerald-200">
@@ -259,7 +256,7 @@ export default function PremiumPage() {
                 </div>
               </div>
               <div className="text-xs text-emerald-600 font-semibold">Available in all pages</div>
-            </Link>
+            </div>
           </div>
 
           {/* Help Section */}
