@@ -82,7 +82,7 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
   const [expandedBookings, setExpandedBookings] = useState<Set<string>>(new Set());
   const [addingPaymentFor, setAddingPaymentFor] = useState<string | null>(null);
   const [paymentAmount, setPaymentAmount] = useState("");
-  const [paymentDate, setPaymentDate] = useState("");
+  const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
   const [paymentNotes, setPaymentNotes] = useState("");
   const [paymentError, setPaymentError] = useState("");
   const { formatCurrency, settings } = useSettings();
@@ -288,7 +288,7 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
 
       // Reset form and refresh data
       setPaymentAmount("");
-      setPaymentDate("");
+      setPaymentDate(new Date().toISOString().split('T')[0]);
       setPaymentNotes("");
       setPaymentError("");
       setAddingPaymentFor(null);
@@ -612,7 +612,7 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
                                             onClick={() => {
                                               setAddingPaymentFor(null);
                                               setPaymentAmount("");
-                                              setPaymentDate("");
+                                              setPaymentDate(new Date().toISOString().split('T')[0]);
                                               setPaymentNotes("");
                                               setPaymentError("");
                                             }}
@@ -625,7 +625,13 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
                                     </div>
                                   ) : (
                                     <button
-                                      onClick={() => setAddingPaymentFor(booking.id)}
+                                      onClick={() => {
+                                        setAddingPaymentFor(booking.id);
+                                        setPaymentDate(new Date().toISOString().split('T')[0]);
+                                        setPaymentAmount("");
+                                        setPaymentNotes("");
+                                        setPaymentError("");
+                                      }}
                                       className="mt-2 w-full flex items-center justify-center gap-1 px-2 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 text-[11px] font-bold shadow-sm"
                                     >
                                       <Plus className="w-3.5 h-3.5" />
