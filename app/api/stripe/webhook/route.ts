@@ -108,6 +108,11 @@ export async function POST(req: NextRequest) {
 }
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
+  if (!stripe) {
+    console.error("Stripe not configured");
+    return;
+  }
+
   const userId = session.metadata?.userId;
   const customerId = session.customer as string;
 
