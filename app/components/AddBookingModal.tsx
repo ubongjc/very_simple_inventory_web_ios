@@ -813,8 +813,9 @@ export default function AddBookingModal({
           );
         }
 
+        // Show detailed message for plan limit errors, otherwise show generic error
         throw new Error(
-          errorData.error || "Failed to create booking"
+          errorData.details || errorData.error || "Failed to create booking"
         );
       }
 
