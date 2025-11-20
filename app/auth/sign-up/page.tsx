@@ -130,7 +130,7 @@ export default function SignUpPage() {
                 <div>
                   <p className="text-base md:text-lg font-bold text-green-800 mb-2">Account Created!</p>
                   <p className="text-xs md:text-sm text-green-700">
-                    We've sent a verification email to:
+                    We&apos;ve sent a verification email to:
                   </p>
                   <p className="text-sm md:text-base font-semibold text-green-900 mt-1">{userEmail}</p>
                 </div>
