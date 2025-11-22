@@ -92,8 +92,12 @@ export const config = {
      * Match all request paths except for the ones starting with:
      * - / (homepage - marketing page)
      * - /contact, /privacy, /terms (public marketing pages)
+     * - /book (public booking pages)
+     * - /team/accept (team invitation acceptance pages)
      * - api/auth (authentication endpoints)
      * - api/contact (contact form endpoint)
+     * - api/public-page (public booking page API)
+     * - api/team/invitations/[token] (team invitation verification API)
      * - api/payment/webhook (Paystack webhooks - need to be public)
      * - auth/sign-in (login page)
      * - auth/sign-up (registration page)
@@ -104,6 +108,6 @@ export const config = {
      * - favicon.ico, manifest.json, icons (PWA files)
      * - public/* (public assets)
      */
-    '/((?!$|contact|privacy|terms|api/auth|api/contact|api/payment/webhook|auth/sign-in|auth/sign-up|auth/forgot-password|auth/reset-password|_next/static|_next/image|favicon.ico|manifest.json|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$).*)',
+    '/((?!$|contact|privacy|terms|book|team/accept|api/auth|api/contact|api/public-page|api/team/invitations/.*|api/payment/webhook|auth/sign-in|auth/sign-up|auth/forgot-password|auth/reset-password|_next/static|_next/image|favicon.ico|manifest.json|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$).*)',
   ],
 };

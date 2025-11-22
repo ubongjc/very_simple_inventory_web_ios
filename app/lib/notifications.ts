@@ -681,4 +681,64 @@ export class NotificationService {
       });
     }
   }
+
+  /**
+   * Send new inquiry notification to business owner
+   */
+  static async sendNewInquiry(
+    userId: string,
+    inquiryId: string,
+    inquirerName: string,
+    inquirerEmail: string | null,
+    inquirerPhone: string | null,
+    startDate: Date,
+    endDate: Date,
+    inquiryMessage: string | null
+  ): Promise<void> {
+    const preferences = await prisma.notificationPreferences.findUnique({
+      where: { userId },
+    });
+
+    if (!preferences) return;
+
+    const business = await this.getBusinessDetails(userId);
+
+    const templateData: EmailTemplateData & { inquiryMessage?: string } = {
+      businessName: business.businessName,
+      businessEmail: business.businessEmail,
+      businessPhone: business.businessPhone,
+      customerName: inquirerName,
+      customerEmail: inquirerEmail || '',
+      startDate: startDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+      endDate: endDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+      inquiryMessage: inquiryMessage || '',
+    };
+
+    // Send email notification to business owner if enabled
+    if (preferences.newInquiryEmail && business.businessEmail) {
+      const emailContent = newInquiryTemplate(templateData);
+      await this.send({
+        userId,
+        type: 'new_inquiry',
+        channel: 'email',
+        recipient: business.businessEmail,
+        subject: emailContent.subject,
+        message: emailContent.text,
+        html: emailContent.html,
+      });
+    }
+
+    // Send SMS notification to business owner if enabled
+    if (preferences.newInquirySms && business.businessPhone) {
+      const contactInfo = inquirerPhone || inquirerEmail || 'No contact provided';
+      const smsMessage = `New rental inquiry from ${inquirerName}! ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}. Contact: ${contactInfo}. Check your dashboard for details.`;
+      await this.send({
+        userId,
+        type: 'new_inquiry',
+        channel: 'sms',
+        recipient: business.businessPhone,
+        message: smsMessage,
+      });
+    }
+  }
 }
