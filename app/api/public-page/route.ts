@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { slug, title, phonePublic, emailPublic, itemIds, isActive } = body;
+    const { slug, title, phonePublic, emailPublic, itemIds, isActive, customMessage, contactMethods } = body;
 
     // Validate slug format (alphanumeric + hyphens only, 3-50 chars)
     if (slug) {
@@ -114,6 +114,8 @@ export async function POST(req: NextRequest) {
         emailPublic: emailPublic || null,
         ...(itemIds && { itemsJson }),
         ...(typeof isActive === 'boolean' && { isActive }),
+        customMessage: customMessage || null,
+        ...(contactMethods && { contactMethods }),
       },
       create: {
         userId: user.id,
@@ -123,6 +125,8 @@ export async function POST(req: NextRequest) {
         emailPublic: emailPublic || null,
         itemsJson,
         isActive: typeof isActive === 'boolean' ? isActive : true,
+        customMessage: customMessage || null,
+        contactMethods: contactMethods || ['app'],
       },
     });
 

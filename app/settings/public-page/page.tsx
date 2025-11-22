@@ -54,6 +54,8 @@ export default function PublicPageSettingsPage() {
   const [emailPublic, setEmailPublic] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [slugError, setSlugError] = useState('');
+  const [customMessage, setCustomMessage] = useState('');
+  const [contactMethods, setContactMethods] = useState<string[]>(['app']);
 
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
   const publicUrl = `${baseUrl}/book/${slug}`;
@@ -86,6 +88,8 @@ export default function PublicPageSettingsPage() {
           setPhonePublic(pageData.publicPage.phonePublic || '');
           setEmailPublic(pageData.publicPage.emailPublic || '');
           setIsActive(pageData.publicPage.isActive);
+          setCustomMessage(pageData.publicPage.customMessage || '');
+          setContactMethods(pageData.publicPage.contactMethods || ['app']);
 
           // Set selected items
           const itemIds = (pageData.publicPage.itemsJson || []).map((item: any) => item.itemId);
@@ -172,6 +176,8 @@ export default function PublicPageSettingsPage() {
           emailPublic: emailPublic || null,
           itemsJson,
           isActive,
+          customMessage: customMessage || null,
+          contactMethods,
         }),
       });
 
@@ -325,6 +331,59 @@ export default function PublicPageSettingsPage() {
                   />
                   <p className="text-sm text-gray-500 mt-1">
                     Displayed on public page for customer inquiries
+                  </p>
+                </div>
+
+                {/* Custom Message */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Custom Message (Optional)
+                  </label>
+                  <textarea
+                    value={customMessage}
+                    onChange={(e) => setCustomMessage(e.target.value)}
+                    rows={3}
+                    maxLength={500}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    placeholder="Add a custom welcome message or instructions for your customers..."
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    This message will be displayed at the top of your public booking page
+                  </p>
+                </div>
+
+                {/* Contact Methods */}
+                <div className="border-t border-gray-200 pt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    How should customers contact you?
+                  </label>
+                  <div className="space-y-2">
+                    {[
+                      { value: 'app', label: 'Through Application (Dashboard notifications)' },
+                      { value: 'email', label: 'Email' },
+                      { value: 'sms', label: 'SMS' },
+                      { value: 'whatsapp', label: 'WhatsApp' },
+                      { value: 'social', label: 'Social Media' },
+                    ].map((method) => (
+                      <label key={method.value} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={contactMethods.includes(method.value)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setContactMethods([...contactMethods, method.value]);
+                            } else {
+                              setContactMethods(contactMethods.filter((m) => m !== method.value));
+                            }
+                          }}
+                          className="w-4 h-4 text-blue-600 rounded"
+                        />
+                        <span className="text-sm text-gray-700">{method.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Select all methods you want customers to use to contact you
                   </p>
                 </div>
 
