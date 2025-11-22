@@ -4,6 +4,7 @@ import { authOptions } from "@/app/lib/auth.config";
 import { prisma } from "@/app/lib/prisma";
 import { toUTCMidnight } from "@/app/lib/dates";
 import { secureLog } from "@/app/lib/security";
+import { getUserPlanType } from "@/app/lib/planLimits";
 
 export async function DELETE(
   request: NextRequest,
@@ -176,7 +177,7 @@ export async function PUT(
       include: { subscription: true }
     });
 
-    const planType = userWithSubscription?.subscription?.plan || 'free';
+    const planType = getUserPlanType(userWithSubscription?.subscription || null, userWithSubscription?.isPremium);
 
     if (planType === 'free') {
       const now = new Date();

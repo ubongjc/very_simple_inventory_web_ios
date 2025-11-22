@@ -178,6 +178,7 @@ model User {
 model Subscription {
   id                   String    @id @default(cuid())
   userId               String    @unique
+  plan                 String    @default("free") @db.VarChar(20) // 'free' | 'premium'
   stripeCustomerId     String?   @unique @db.VarChar(100)
   stripeSubscriptionId String?   @unique @db.VarChar(100)
   status               String    @default("inactive") @db.VarChar(20) // 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete' | 'inactive'
