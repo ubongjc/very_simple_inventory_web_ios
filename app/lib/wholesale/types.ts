@@ -157,6 +157,7 @@ export interface SupplierCardData {
 // Normalized data structures for export
 export interface NormalizedSupplier extends WholesaleSupplier {
   // Database metadata
+  id: string; // Prisma CUID
   db_id?: string;
   approval_status?: ApprovalStatus;
   is_blacklisted?: boolean;
