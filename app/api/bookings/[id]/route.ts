@@ -4,6 +4,7 @@ import { authOptions } from "@/app/lib/auth.config";
 import { prisma } from "@/app/lib/prisma";
 import { toUTCMidnight } from "@/app/lib/dates";
 import { secureLog } from "@/app/lib/security";
+import { getUserPlanType } from "@/app/lib/planLimits";
 
 export async function DELETE(
   request: NextRequest,
@@ -176,7 +177,7 @@ export async function PUT(
       include: { subscription: true }
     });
 
-    const planType = userWithSubscription?.subscription?.plan || 'free';
+    const planType = getUserPlanType(userWithSubscription?.subscription || null, userWithSubscription?.isPremium);
 
     if (planType === 'free') {
       const now = new Date();
@@ -318,6 +319,8 @@ export async function PUT(
         totalPrice: body.totalPrice,
         advancePayment: body.advancePayment,
         paymentDueDate: body.paymentDueDate ? toUTCMidnight(body.paymentDueDate) : null,
+        taxAmount: body.taxAmount,
+        totalWithTax: body.totalWithTax,
         items: {
           create: body.items.map((item: any) => ({
             itemId: item.itemId,
