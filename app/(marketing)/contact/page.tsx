@@ -28,33 +28,108 @@ export default function ContactPage() {
     phone: '',
     subject: '',
     message: '',
+    website: '', // Honeypot field
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    // Clear error for this field when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors({
+        ...fieldErrors,
+        [name]: '',
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const errors: { [key: string]: string } = {};
+
+    // Name validation
+    if (!formData.name.trim()) {
+      errors.name = 'Name is required';
+    } else if (formData.name.length < 2) {
+      errors.name = 'Name must be at least 2 characters';
+    } else if (formData.name.length > 100) {
+      errors.name = 'Name must be less than 100 characters';
+    } else if (!/^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/.test(formData.name)) {
+      errors.name = 'Name can only contain letters, spaces, hyphens, and apostrophes';
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required';
+    } else if (formData.email.length > 254) {
+      errors.email = 'Email must be less than 254 characters';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+
+    // Phone validation (optional but has limits)
+    if (formData.phone && formData.phone.length > 20) {
+      errors.phone = 'Phone number must be less than 20 characters';
+    }
+
+    // Subject validation
+    if (!formData.subject) {
+      errors.subject = 'Please select a subject';
+    } else if (formData.subject.length > 200) {
+      errors.subject = 'Subject must be less than 200 characters';
+    }
+
+    // Message validation
+    if (!formData.message.trim()) {
+      errors.message = 'Message is required';
+    } else if (formData.message.length < 10) {
+      errors.message = 'Message must be at least 10 characters';
+    } else if (formData.message.length > 2000) {
+      errors.message = 'Message must be less than 2000 characters';
+    }
+
+    return errors;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate form
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+
     setStatus('loading');
     setErrorMessage('');
+    setFieldErrors({});
 
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          subject: formData.subject,
+          message: formData.message.trim(),
+          website: formData.website, // Honeypot
+        }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        throw new Error(data.error || 'Failed to send message');
       }
 
       setStatus('success');
@@ -64,14 +139,18 @@ export default function ContactPage() {
         phone: '',
         subject: '',
         message: '',
+        website: '',
       });
 
-      // Reset success message after 5 seconds
-      setTimeout(() => setStatus('idle'), 5000);
-    } catch (_error) {
+      // Reset success message after 8 seconds
+      setTimeout(() => setStatus('idle'), 8000);
+    } catch (error) {
       setStatus('error');
+      const err = error instanceof Error ? error.message : 'Failed to send message';
       setErrorMessage(
-        'Failed to send message. Please try again or contact us directly via email or phone.'
+        err.includes('rate limit')
+          ? err
+          : 'Failed to send message. Please try again or email us directly at support@verysimpleinventory.com'
       );
     }
   };
@@ -113,15 +192,14 @@ export default function ContactPage() {
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Get In Touch</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            We're here to help Nigerian businesses succeed. Reach out with any questions, feedback,
-            or support needs.
+            We're here to help. Reach out with any questions, feedback, or support needs.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Contact Information */}
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+            <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-gray-200">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h3>
 
               <div className="space-y-4">
@@ -134,7 +212,7 @@ export default function ContactPage() {
                     <h4 className="font-bold text-gray-900 mb-1">Email Support</h4>
                     <a
                       href="mailto:support@verysimpleinventory.com"
-                      className="text-blue-600 hover:text-blue-800 transition-colors"
+                      className="text-blue-600 hover:text-blue-800 transition-colors font-semibold"
                     >
                       support@verysimpleinventory.com
                     </a>
@@ -151,13 +229,13 @@ export default function ContactPage() {
                     <h4 className="font-bold text-gray-900 mb-1">Phone Support</h4>
                     <a
                       href="tel:+2348031234567"
-                      className="text-blue-600 hover:text-blue-800 transition-colors block"
+                      className="text-blue-600 hover:text-blue-800 transition-colors block font-semibold"
                     >
                       +234 803 123 4567
                     </a>
                     <a
                       href="tel:+2348057654321"
-                      className="text-blue-600 hover:text-blue-800 transition-colors block"
+                      className="text-blue-600 hover:text-blue-800 transition-colors block font-semibold"
                     >
                       +234 805 765 4321
                     </a>
@@ -175,7 +253,7 @@ export default function ContactPage() {
                   <div className="flex-1">
                     <h4 className="font-bold text-gray-900 mb-2">WhatsApp Business</h4>
                     <p className="text-sm text-gray-600 mb-3">
-                      Get instant support via WhatsApp - most popular in Nigeria!
+                      Get instant support via WhatsApp!
                     </p>
                     <a
                       href="https://wa.me/2348031234567?text=Hello%2C%20I%20need%20help%20with%20Very%20Simple%20Inventory"
@@ -242,29 +320,48 @@ export default function ContactPage() {
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Send Us a Message</h3>
+          <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-gray-200">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Send Us a Message</h3>
+            <p className="text-sm text-gray-600 mb-6">
+              All fields marked with <span className="text-red-500 font-bold">*</span> are required.
+              Character limits are enforced.
+            </p>
 
             {status === 'success' && (
-              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <div className="mb-6 p-4 bg-green-50 border-2 border-green-300 rounded-xl flex items-start gap-3">
+                <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-green-800 font-semibold">Message sent successfully!</p>
-                  <p className="text-green-700 text-sm">
-                    We'll get back to you as soon as possible.
+                  <p className="text-green-800 font-bold text-base">✅ Message sent successfully!</p>
+                  <p className="text-green-700 text-sm mt-1">
+                    Your message has been delivered to our support team. We'll respond as soon as possible.
                   </p>
                 </div>
               </div>
             )}
 
             {status === 'error' && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <p className="text-red-700 text-sm">{errorMessage}</p>
+              <div className="mb-6 p-4 bg-red-50 border-2 border-red-300 rounded-xl flex items-start gap-3">
+                <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-red-800 font-bold text-base">❌ Failed to send message</p>
+                  <p className="text-red-700 text-sm mt-1">{errorMessage}</p>
+                </div>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Honeypot field - hidden from users, catches bots */}
+              <input
+                type="text"
+                name="website"
+                value={formData.website}
+                onChange={handleChange}
+                style={{ position: 'absolute', left: '-9999px', opacity: 0, pointerEvents: 'none' }}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
+
               <div>
                 <label className="block text-sm font-bold text-gray-900 mb-2">
                   Full Name <span className="text-red-500">*</span>
@@ -274,10 +371,19 @@ export default function ContactPage() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-gray-900 font-medium transition-all"
-                  placeholder="Adebayo Johnson"
+                  maxLength={100}
+                  className={`w-full px-4 py-3 border-2 ${
+                    fieldErrors.name ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-gray-900 font-medium transition-all`}
+                  placeholder="John Doe"
+                  disabled={status === 'loading'}
                 />
+                {fieldErrors.name && (
+                  <p className="text-red-600 text-xs mt-1 font-semibold">⚠️ {fieldErrors.name}</p>
+                )}
+                <p className={`text-xs mt-1 ${formData.name.length > 90 ? 'text-red-600 font-bold' : 'text-gray-500'}`}>
+                  {formData.name.length}/100 characters {formData.name.length < 2 && formData.name.length > 0 && '(minimum 2)'}
+                </p>
               </div>
 
               <div>
@@ -289,22 +395,41 @@ export default function ContactPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-gray-900 font-medium transition-all"
-                  placeholder="adebayo@example.com"
+                  maxLength={254}
+                  className={`w-full px-4 py-3 border-2 ${
+                    fieldErrors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-gray-900 font-medium transition-all`}
+                  placeholder="john@example.com"
+                  disabled={status === 'loading'}
                 />
+                {fieldErrors.email && (
+                  <p className="text-red-600 text-xs mt-1 font-semibold">⚠️ {fieldErrors.email}</p>
+                )}
+                <p className={`text-xs mt-1 ${formData.email.length > 240 ? 'text-red-600 font-bold' : 'text-gray-500'}`}>
+                  {formData.email.length}/254 characters
+                </p>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-gray-900 mb-2">Phone Number</label>
+                <label className="block text-sm font-bold text-gray-900 mb-2">
+                  Phone Number <span className="text-gray-500">(Optional)</span>
+                </label>
                 <input
                   type="tel"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-gray-900 font-medium transition-all"
+                  maxLength={20}
+                  className={`w-full px-4 py-3 border-2 ${
+                    fieldErrors.phone ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-gray-900 font-medium transition-all`}
                   placeholder="+234 803 123 4567"
+                  disabled={status === 'loading'}
                 />
+                {fieldErrors.phone && (
+                  <p className="text-red-600 text-xs mt-1 font-semibold">⚠️ {fieldErrors.phone}</p>
+                )}
+                <p className="text-gray-500 text-xs mt-1">{formData.phone.length}/20 characters</p>
               </div>
 
               <div>
@@ -315,17 +440,22 @@ export default function ContactPage() {
                   name="subject"
                   value={formData.subject}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-gray-900 font-bold transition-all"
+                  className={`w-full px-4 py-3 border-2 ${
+                    fieldErrors.subject ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-gray-900 font-bold transition-all`}
+                  disabled={status === 'loading'}
                 >
                   <option value="">Select a subject</option>
-                  <option value="general">General Inquiry</option>
-                  <option value="support">Technical Support</option>
-                  <option value="billing">Billing Question</option>
-                  <option value="feature">Feature Request</option>
-                  <option value="partnership">Partnership Opportunity</option>
-                  <option value="other">Other</option>
+                  <option value="General Inquiry">General Inquiry</option>
+                  <option value="Technical Support">Technical Support</option>
+                  <option value="Billing Question">Billing Question</option>
+                  <option value="Feature Request">Feature Request</option>
+                  <option value="Partnership Opportunity">Partnership Opportunity</option>
+                  <option value="Other">Other</option>
                 </select>
+                {fieldErrors.subject && (
+                  <p className="text-red-600 text-xs mt-1 font-semibold">⚠️ {fieldErrors.subject}</p>
+                )}
               </div>
 
               <div>
@@ -336,11 +466,31 @@ export default function ContactPage() {
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  required
+                  maxLength={2000}
                   rows={6}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-gray-900 font-medium transition-all resize-none"
+                  className={`w-full px-4 py-3 border-2 ${
+                    fieldErrors.message ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-gray-900 font-medium transition-all resize-none`}
                   placeholder="Tell us how we can help you..."
+                  disabled={status === 'loading'}
                 />
+                {fieldErrors.message && (
+                  <p className="text-red-600 text-xs mt-1 font-semibold">⚠️ {fieldErrors.message}</p>
+                )}
+                <p
+                  className={`text-xs mt-1 ${
+                    formData.message.length >= 2000
+                      ? 'text-red-600 font-bold'
+                      : formData.message.length >= 1800
+                      ? 'text-orange-600 font-semibold'
+                      : 'text-gray-500'
+                  }`}
+                >
+                  {formData.message.length}/2000 characters
+                  {formData.message.length < 10 && formData.message.length > 0 && ' (minimum 10)'}
+                  {formData.message.length >= 1800 && formData.message.length < 2000 && ' (approaching limit)'}
+                  {formData.message.length >= 2000 && ' (LIMIT REACHED)'}
+                </p>
               </div>
 
               <button
@@ -351,7 +501,7 @@ export default function ContactPage() {
                 {status === 'loading' ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    Sending...
+                    Sending your message...
                   </>
                 ) : (
                   <>
@@ -375,19 +525,19 @@ export default function ContactPage() {
             <div className="flex gap-6">
               <Link
                 href="/"
-                className="text-gray-600 hover:text-blue-600 transition-colors text-sm"
+                className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-semibold"
               >
                 Home
               </Link>
               <Link
                 href="/privacy"
-                className="text-gray-600 hover:text-blue-600 transition-colors text-sm"
+                className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-semibold"
               >
                 Privacy Policy
               </Link>
               <Link
                 href="/terms"
-                className="text-gray-600 hover:text-blue-600 transition-colors text-sm"
+                className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-semibold"
               >
                 Terms of Service
               </Link>
