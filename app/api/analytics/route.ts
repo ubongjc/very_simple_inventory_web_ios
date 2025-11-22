@@ -205,7 +205,7 @@ export async function GET(request: NextRequest) {
         avgRevenuePerBooking: (item.revenue / item.bookings).toFixed(2),
       }));
 
-    // 5. PAYMENT STATS
+    // 5. PAYMENT STATS & INCOME BREAKDOWN
     const allPayments = bookings.flatMap((b) => b.payments);
     const totalRevenue = allPayments.reduce((sum, p) => sum + parseFloat(p.amount.toString()), 0);
     const avgPaymentAmount = allPayments.length > 0 ? totalRevenue / allPayments.length : 0;
@@ -217,6 +217,65 @@ export async function GET(request: NextRequest) {
     const totalPaid = totalRevenue;
     const outstandingBalance = totalBookingValue - totalPaid;
     const collectionRate = totalBookingValue > 0 ? (totalPaid / totalBookingValue) * 100 : 0;
+
+    // 5a. PUBLIC BOOKING PAGE METRICS
+    // Get all public inquiries (rental requests from public page)
+    const publicPage = await prisma.publicPage.findUnique({
+      where: { userId: user.id },
+    });
+
+    let publicPageStats = {
+      totalInquiries: 0,
+      confirmedBookings: 0,
+      conversionRate: 0,
+      totalRevenue: 0,
+      platformFeesCollected: 0,
+      netRevenue: 0,
+    };
+
+    if (publicPage) {
+      const publicInquiries = await prisma.publicInquiry.findMany({
+        where: {
+          publicPageId: publicPage.id,
+          createdAt: { gte: startDate },
+        },
+      });
+
+      publicPageStats.totalInquiries = publicInquiries.length;
+      publicPageStats.confirmedBookings = publicInquiries.filter((i) => i.status === 'confirmed').length;
+      publicPageStats.conversionRate = publicPageStats.totalInquiries > 0
+        ? (publicPageStats.confirmedBookings / publicPageStats.totalInquiries) * 100
+        : 0;
+
+      // Calculate revenue from confirmed public bookings
+      const confirmedInquiries = publicInquiries.filter((i) => i.status === 'confirmed');
+      publicPageStats.totalRevenue = confirmedInquiries.reduce(
+        (sum, i) => sum + (i.totalAmount ? parseFloat(i.totalAmount.toString()) : 0),
+        0
+      );
+      publicPageStats.platformFeesCollected = confirmedInquiries.reduce(
+        (sum, i) => sum + (i.platformFee ? parseFloat(i.platformFee.toString()) : 0),
+        0
+      );
+      publicPageStats.netRevenue = publicPageStats.totalRevenue - publicPageStats.platformFeesCollected;
+    }
+
+    // 5b. APP BOOKINGS VS PUBLIC PAGE BOOKINGS
+    // App bookings = total bookings revenue
+    // Public page bookings = revenue from public inquiries
+    const appBookings = bookings.length;
+    const appRevenue = totalPaid; // All payments through the app
+    const publicPageRevenue = publicPageStats.totalRevenue;
+    const totalGrossRevenue = appRevenue + publicPageRevenue;
+
+    // 5c. TAX CALCULATION (excludes platform fees - premium feature)
+    const taxRate = user.settings?.taxRate ? parseFloat(user.settings.taxRate.toString()) : 0;
+    const taxableAmount = totalGrossRevenue - publicPageStats.platformFeesCollected; // Tax applies to revenue, not platform fees
+    const taxAmount = taxRate > 0 ? (taxableAmount * taxRate) / 100 : 0;
+
+    // 5d. NET INCOME (after platform fees and tax)
+    const platformFeesTotal = publicPageStats.platformFeesCollected;
+    const netIncome = totalGrossRevenue - platformFeesTotal - taxAmount;
 
     // 6. BOOKING STATS BY STATUS
     const bookingsByStatus = {
@@ -261,6 +320,35 @@ export async function GET(request: NextRequest) {
 
       // Booking Stats
       bookingsByStatus,
+
+      // NEW: Income Breakdown & Public Page Impact
+      incomeBreakdown: {
+        grossRevenue: totalGrossRevenue.toFixed(2),
+        platformFees: platformFeesTotal.toFixed(2),
+        taxAmount: taxAmount.toFixed(2),
+        taxRate: taxRate.toFixed(2),
+        netIncome: netIncome.toFixed(2),
+      },
+
+      // NEW: Booking Source Breakdown
+      bookingSourceStats: {
+        appBookings: appBookings,
+        appRevenue: appRevenue.toFixed(2),
+        publicPageBookings: publicPageStats.confirmedBookings,
+        publicPageRevenue: publicPageRevenue.toFixed(2),
+        publicPageConversionRate: publicPageStats.conversionRate.toFixed(1),
+      },
+
+      // NEW: Public Page Impact
+      publicPageImpact: {
+        totalInquiries: publicPageStats.totalInquiries,
+        confirmedBookings: publicPageStats.confirmedBookings,
+        conversionRate: publicPageStats.conversionRate.toFixed(1),
+        grossRevenue: publicPageStats.totalRevenue.toFixed(2),
+        platformFees: publicPageStats.platformFeesCollected.toFixed(2),
+        netRevenue: publicPageStats.netRevenue.toFixed(2),
+        helpedEarn: publicPageStats.netRevenue.toFixed(2), // How much the app helped them make (net from public page)
+      },
 
       // Period info
       period,

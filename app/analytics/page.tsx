@@ -55,6 +55,29 @@ interface AnalyticsData {
     RETURNED: number;
     CANCELLED: number;
   };
+  incomeBreakdown: {
+    grossRevenue: string;
+    platformFees: string;
+    taxAmount: string;
+    taxRate: string;
+    netIncome: string;
+  };
+  bookingSourceStats: {
+    appBookings: number;
+    appRevenue: string;
+    publicPageBookings: number;
+    publicPageRevenue: string;
+    publicPageConversionRate: string;
+  };
+  publicPageImpact: {
+    totalInquiries: number;
+    confirmedBookings: number;
+    conversionRate: string;
+    grossRevenue: string;
+    platformFees: string;
+    netRevenue: string;
+    helpedEarn: string;
+  };
   period: number;
 }
 
@@ -238,10 +261,10 @@ export default function AnalyticsPage() {
               <div className="p-2 bg-green-100 rounded-lg">
                 <DollarSign className="w-6 h-6 text-green-600" />
               </div>
-              <h3 className="text-sm font-semibold text-gray-600">Total Revenue</h3>
+              <h3 className="text-sm font-semibold text-gray-600">Net Income</h3>
             </div>
-            <p className="text-3xl font-bold text-gray-900">₦{parseFloat(analytics.totalRevenue).toLocaleString()}</p>
-            <p className="text-xs text-gray-500 mt-1">₦{parseFloat(analytics.avgRevenuePerBooking).toLocaleString()} per booking</p>
+            <p className="text-3xl font-bold text-green-900">₦{parseFloat(analytics.incomeBreakdown.netIncome).toLocaleString()}</p>
+            <p className="text-xs text-gray-500 mt-1">After platform fees & tax</p>
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">
@@ -264,6 +287,118 @@ export default function AnalyticsPage() {
             </div>
             <p className="text-3xl font-bold text-gray-900">{analytics.paymentStats.collectionRate}%</p>
             <p className="text-xs text-gray-500 mt-1">Payments collected</p>
+          </div>
+        </div>
+
+        {/* Income Breakdown */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <DollarSign className="w-6 h-6 text-green-600" />
+            Income Breakdown
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="bg-blue-50 rounded-lg p-4">
+              <p className="text-sm text-gray-600 mb-1">Gross Revenue</p>
+              <p className="text-2xl font-bold text-blue-600">
+                ₦{parseFloat(analytics.incomeBreakdown.grossRevenue).toLocaleString()}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">Total before fees</p>
+            </div>
+            <div className="bg-orange-50 rounded-lg p-4">
+              <p className="text-sm text-gray-600 mb-1">Platform Fees</p>
+              <p className="text-2xl font-bold text-orange-600">
+                -₦{parseFloat(analytics.incomeBreakdown.platformFees).toLocaleString()}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">1.5% on public bookings</p>
+            </div>
+            <div className="bg-purple-50 rounded-lg p-4">
+              <p className="text-sm text-gray-600 mb-1">Tax Amount</p>
+              <p className="text-2xl font-bold text-purple-600">
+                -₦{parseFloat(analytics.incomeBreakdown.taxAmount).toLocaleString()}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">{parseFloat(analytics.incomeBreakdown.taxRate).toFixed(1)}% tax rate</p>
+            </div>
+            <div className="bg-green-50 rounded-lg p-4 md:col-span-2">
+              <p className="text-sm text-gray-600 mb-1">Net Income</p>
+              <p className="text-3xl font-bold text-green-600">
+                ₦{parseFloat(analytics.incomeBreakdown.netIncome).toLocaleString()}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">Your actual earnings</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Booking Source Statistics */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <BarChart3 className="w-6 h-6 text-blue-600" />
+            Booking Sources
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="border-2 border-blue-200 rounded-lg p-4 bg-blue-50">
+              <h3 className="text-lg font-bold text-blue-900 mb-3">App Bookings</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-700">Total Bookings:</span>
+                  <span className="font-bold text-blue-600">{analytics.bookingSourceStats.appBookings}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-700">Revenue:</span>
+                  <span className="font-bold text-blue-600">₦{parseFloat(analytics.bookingSourceStats.appRevenue).toLocaleString()}</span>
+                </div>
+              </div>
+            </div>
+            <div className="border-2 border-purple-200 rounded-lg p-4 bg-purple-50">
+              <h3 className="text-lg font-bold text-purple-900 mb-3">Public Page Bookings</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-700">Total Bookings:</span>
+                  <span className="font-bold text-purple-600">{analytics.bookingSourceStats.publicPageBookings}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-700">Revenue:</span>
+                  <span className="font-bold text-purple-600">₦{parseFloat(analytics.bookingSourceStats.publicPageRevenue).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-700">Conversion:</span>
+                  <span className="font-bold text-purple-600">{analytics.bookingSourceStats.publicPageConversionRate}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Public Page Impact */}
+        <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg shadow-md p-6 mb-8 text-white">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <TrendingUp className="w-6 h-6" />
+            How Much Has This App Helped You Earn?
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+              <p className="text-sm text-purple-100 mb-1">Public Inquiries</p>
+              <p className="text-3xl font-bold">{analytics.publicPageImpact.totalInquiries}</p>
+              <p className="text-xs text-purple-100 mt-1">Customer requests</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+              <p className="text-sm text-purple-100 mb-1">Confirmed</p>
+              <p className="text-3xl font-bold">{analytics.publicPageImpact.confirmedBookings}</p>
+              <p className="text-xs text-purple-100 mt-1">{analytics.publicPageImpact.conversionRate}% conversion rate</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+              <p className="text-sm text-purple-100 mb-1">Gross Revenue</p>
+              <p className="text-2xl font-bold">₦{parseFloat(analytics.publicPageImpact.grossRevenue).toLocaleString()}</p>
+              <p className="text-xs text-purple-100 mt-1">From public page</p>
+            </div>
+            <div className="bg-white/30 backdrop-blur-sm rounded-lg p-4 border-2 border-white/50">
+              <p className="text-sm text-purple-100 mb-1 font-semibold">You Earned</p>
+              <p className="text-3xl font-bold">₦{parseFloat(analytics.publicPageImpact.helpedEarn).toLocaleString()}</p>
+              <p className="text-xs text-purple-100 mt-1">Net after platform fees</p>
+            </div>
+          </div>
+          <div className="mt-4 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+            <p className="text-sm font-semibold">💡 Platform Fee: ₦{parseFloat(analytics.publicPageImpact.platformFees).toLocaleString()} (1.5% on public bookings)</p>
+            <p className="text-xs text-purple-100 mt-1">This small fee helps us maintain and improve the platform for you!</p>
           </div>
         </div>
 
