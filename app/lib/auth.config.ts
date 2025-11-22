@@ -46,9 +46,8 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Check if user has active premium subscription
-        const isPremium = user.subscription?.status
-          ? ["active", "trialing"].includes(user.subscription.status)
-          : false;
+        const isPremium = user.subscription?.plan === "premium" &&
+                         user.subscription?.status === "active";
 
         // Return user object
         return {

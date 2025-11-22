@@ -135,6 +135,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     where: { userId },
     create: {
       userId,
+      plan: "premium", // Stripe subscriptions are always premium
       stripeCustomerId: customerId,
       stripeSubscriptionId: subscriptionId,
       status: subscription.status,
@@ -143,6 +144,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
     },
     update: {
+      plan: "premium", // Stripe subscriptions are always premium
       stripeSubscriptionId: subscriptionId,
       status: subscription.status,
       currentPeriodStart: new Date(subscription.current_period_start * 1000),
@@ -151,8 +153,8 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     },
   });
 
-  // Update user's isPremium flag
-  const isPremium = ["active", "trialing"].includes(subscription.status);
+  // Update user's isPremium flag - only active premium subscriptions
+  const isPremium = subscription.status === "active";
   await prisma.user.update({
     where: { id: userId },
     data: { isPremium },
@@ -180,6 +182,7 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
   await prisma.subscription.update({
     where: { id: dbSubscription.id },
     data: {
+      plan: "premium", // Stripe subscriptions are always premium
       stripeSubscriptionId: subscription.id,
       status: subscription.status,
       currentPeriodStart: new Date(subscription.current_period_start * 1000),
@@ -188,8 +191,8 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
     },
   });
 
-  // Update user's isPremium flag
-  const isPremium = ["active", "trialing"].includes(subscription.status);
+  // Update user's isPremium flag - only active premium subscriptions
+  const isPremium = subscription.status === "active";
   await prisma.user.update({
     where: { id: dbSubscription.userId },
     data: { isPremium },

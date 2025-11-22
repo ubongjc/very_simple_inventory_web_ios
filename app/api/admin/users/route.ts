@@ -44,14 +44,14 @@ export async function GET() {
       },
     });
 
-    // Transform the data to flatten the subscription plan (derived from status)
+    // Transform the data to flatten the subscription plan
     const transformedUsers = users.map((user: typeof users[number]) => {
-      const isPremium = user.subscription?.status
-        ? ["active", "trialing"].includes(user.subscription.status)
-        : false;
+      const isPremium = user.subscription?.plan === "premium" &&
+                       user.subscription?.status === "active";
       return {
         ...user,
-        plan: isPremium ? "premium" : "free",
+        plan: user.subscription?.plan || "free",
+        isPremiumActive: isPremium,
         subscription: undefined, // Remove the nested subscription object
       };
     });
@@ -104,8 +104,8 @@ export async function PATCH(request: Request) {
     }
 
     // Validate status if provided
-    if (derivedStatus && !["active", "trialing", "past_due", "canceled"].includes(derivedStatus)) {
-      return NextResponse.json({ error: "Invalid status. Must be: active, trialing, past_due, or canceled" }, { status: 400 });
+    if (derivedStatus && !["active", "past_due", "canceled", "incomplete", "inactive"].includes(derivedStatus)) {
+      return NextResponse.json({ error: "Invalid status. Must be: active, past_due, canceled, incomplete, or inactive" }, { status: 400 });
     }
 
     // Check if user exists
@@ -135,6 +135,7 @@ export async function PATCH(request: Request) {
       subscription = await prisma.subscription.update({
         where: { userId },
         data: {
+          ...(plan && { plan }),
           ...(derivedStatus && { status: derivedStatus }),
           ...(derivedStatus && {
             currentPeriodStart: new Date(),
@@ -148,16 +149,17 @@ export async function PATCH(request: Request) {
       subscription = await prisma.subscription.create({
         data: {
           userId,
+          plan: plan || "free",
           stripeCustomerId: `admin_${userId}`, // Placeholder for admin-created subscriptions
-          status: derivedStatus || "canceled",
+          status: derivedStatus || "active",
           currentPeriodStart: new Date(),
           currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         },
       });
     }
 
-    // Update user's isPremium flag
-    const isPremium = Boolean(subscription.status && ["active", "trialing"].includes(subscription.status));
+    // Update user's isPremium flag - only active premium subscriptions
+    const isPremium = subscription.plan === "premium" && subscription.status === "active";
     await prisma.user.update({
       where: { id: userId },
       data: { isPremium },

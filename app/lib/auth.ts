@@ -37,15 +37,15 @@ export async function hasFeature(
 ): Promise<boolean> {
   const subscription = await prisma.subscription.findUnique({
     where: { userId },
-    select: { status: true },
+    select: { plan: true, status: true },
   });
 
   if (!subscription) {
     return false;
   }
 
-  // Active or trialing subscriptions get all premium features
-  return ["active", "trialing"].includes(subscription.status);
+  // Only active premium subscriptions get premium features
+  return subscription.plan === "premium" && subscription.status === "active";
 }
 
 /**

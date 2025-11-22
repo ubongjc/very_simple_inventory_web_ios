@@ -34,10 +34,10 @@ export async function requirePremium(userId: string): Promise<void> {
     throw new Error("Premium subscription required");
   }
 
-  // Double-check subscription status
+  // Double-check subscription plan and status
   if (
-    !user.subscription?.status ||
-    !["active", "trialing"].includes(user.subscription.status)
+    user.subscription?.plan !== "premium" ||
+    user.subscription?.status !== "active"
   ) {
     throw new Error("Active premium subscription required");
   }
@@ -64,8 +64,8 @@ export async function isPremium(userId: string): Promise<boolean> {
   }
 
   return (
-    user.subscription?.status !== undefined &&
-    ["active", "trialing"].includes(user.subscription.status)
+    user.subscription?.plan === "premium" &&
+    user.subscription?.status === "active"
   );
 }
 

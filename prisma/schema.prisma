@@ -181,7 +181,7 @@ model Subscription {
   plan                 String    @default("free") @db.VarChar(20) // 'free' | 'premium'
   stripeCustomerId     String?   @unique @db.VarChar(100)
   stripeSubscriptionId String?   @unique @db.VarChar(100)
-  status               String    @default("inactive") @db.VarChar(20) // 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete' | 'inactive'
+  status               String    @default("active") @db.VarChar(20) // 'active' | 'canceled' | 'past_due' | 'incomplete' | 'inactive'
   currentPeriodStart   DateTime?
   currentPeriodEnd     DateTime?
   cancelAtPeriodEnd    Boolean   @default(false)
