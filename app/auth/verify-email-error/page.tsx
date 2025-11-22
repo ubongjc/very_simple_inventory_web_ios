@@ -27,7 +27,7 @@ function VerifyEmailErrorContent() {
         return {
           title: 'Link Already Used',
           message:
-            'This verification link has already been used. If you need a new verification email, please contact support.',
+            'This verification link has already been used. You can request a new verification email below.',
         };
       case 'rate_limit':
         return {
@@ -86,8 +86,15 @@ function VerifyEmailErrorContent() {
 
             <div className="space-y-3">
               <Link
-                href="/auth/sign-in"
+                href="/auth/resend-verification"
                 className="block w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl text-center"
+              >
+                Resend Verification Email
+              </Link>
+
+              <Link
+                href="/auth/sign-in"
+                className="block w-full py-3 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold rounded-lg transition-all duration-200 text-center"
               >
                 Try Signing In
               </Link>

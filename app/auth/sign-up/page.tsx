@@ -157,6 +157,18 @@ export default function SignUpPage() {
               >
                 Go to Sign In
               </Link>
+
+              <div className="text-center">
+                <p className="text-xs md:text-sm text-gray-600">
+                  Didn&apos;t receive the email?{' '}
+                  <Link
+                    href="/auth/resend-verification"
+                    className="text-blue-600 hover:text-blue-700 font-bold"
+                  >
+                    Resend verification email
+                  </Link>
+                </p>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 md:space-y-5">
