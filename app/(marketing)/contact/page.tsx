@@ -333,7 +333,7 @@ export default function ContactPage() {
                 <div>
                   <p className="text-green-800 font-bold text-base">✅ Message sent successfully!</p>
                   <p className="text-green-700 text-sm mt-1">
-                    Your message has been delivered to our support team. We'll respond within 24 hours.
+                    Your message has been delivered to our support team. We'll respond as soon as possible.
                   </p>
                 </div>
               </div>
