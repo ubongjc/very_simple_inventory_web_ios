@@ -8,6 +8,7 @@ import { getRandomBookingColor } from "@/app/lib/colors";
 import { toUtcDateOnly, toYmd, addDays } from "@/app/lib/dateUtils";
 import { secureLog, applyRateLimit, RateLimitPresets } from "@/app/lib/security";
 import { checkActiveBookingLimit, checkMonthlyBookingLimit, getBookingHistoryCutoff } from "@/app/lib/limits";
+import { getUserPlanType } from "@/app/lib/planLimits";
 
 export async function GET(request: NextRequest) {
   // Apply rate limiting for read operations
@@ -167,7 +168,7 @@ export async function POST(request: NextRequest) {
       include: { subscription: true }
     });
 
-    const planType = userWithSubscription?.subscription?.plan || 'free';
+    const planType = getUserPlanType(userWithSubscription?.subscription || null, userWithSubscription?.isPremium);
 
     if (planType === 'free') {
       const now = new Date();
@@ -359,6 +360,8 @@ export async function POST(request: NextRequest) {
         totalPrice: validated.totalPrice,
         advancePayment: validated.advancePayment,
         paymentDueDate: validated.paymentDueDate ? toUTCMidnight(validated.paymentDueDate) : undefined,
+        taxAmount: validated.taxAmount,
+        totalWithTax: validated.totalWithTax,
         items: {
           create: validated.items.map((item) => ({
             itemId: item.itemId,

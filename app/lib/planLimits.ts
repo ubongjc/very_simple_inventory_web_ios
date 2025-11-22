@@ -165,12 +165,24 @@ export const FEATURE_DESCRIPTIONS = {
 
 /**
  * Helper to get user's plan type from subscription
+ * Also accepts optional isPremium flag for admin overrides and testing
  */
-export function getUserPlanType(subscription: { plan: string } | null): PlanType {
-  if (!subscription || subscription.plan === 'free') {
+export function getUserPlanType(
+  subscription: { plan?: string; status: string } | null,
+  isPremium?: boolean
+): PlanType {
+  // Check isPremium flag first (for admin overrides and testing)
+  if (isPremium === true) {
+    return 'premium';
+  }
+
+  if (!subscription) {
     return 'free';
   }
-  return 'premium';
+
+  // Check if subscription plan is premium and status is active
+  const isPremiumPlan = subscription.plan === 'premium' && subscription.status === 'active';
+  return isPremiumPlan ? 'premium' : 'free';
 }
 
 /**

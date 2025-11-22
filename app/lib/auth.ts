@@ -44,18 +44,8 @@ export async function hasFeature(
     return false;
   }
 
-  // Free plan has no premium features
-  if (subscription.plan === "free") {
-    return false;
-  }
-
-  // Inactive subscriptions don't get features
-  if (!["active", "trialing"].includes(subscription.status)) {
-    return false;
-  }
-
-  // Premium plan gets all features
-  return subscription.plan === "premium";
+  // Only active premium subscriptions get premium features
+  return subscription.plan === "premium" && subscription.status === "active";
 }
 
 /**

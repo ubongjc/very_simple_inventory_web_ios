@@ -35,7 +35,7 @@ export async function GET() {
         createdAt: true,
         subscription: {
           select: {
-            plan: true,
+            status: true,
           },
         },
       },
@@ -45,11 +45,16 @@ export async function GET() {
     });
 
     // Transform the data to flatten the subscription plan
-    const transformedUsers = users.map((user: typeof users[number]) => ({
-      ...user,
-      plan: user.subscription?.plan || "free",
-      subscription: undefined, // Remove the nested subscription object
-    }));
+    const transformedUsers = users.map((user: typeof users[number]) => {
+      const isPremium = user.subscription?.plan === "premium" &&
+                       user.subscription?.status === "active";
+      return {
+        ...user,
+        plan: user.subscription?.plan || "free",
+        isPremiumActive: isPremium,
+        subscription: undefined, // Remove the nested subscription object
+      };
+    });
 
     return NextResponse.json(transformedUsers);
   } catch (error) {
@@ -87,14 +92,20 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "User ID is required" }, { status: 400 });
     }
 
-    // Validate plan if provided
-    if (plan && !["free", "pro", "business"].includes(plan)) {
-      return NextResponse.json({ error: "Invalid plan. Must be: free, pro, or business" }, { status: 400 });
+    // Validate plan if provided (convert to status)
+    if (plan && !["free", "premium"].includes(plan)) {
+      return NextResponse.json({ error: "Invalid plan. Must be: free or premium" }, { status: 400 });
+    }
+
+    // Derive status from plan if plan is provided
+    let derivedStatus = status;
+    if (plan) {
+      derivedStatus = plan === "premium" ? "active" : "canceled";
     }
 
     // Validate status if provided
-    if (status && !["active", "trialing", "past_due", "canceled"].includes(status)) {
-      return NextResponse.json({ error: "Invalid status. Must be: active, trialing, past_due, or canceled" }, { status: 400 });
+    if (derivedStatus && !["active", "past_due", "canceled", "incomplete", "inactive"].includes(derivedStatus)) {
+      return NextResponse.json({ error: "Invalid status. Must be: active, past_due, canceled, incomplete, or inactive" }, { status: 400 });
     }
 
     // Check if user exists
@@ -125,7 +136,11 @@ export async function PATCH(request: Request) {
         where: { userId },
         data: {
           ...(plan && { plan }),
-          ...(status && { status }),
+          ...(derivedStatus && { status: derivedStatus }),
+          ...(derivedStatus && {
+            currentPeriodStart: new Date(),
+            currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          }),
           updatedAt: new Date(),
         },
       });
@@ -135,10 +150,20 @@ export async function PATCH(request: Request) {
         data: {
           userId,
           plan: plan || "free",
-          status: status || "active",
+          stripeCustomerId: `admin_${userId}`, // Placeholder for admin-created subscriptions
+          status: derivedStatus || "active",
+          currentPeriodStart: new Date(),
+          currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         },
       });
     }
+
+    // Update user's isPremium flag - only active premium subscriptions
+    const isPremium = subscription.plan === "premium" && subscription.status === "active";
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isPremium },
+    });
 
     return NextResponse.json({
       success: true,
