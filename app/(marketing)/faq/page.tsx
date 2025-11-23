@@ -55,7 +55,7 @@ export default function FAQPage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-3 md:gap-4">
+        <div className="grid md:grid-cols-2 gap-3 md:gap-4 mb-6">
           {/* Q&A 1 */}
           <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 border-2 border-blue-100">
             <h4 className="text-sm md:text-base font-bold text-gray-900 mb-1.5 flex items-start gap-2">
@@ -73,7 +73,7 @@ export default function FAQPage() {
           <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 border-2 border-purple-100">
             <h4 className="text-sm md:text-base font-bold text-gray-900 mb-1.5 flex items-start gap-2">
               <HelpCircle className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
-              Is it really free?
+              Is Very Simple Inventory really free?
             </h4>
             <p className="text-xs md:text-sm text-gray-700">
               Yes! We offer a free forever plan with essential features including up to 15 items,
@@ -85,11 +85,10 @@ export default function FAQPage() {
           <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 border-2 border-green-100">
             <h4 className="text-sm md:text-base font-bold text-gray-900 mb-1.5 flex items-start gap-2">
               <HelpCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-              How do I track my inventory?
+              Do I need a credit card to sign up?
             </h4>
             <p className="text-xs md:text-sm text-gray-700">
-              Simply add your rental items with quantities and details. The system automatically
-              tracks availability, reservations, and sends low stock alerts when needed.
+              No! You can sign up and start using Very Simple Inventory without providing any payment information. Our free plan is truly free forever.
             </p>
           </div>
 
@@ -97,11 +96,10 @@ export default function FAQPage() {
           <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 border-2 border-orange-100">
             <h4 className="text-sm md:text-base font-bold text-gray-900 mb-1.5 flex items-start gap-2">
               <HelpCircle className="w-4 h-4 text-orange-600 flex-shrink-0 mt-0.5" />
-              Can I use it on my phone?
+              What kind of businesses can use Very Simple Inventory?
             </h4>
             <p className="text-xs md:text-sm text-gray-700">
-              Absolutely! Very Simple Inventory is fully responsive and works perfectly on all
-              devices - phones, tablets, and desktops. Manage your business from anywhere.
+              Any business that rents out items! Party equipment rentals, event venues, tool rentals, costume rentals, camera equipment rentals, and more. If you rent things to customers, Very Simple Inventory can help you manage it.
             </p>
           </div>
 
@@ -109,12 +107,10 @@ export default function FAQPage() {
           <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 border-2 border-pink-100">
             <h4 className="text-sm md:text-base font-bold text-gray-900 mb-1.5 flex items-start gap-2">
               <HelpCircle className="w-4 h-4 text-pink-600 flex-shrink-0 mt-0.5" />
-              What about premium features?
+              Can I track multiple items in a single booking?
             </h4>
             <p className="text-xs md:text-sm text-gray-700">
-              Premium features like tax calculators, online payments, automated notifications, and
-              unlimited items are coming soon. Sign up for free now and we&apos;ll notify you when
-              they&apos;re available.
+              Yes! You can add multiple items to a single booking. This makes it easy to track complex rentals where a customer is renting several items at once.
             </p>
           </div>
 
@@ -122,12 +118,92 @@ export default function FAQPage() {
           <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 border-2 border-indigo-100">
             <h4 className="text-sm md:text-base font-bold text-gray-900 mb-1.5 flex items-start gap-2">
               <HelpCircle className="w-4 h-4 text-indigo-600 flex-shrink-0 mt-0.5" />
+              How does the availability checker work?
+            </h4>
+            <p className="text-xs md:text-sm text-gray-700">
+              The availability checker shows you which items are available for a specific date range. It automatically accounts for existing bookings and item quantities, so you always know what&apos;s available to rent.
+            </p>
+          </div>
+
+          {/* Q&A 7 */}
+          <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 border-2 border-cyan-100">
+            <h4 className="text-sm md:text-base font-bold text-gray-900 mb-1.5 flex items-start gap-2">
+              <HelpCircle className="w-4 h-4 text-cyan-600 flex-shrink-0 mt-0.5" />
+              What are the limits on the free plan?
+            </h4>
+            <p className="text-xs md:text-sm text-gray-700">
+              The free plan includes up to 15 items, 50 customers, 15 active bookings, and 25 bookings per month. Your booking history is kept for the last 3 months. These limits are perfect for small businesses getting started.
+            </p>
+          </div>
+
+          {/* Q&A 8 */}
+          <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 border-2 border-amber-100">
+            <h4 className="text-sm md:text-base font-bold text-gray-900 mb-1.5 flex items-start gap-2">
+              <HelpCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+              Can I export my data?
+            </h4>
+            <p className="text-xs md:text-sm text-gray-700">
+              Data export will be available in the premium plan (coming soon). You&apos;ll be able to export your data in CSV, Excel, and PDF formats.
+            </p>
+          </div>
+
+          {/* Q&A 9 */}
+          <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 border-2 border-emerald-100">
+            <h4 className="text-sm md:text-base font-bold text-gray-900 mb-1.5 flex items-start gap-2">
+              <HelpCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+              Is my data secure?
+            </h4>
+            <p className="text-xs md:text-sm text-gray-700">
+              Yes! We take security seriously. All data is encrypted in transit and at rest. We use industry-standard security practices and are hosted on secure infrastructure. Your business data is safe with us.
+            </p>
+          </div>
+
+          {/* Q&A 10 */}
+          <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 border-2 border-rose-100">
+            <h4 className="text-sm md:text-base font-bold text-gray-900 mb-1.5 flex items-start gap-2">
+              <HelpCircle className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
+              Can I use this on my mobile phone?
+            </h4>
+            <p className="text-xs md:text-sm text-gray-700">
+              Absolutely! Very Simple Inventory is fully responsive and works perfectly on all devices - phones, tablets, and desktops. Manage your business from anywhere.
+            </p>
+          </div>
+
+          {/* Q&A 11 */}
+          <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 border-2 border-violet-100">
+            <h4 className="text-sm md:text-base font-bold text-gray-900 mb-1.5 flex items-start gap-2">
+              <HelpCircle className="w-4 h-4 text-violet-600 flex-shrink-0 mt-0.5" />
+              What premium features are coming?
+            </h4>
+            <p className="text-xs md:text-sm text-gray-700">
+              Premium features include unlimited items and bookings, tax calculator, events near you, custom analytics, online payments, customer reminders, automated notifications, public booking page, team collaboration, wholesale supplier connections, and data export.
+            </p>
+          </div>
+
+          {/* Q&A 12 */}
+          <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-3 md:p-4 border-2 border-teal-100">
+            <h4 className="text-sm md:text-base font-bold text-gray-900 mb-1.5 flex items-start gap-2">
+              <HelpCircle className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
               How do I get support?
             </h4>
             <p className="text-xs md:text-sm text-gray-700">
               You can reach us via email at support@verysimpleinventory.com. We aim to respond to all inquiries as soon as possible.
             </p>
           </div>
+        </div>
+
+        {/* Call to Action */}
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg md:rounded-xl p-4 md:p-6 text-center border-2 border-blue-200">
+          <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2">Still have questions?</h3>
+          <p className="text-xs md:text-sm text-gray-600 mb-3">
+            We&apos;re here to help! Contact us and we&apos;ll get back to you as soon as possible.
+          </p>
+          <Link
+            href="/contact"
+            className="inline-block px-4 py-2 md:px-6 md:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-md text-xs md:text-sm"
+          >
+            Contact Us
+          </Link>
         </div>
       </section>
 

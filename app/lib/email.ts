@@ -1,6 +1,4 @@
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import nodemailer from 'nodemailer';
 
 export interface SendEmailOptions {
   to: string;
@@ -10,25 +8,32 @@ export interface SendEmailOptions {
 }
 
 /**
- * Send an email using Resend
+ * Send an email using SMTP (Gmail)
  */
 export async function sendEmail({ to, subject, html, text }: SendEmailOptions) {
   try {
-    const { data, error } = await resend.emails.send({
-      from: `${process.env.EMAIL_FROM_NAME || 'Very Simple Inventory'} <${process.env.EMAIL_FROM_ADDRESS}>`,
+    // Create transporter using Gmail SMTP
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+
+    // Send email
+    const info = await transporter.sendMail({
+      from: `${process.env.EMAIL_FROM_NAME || 'Very Simple Inventory'} <${process.env.EMAIL_FROM_ADDRESS || process.env.SMTP_USER}>`,
       to,
       subject,
       html,
       text,
     });
 
-    if (error) {
-      console.error('[EMAIL] Send error:', error);
-      throw new Error('Failed to send email');
-    }
-
-    console.log('[EMAIL] Message sent:', data?.id);
-    return { success: true, messageId: data?.id };
+    console.log('[EMAIL] Message sent:', info.messageId);
+    return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error('[EMAIL] Send error:', error);
     throw new Error('Failed to send email');

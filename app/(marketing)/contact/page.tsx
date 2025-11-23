@@ -127,9 +127,9 @@ export default function ContactPage() {
           <div className="max-w-7xl mx-auto">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors border-2 border-gray-300 shadow-sm"
+              className="flex items-center gap-1 sm:gap-2 px-2 py-1 sm:px-4 sm:py-2 bg-gradient-to-r from-gray-600 to-gray-800 hover:from-gray-700 hover:to-gray-900 text-white rounded-lg sm:rounded-xl font-semibold transition-all duration-200 shadow-md sm:shadow-lg text-xs sm:text-sm inline-flex"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
               Back to Dashboard
             </Link>
           </div>
@@ -311,45 +311,47 @@ export default function ContactPage() {
         </section>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-white border-t-2 border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-              <Package className="w-5 h-5 text-white" />
+      {/* Footer - Only show for public users */}
+      {!session && (
+        <footer className="bg-white border-t-2 border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 py-6">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                <Package className="w-5 h-5 text-white" />
+              </div>
+              <h4 className="font-bold text-gray-900">Very Simple Inventory</h4>
             </div>
-            <h4 className="font-bold text-gray-900">Very Simple Inventory</h4>
-          </div>
-          <p className="text-gray-600 text-sm text-center mb-3">
-            Simple rental inventory management for businesses of all sizes.
-          </p>
-          <div className="border-t border-gray-200 pt-3">
-            <div className="flex justify-center gap-6 mb-3">
-              <Link
-                href="/"
-                className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-semibold"
-              >
-                Home
-              </Link>
-              <Link
-                href="/faq"
-                className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-semibold"
-              >
-                Frequently Asked Questions
-              </Link>
-              <Link
-                href="/contact"
-                className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-semibold"
-              >
-                Contact Us
-              </Link>
-            </div>
-            <p className="text-gray-600 text-sm text-center">
-              © 2025 Very Simple Inventory. All rights reserved.
+            <p className="text-gray-600 text-sm text-center mb-3">
+              Simple rental inventory management for businesses of all sizes.
             </p>
+            <div className="border-t border-gray-200 pt-3">
+              <div className="flex justify-center gap-6 mb-3">
+                <Link
+                  href="/"
+                  className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-semibold"
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/faq"
+                  className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-semibold"
+                >
+                  Frequently Asked Questions
+                </Link>
+                <Link
+                  href="/contact"
+                  className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-semibold"
+                >
+                  Contact Us
+                </Link>
+              </div>
+              <p className="text-gray-600 text-sm text-center">
+                © 2025 Very Simple Inventory. All rights reserved.
+              </p>
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 }
