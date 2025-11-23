@@ -40,50 +40,74 @@ export default function ContactPage() {
       [name]: value,
     });
 
-    // Clear validation error when user starts typing
-    if (validationErrors[name as keyof typeof validationErrors]) {
-      setValidationErrors({
-        ...validationErrors,
-        [name]: '',
-      });
+    // Real-time validation
+    const newErrors = { ...validationErrors };
+
+    if (name === 'name') {
+      if (!value.trim()) {
+        newErrors.name = 'Name is required';
+      } else if (value.length < 2) {
+        newErrors.name = 'Name must be at least 2 characters';
+      } else if (value.length > 100) {
+        newErrors.name = 'Name must be 100 characters or less';
+      } else {
+        newErrors.name = '';
+      }
+    } else if (name === 'email') {
+      if (!value.trim()) {
+        newErrors.email = 'Email is required';
+      } else if (value.length > 254) {
+        newErrors.email = 'Email must be 254 characters or less';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) && value.length > 0) {
+        newErrors.email = 'Please enter a valid email address';
+      } else {
+        newErrors.email = '';
+      }
+    } else if (name === 'message') {
+      if (!value.trim()) {
+        newErrors.message = 'Message is required';
+      } else if (value.length > 150) {
+        newErrors.message = 'Message must be 150 characters or less';
+      } else {
+        newErrors.message = '';
+      }
     }
 
-    // Validate character limits
-    if (name === 'name' && value.length > 100) {
-      setValidationErrors({
-        ...validationErrors,
-        name: 'Name must be 100 characters or less',
-      });
-    } else if (name === 'email' && value.length > 254) {
-      setValidationErrors({
-        ...validationErrors,
-        email: 'Email must be 254 characters or less',
-      });
-    } else if (name === 'message' && value.length > 150) {
-      setValidationErrors({
-        ...validationErrors,
-        message: 'Message must be 150 characters or less',
-      });
-    }
+    setValidationErrors(newErrors);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate character limits before submitting
+    // Validate all fields before submitting
     const errors = {
       name: '',
       email: '',
       message: '',
     };
 
-    if (formData.name.length > 100) {
+    // Name validation
+    if (!formData.name.trim()) {
+      errors.name = 'Name is required';
+    } else if (formData.name.length < 2) {
+      errors.name = 'Name must be at least 2 characters';
+    } else if (formData.name.length > 100) {
       errors.name = 'Name must be 100 characters or less';
     }
-    if (formData.email.length > 254) {
+
+    // Email validation
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required';
+    } else if (formData.email.length > 254) {
       errors.email = 'Email must be 254 characters or less';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
     }
-    if (formData.message.length > 150) {
+
+    // Message validation
+    if (!formData.message.trim()) {
+      errors.message = 'Message is required';
+    } else if (formData.message.length > 150) {
       errors.message = 'Message must be 150 characters or less';
     }
 
@@ -236,10 +260,7 @@ export default function ContactPage() {
                   placeholder="Your name"
                 />
                 {validationErrors.name && (
-                  <p className="text-red-600 text-xs mt-1">{validationErrors.name}</p>
-                )}
-                {formData.name.length > 100 && (
-                  <p className="text-red-600 text-xs mt-1">Name must be 100 characters or less</p>
+                  <p className="text-red-600 text-xs mt-1 font-semibold">{validationErrors.name}</p>
                 )}
               </div>
 
@@ -261,10 +282,7 @@ export default function ContactPage() {
                   placeholder="your@email.com"
                 />
                 {validationErrors.email && (
-                  <p className="text-red-600 text-xs mt-1">{validationErrors.email}</p>
-                )}
-                {formData.email.length > 254 && (
-                  <p className="text-red-600 text-xs mt-1">Email must be 254 characters or less</p>
+                  <p className="text-red-600 text-xs mt-1 font-semibold">{validationErrors.email}</p>
                 )}
               </div>
 

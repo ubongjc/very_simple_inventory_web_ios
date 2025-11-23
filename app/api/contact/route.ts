@@ -28,7 +28,7 @@ const contactFormSchema = z.object({
     .max(200, 'Subject must be less than 200 characters'),
   message: z
     .string()
-    .min(10, 'Message must be at least 10 characters')
+    .min(1, 'Message is required')
     .max(150, 'Message must be 150 characters or less'),
   // Honeypot field to catch bots
   website: z.string().optional(),
