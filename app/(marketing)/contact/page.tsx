@@ -2,15 +2,18 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import {
   Package,
   Send,
   CheckCircle,
   AlertCircle,
   Mail,
+  ArrowLeft,
 } from 'lucide-react';
 
 export default function ContactPage() {
+  const { data: session } = useSession();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -117,36 +120,52 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex flex-col">
-      {/* Navigation */}
-      <nav className="bg-white shadow-md border-b-2 border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <div className="p-1.5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                <Package className="w-4 h-4 text-white" />
-              </div>
-              <h1 className="text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">
-                Very Simple Inventory
-              </h1>
+      {/* Navigation - Conditional based on auth status */}
+      {session ? (
+        // Logged in users see Back to Dashboard button
+        <div className="bg-white shadow-sm border-b border-gray-200 p-4">
+          <div className="max-w-7xl mx-auto">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors border-2 border-gray-300 shadow-sm"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Dashboard
             </Link>
-            <div className="flex items-center gap-2 ml-4">
-              <Link
-                href="/auth/sign-in"
-                className="px-2.5 py-1 md:px-4 md:py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-md text-xs md:text-base whitespace-nowrap"
-              >
-                Log In
-              </Link>
-              <Link
-                href="/auth/sign-up"
-                className="px-2.5 py-1 md:px-4 md:py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-md text-xs md:text-base whitespace-nowrap"
-              >
-                <span className="md:hidden">Sign Up</span>
-                <span className="hidden md:inline">Sign Up Free</span>
-              </Link>
-            </div>
           </div>
         </div>
-      </nav>
+      ) : (
+        // Public users see standard navigation
+        <nav className="bg-white shadow-md border-b-2 border-gray-200 sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <div className="p-1.5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                  <Package className="w-4 h-4 text-white" />
+                </div>
+                <h1 className="text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">
+                  Very Simple Inventory
+                </h1>
+              </Link>
+              <div className="flex items-center gap-2 ml-4">
+                <Link
+                  href="/auth/sign-in"
+                  className="px-2.5 py-1 md:px-4 md:py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-md text-xs md:text-base whitespace-nowrap"
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/auth/sign-up"
+                  className="px-2.5 py-1 md:px-4 md:py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-md text-xs md:text-base whitespace-nowrap"
+                >
+                  <span className="md:hidden">Sign Up</span>
+                  <span className="hidden md:inline">Sign Up Free</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </nav>
+      )}
 
       {/* Contact Section - Centered and Compact */}
       <div className="flex-1 flex items-center justify-center p-4">
