@@ -85,6 +85,7 @@ export default function ContactPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
+          phone: '', // Empty phone field (not collected in form)
           subject: 'general', // Default subject for simplified form
         }),
       });

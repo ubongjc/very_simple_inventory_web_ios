@@ -56,6 +56,15 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
+    console.log('[CONTACT] Received body:', JSON.stringify({
+      name: body.name ? 'present' : 'missing',
+      email: body.email ? 'present' : 'missing',
+      phone: body.phone !== undefined ? 'present' : 'missing',
+      subject: body.subject ? 'present' : 'missing',
+      message: body.message ? 'present' : 'missing',
+      website: body.website !== undefined ? 'present' : 'missing',
+    }));
+
     // Check honeypot field - if filled, it's likely a bot
     if (body.website) {
       console.log('[SECURITY] Honeypot triggered for contact form');
@@ -74,6 +83,12 @@ export async function POST(request: NextRequest) {
 
     if (!validationResult.success) {
       const firstError = validationResult.error.errors[0];
+      console.error('[CONTACT] Validation failed:', {
+        field: firstError.path.join('.'),
+        message: firstError.message,
+        code: firstError.code,
+      });
+      console.error('[CONTACT] All errors:', validationResult.error.errors);
       return NextResponse.json(
         { error: firstError.message || 'Invalid input' },
         { status: 400 }
