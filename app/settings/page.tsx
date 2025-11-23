@@ -505,7 +505,10 @@ export default function SettingsPage() {
             <div className="flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
               <p className="text-xs text-blue-800">
-                <span className="font-bold">Note:</span> Your first and last name cannot be changed. If you need to update this information, please contact support.
+                <span className="font-bold">Note:</span> Your name cannot be changed. If you need to update this information,{' '}
+                <Link href="/contact" className="font-bold underline hover:text-blue-900 transition-colors">
+                  please contact support
+                </Link>.
               </p>
             </div>
           </div>
