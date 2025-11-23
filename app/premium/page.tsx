@@ -4,15 +4,11 @@ import Link from 'next/link';
 import {
   ArrowLeft,
   Sparkles,
-  CheckCircle,
   Globe,
-  TrendingUp,
   Bell,
   CreditCard,
   Users,
-  Calendar,
   BarChart3,
-  Lock,
   Calculator,
   BellRing,
   Truck,
@@ -309,37 +305,6 @@ export default function PremiumPage() {
           </div>
         </div>
 
-        {/* Trust Section */}
-        <div className="bg-white rounded-lg md:rounded-2xl shadow-lg p-4 md:p-8 border border-gray-200">
-          <div className="flex items-start gap-2 md:gap-4">
-            <div className="p-2 md:p-3 bg-blue-100 rounded-lg md:rounded-xl">
-              <Lock className="w-5 h-5 md:w-8 md:h-8 text-blue-600" />
-            </div>
-            <div>
-              <h3 className="text-sm md:text-xl font-bold text-black mb-1 md:mb-2">
-                Secure & Reliable
-              </h3>
-              <p className="text-xs md:text-base text-gray-600 mb-2 md:mb-4">
-                Your data is encrypted and backed up daily. We use industry-standard security
-                practices to keep your business information safe.
-              </p>
-              <ul className="space-y-1 md:space-y-2">
-                <li className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm text-gray-700">
-                  <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-600" />
-                  Cancel anytime, no questions asked
-                </li>
-                <li className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm text-gray-700">
-                  <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-600" />
-                  14-day money-back guarantee
-                </li>
-                <li className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm text-gray-700">
-                  <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-600" />
-                  No setup fees or hidden charges
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   );
