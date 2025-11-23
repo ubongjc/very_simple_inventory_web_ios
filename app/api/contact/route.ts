@@ -29,7 +29,7 @@ const contactFormSchema = z.object({
   message: z
     .string()
     .min(10, 'Message must be at least 10 characters')
-    .max(2000, 'Message must be less than 2000 characters'),
+    .max(150, 'Message must be 150 characters or less'),
   // Honeypot field to catch bots
   website: z.string().optional(),
 });
@@ -130,53 +130,42 @@ export async function POST(request: NextRequest) {
             <head>
               <meta charset="utf-8">
               <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-                .field { margin-bottom: 15px; }
-                .label { font-weight: bold; color: #555; }
-                .value { margin-top: 5px; padding: 10px; background: #f5f5f5; border-radius: 4px; }
-                .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666; }
+                body { font-family: Arial, sans-serif; line-height: 1.5; color: #333; margin: 0; padding: 20px; background: #f5f5f5; }
+                .container { max-width: 500px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 20px; }
+                .header h2 { margin: 0; font-size: 18px; }
+                .content { padding: 20px; }
+                .reply-btn { display: inline-block; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 10px 0 20px 0; }
+                .reply-btn:hover { background: #5568d3; }
+                .field { margin-bottom: 12px; }
+                .label { font-weight: bold; color: #555; font-size: 12px; text-transform: uppercase; }
+                .value { margin-top: 4px; padding: 8px 12px; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #667eea; }
+                .footer { padding: 16px 20px; background: #f8f9fa; border-top: 1px solid #e0e0e0; font-size: 12px; color: #666; text-align: center; }
               </style>
             </head>
             <body>
               <div class="container">
                 <div class="header">
-                  <h2>📧 New Contact Form Submission</h2>
+                  <h2>📧 New Contact Message</h2>
                 </div>
+                <div class="content">
+                  <a href="mailto:${sanitizedData.email}?subject=Re: ${encodeURIComponent(sanitizedData.subject)}" class="reply-btn">
+                    ↩️ Reply to ${sanitizedData.name}
+                  </a>
 
-                <div class="field">
-                  <div class="label">From:</div>
-                  <div class="value">${sanitizedData.name}</div>
-                </div>
+                  <div class="field">
+                    <div class="label">From</div>
+                    <div class="value">${sanitizedData.name} (${sanitizedData.email})</div>
+                  </div>
 
-                <div class="field">
-                  <div class="label">Email:</div>
-                  <div class="value">${sanitizedData.email}</div>
-                </div>
+                  <div class="field">
+                    <div class="label">Message</div>
+                    <div class="value">${sanitizedData.message.replace(/\n/g, '<br>')}</div>
+                  </div>
 
-                ${
-                  sanitizedData.phone
-                    ? `<div class="field">
-                  <div class="label">Phone:</div>
-                  <div class="value">${sanitizedData.phone}</div>
-                </div>`
-                    : ''
-                }
-
-                <div class="field">
-                  <div class="label">Subject:</div>
-                  <div class="value">${sanitizedData.subject}</div>
-                </div>
-
-                <div class="field">
-                  <div class="label">Message:</div>
-                  <div class="value">${sanitizedData.message.replace(/\n/g, '<br>')}</div>
-                </div>
-
-                <div class="footer">
-                  <p>Submitted at: ${new Date().toLocaleString()}</p>
-                  <p>Reply to: ${sanitizedData.email}</p>
+                  <div class="footer">
+                    Received: ${new Date().toLocaleString('en-US', { timeZone: 'Africa/Lagos', timeZoneName: 'short' })}
+                  </div>
                 </div>
               </div>
             </body>
@@ -184,19 +173,17 @@ export async function POST(request: NextRequest) {
         `;
 
         const emailText = `
-New Contact Form Submission
+New Contact Message
 
-From: ${sanitizedData.name}
-Email: ${sanitizedData.email}
-${sanitizedData.phone ? `Phone: ${sanitizedData.phone}` : ''}
-Subject: ${sanitizedData.subject}
+From: ${sanitizedData.name} (${sanitizedData.email})
 
 Message:
 ${sanitizedData.message}
 
 ---
-Submitted at: ${new Date().toLocaleString()}
-Reply to: ${sanitizedData.email}
+Received: ${new Date().toLocaleString('en-US', { timeZone: 'Africa/Lagos', timeZoneName: 'short' })}
+
+Reply to this email to respond to ${sanitizedData.name}.
         `;
 
         await sendEmail({

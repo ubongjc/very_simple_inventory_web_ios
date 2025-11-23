@@ -48,11 +48,21 @@ export default function ContactPage() {
       });
     }
 
-    // Validate character limit for message only
-    if (name === 'message' && value.length > 2000) {
+    // Validate character limits
+    if (name === 'name' && value.length > 100) {
       setValidationErrors({
         ...validationErrors,
-        message: 'Message must be 2000 characters or less',
+        name: 'Name must be 100 characters or less',
+      });
+    } else if (name === 'email' && value.length > 254) {
+      setValidationErrors({
+        ...validationErrors,
+        email: 'Email must be 254 characters or less',
+      });
+    } else if (name === 'message' && value.length > 150) {
+      setValidationErrors({
+        ...validationErrors,
+        message: 'Message must be 150 characters or less',
       });
     }
   };
@@ -67,11 +77,17 @@ export default function ContactPage() {
       message: '',
     };
 
-    if (formData.message.length > 2000) {
-      errors.message = 'Message must be 2000 characters or less';
+    if (formData.name.length > 100) {
+      errors.name = 'Name must be 100 characters or less';
+    }
+    if (formData.email.length > 254) {
+      errors.email = 'Email must be 254 characters or less';
+    }
+    if (formData.message.length > 150) {
+      errors.message = 'Message must be 150 characters or less';
     }
 
-    if (errors.message) {
+    if (errors.name || errors.email || errors.message) {
       setValidationErrors(errors);
       return;
     }
@@ -254,14 +270,14 @@ export default function ContactPage() {
 
               <div>
                 <label className="block text-xs md:text-sm font-bold text-gray-900 mb-1">
-                  Your Message <span className="text-red-500">*</span>
+                  Your Message <span className="text-red-500">*</span> <span className="text-gray-500 font-normal">({formData.message.length}/150 characters)</span>
                 </label>
                 <textarea
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  maxLength={2000}
+                  maxLength={150}
                   rows={4}
                   className={`w-full px-3 py-2 border-2 ${
                     validationErrors.message ? 'border-red-500' : 'border-gray-300'
@@ -269,7 +285,7 @@ export default function ContactPage() {
                   placeholder="Tell us how we can help you..."
                 />
                 {validationErrors.message && (
-                  <p className="text-red-600 text-xs mt-1">{validationErrors.message}</p>
+                  <p className="text-red-600 text-xs mt-1 font-semibold">{validationErrors.message}</p>
                 )}
               </div>
 
