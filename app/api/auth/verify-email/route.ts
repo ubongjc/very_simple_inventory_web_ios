@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
       prisma.user.update({
         where: { id: emailVerification.userId },
         data: { emailVerified: true },
-        select: { id: true, email: true, name: true },
+        select: { id: true, email: true, firstName: true, lastName: true },
       }),
       // Mark token as used
       prisma.emailVerification.update({
@@ -85,7 +85,10 @@ export async function POST(request: NextRequest) {
     });
 
     // Send welcome email (don't wait for it - send async)
-    sendWelcomeEmail(updatedUser.email, updatedUser.name || undefined)
+    const userName = updatedUser.firstName
+      ? `${updatedUser.firstName}${updatedUser.lastName ? ` ${updatedUser.lastName}` : ''}`
+      : undefined;
+    sendWelcomeEmail(updatedUser.email, userName)
       .catch((error) => {
         console.error('[EMAIL] Failed to send welcome email:', error);
         // Don't fail the verification if welcome email fails
@@ -155,7 +158,7 @@ export async function GET(request: NextRequest) {
       prisma.user.update({
         where: { id: emailVerification.userId },
         data: { emailVerified: true },
-        select: { id: true, email: true, name: true },
+        select: { id: true, email: true, firstName: true, lastName: true },
       }),
       // Mark token as used
       prisma.emailVerification.update({
@@ -170,7 +173,10 @@ export async function GET(request: NextRequest) {
     });
 
     // Send welcome email (don't wait for it - send async)
-    sendWelcomeEmail(updatedUser.email, updatedUser.name || undefined)
+    const userName = updatedUser.firstName
+      ? `${updatedUser.firstName}${updatedUser.lastName ? ` ${updatedUser.lastName}` : ''}`
+      : undefined;
+    sendWelcomeEmail(updatedUser.email, userName)
       .catch((error) => {
         console.error('[EMAIL] Failed to send welcome email:', error);
         // Don't fail the verification if welcome email fails
