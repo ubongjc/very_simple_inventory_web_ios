@@ -894,7 +894,7 @@ export default function HomePage() {
       </section>
 
       {/* Get Help - Q&A Section */}
-      <section className="max-w-7xl mx-auto px-4 py-8 md:py-16 mb-4 md:mb-16">
+      <section id="faq" className="max-w-7xl mx-auto px-4 py-8 md:py-16 mb-4 md:mb-16">
         <div className="text-center mb-8 md:mb-12">
           <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full font-semibold text-xs mb-4">
             <HelpCircle className="w-4 h-4" />

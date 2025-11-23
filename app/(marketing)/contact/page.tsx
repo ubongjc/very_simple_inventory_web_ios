@@ -298,7 +298,7 @@ export default function ContactPage() {
                 Home
               </Link>
               <Link
-                href="/faq"
+                href="/#faq"
                 className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-semibold"
               >
                 Frequently Asked Questions
