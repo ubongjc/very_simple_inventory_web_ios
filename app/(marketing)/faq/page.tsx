@@ -6,6 +6,7 @@ import {
   HelpCircle,
 } from 'lucide-react';
 
+// FAQ Page - Contains all frequently asked questions about Very Simple Inventory
 export default function FAQPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
