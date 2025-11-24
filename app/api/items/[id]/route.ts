@@ -138,19 +138,22 @@ export async function DELETE(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Check if item is used in any bookings (only count current user's bookings)
-    const itemBookings = await prisma.bookingItem.count({
+    // Check if item is used in any active bookings (CONFIRMED or OUT status only)
+    const activeItemBookings = await prisma.bookingItem.count({
       where: {
         itemId: id,
         booking: {
-          userId: session.user.id
+          userId: session.user.id,
+          status: {
+            in: ["CONFIRMED", "OUT"]
+          }
         }
       }
     });
 
-    if (itemBookings > 0) {
+    if (activeItemBookings > 0) {
       return NextResponse.json(
-        { error: `Cannot delete item that is used in ${itemBookings} booking${itemBookings > 1 ? 's' : ''}. Delete or modify the bookings first.` },
+        { error: `Cannot delete item that is used in ${activeItemBookings} active booking${activeItemBookings > 1 ? 's' : ''} (CONFIRMED or OUT). Complete or cancel the bookings first.` },
         { status: 400 }
       );
     }
