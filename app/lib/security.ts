@@ -165,7 +165,7 @@ export function sanitizeString(input: string): string {
   }
 
   // Encode special characters in correct order (& must be first!)
-  let sanitized = input
+  const sanitized = input
     .replace(/&/g, "&amp;")   // Must be first to avoid double-encoding
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
