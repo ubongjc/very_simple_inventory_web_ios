@@ -28,8 +28,12 @@ export default withAuth(
       const referer = req.headers.get('referer');
       const host = req.headers.get('host');
 
-      // Skip CSRF check for webhook endpoints (they use signature validation)
-      if (path.startsWith('/api/payment/webhook')) {
+      // Skip CSRF check for endpoints with their own protection
+      if (
+        path.startsWith('/api/payment/webhook') || // Webhook has signature validation
+        path.startsWith('/api/auth') ||             // NextAuth has built-in CSRF protection
+        path.startsWith('/api/contact')             // Contact form (public endpoint)
+      ) {
         return NextResponse.next();
       }
 
