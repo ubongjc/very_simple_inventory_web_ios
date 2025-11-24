@@ -6,6 +6,7 @@ import { Settings as SettingsIcon, Save, Building2, DollarSign, Globe, Calendar,
 import { sanitizeInput, phoneRegex, emailRegex } from "@/app/lib/clientValidation";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { signOut } from "next-auth/react";
+import { useInactivityTimeout } from "@/app/hooks/useInactivityTimeout";
 
 interface Settings {
   id: string;
@@ -103,6 +104,9 @@ export default function SettingsPage() {
   });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Enable 5-minute inactivity timeout
+  useInactivityTimeout(5);
 
   useEffect(() => {
     fetchSettings();

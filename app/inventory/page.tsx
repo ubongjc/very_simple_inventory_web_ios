@@ -9,6 +9,7 @@ import NotesDisplay from "../components/NotesDisplay";
 import NotesModal from "../components/NotesModal";
 import { useSettings } from "@/app/hooks/useSettings";
 import { toTitleCase } from "@/app/lib/validation";
+import { useInactivityTimeout } from "@/app/hooks/useInactivityTimeout";
 
 interface Item {
   id: string;
@@ -89,6 +90,9 @@ export default function InventoryPage() {
   });
 
   const { formatCurrency } = useSettings();
+
+  // Enable 5-minute inactivity timeout
+  useInactivityTimeout(5);
 
   useEffect(() => {
     const loadData = async () => {

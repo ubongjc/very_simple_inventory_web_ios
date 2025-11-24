@@ -9,6 +9,7 @@ import NotesDisplay from "../components/NotesDisplay";
 import NotesModal from "../components/NotesModal";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { useSettings } from "@/app/hooks/useSettings";
+import { useInactivityTimeout } from "@/app/hooks/useInactivityTimeout";
 import { toZonedTime } from "date-fns-tz";
 
 interface BookingItem {
@@ -85,6 +86,10 @@ export default function BookingsPage() {
   const [paymentNotes, setPaymentNotes] = useState("");
   const [paymentError, setPaymentError] = useState("");
   const { formatCurrency, settings } = useSettings();
+
+  // Enable 5-minute inactivity timeout
+  useInactivityTimeout(5);
+
   const [isItemFilterOpen, setIsItemFilterOpen] = useState(false);
   const [items, setItems] = useState<Item[]>([]);
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
