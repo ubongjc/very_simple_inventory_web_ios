@@ -479,7 +479,7 @@ export default function AddItemModal({
             {items.length >= maxItemsToAdd && (
               <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-2">
                 <p className="text-xs font-semibold text-yellow-800 text-center">
-                  You've reached your item limit. You can add {remainingSlots} item{remainingSlots !== 1 ? 's' : ''} total.
+                  You&apos;ve reached your item limit. You can add {remainingSlots} item{remainingSlots !== 1 ? 's' : ''} total.
                 </p>
               </div>
             )}
