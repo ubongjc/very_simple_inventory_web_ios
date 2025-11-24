@@ -109,9 +109,12 @@ export async function DELETE(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Check if customer has bookings
+    // Check if customer has bookings (only count current user's bookings)
     const customerBookings = await prisma.booking.count({
-      where: { customerId: id }
+      where: {
+        customerId: id,
+        userId: session.user.id
+      }
     });
 
     if (customerBookings > 0) {

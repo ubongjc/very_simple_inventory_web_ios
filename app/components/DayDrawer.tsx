@@ -692,8 +692,8 @@ export default function DayDrawer({ date, isOpen, onClose, selectedItemIds, onDa
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {itemAvailability.map((item) => (
-                        <tr key={item.id}>
+                      {itemAvailability.map((item, index) => (
+                        <tr key={item.id} className={index % 2 === 0 ? "bg-blue-100" : "bg-purple-100"}>
                           <td className="px-3 py-3 text-sm font-bold text-black border-r border-gray-200">
                             {item.name}
                           </td>

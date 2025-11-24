@@ -29,13 +29,22 @@ export async function DELETE() {
 
     // Delete in order: bookings first (has foreign keys to customers and items),
     // then customers and items can be deleted
-    const bookingsResult = await prisma.booking.deleteMany({});
-    const customersResult = await prisma.customer.deleteMany({});
-    const itemsResult = await prisma.item.deleteMany({});
-    const settingsResult = await prisma.settings.deleteMany({});
+    // IMPORTANT: Only delete current user's data, not all users' data!
+    const bookingsResult = await prisma.booking.deleteMany({
+      where: { userId: session.user.id }
+    });
+    const customersResult = await prisma.customer.deleteMany({
+      where: { userId: session.user.id }
+    });
+    const itemsResult = await prisma.item.deleteMany({
+      where: { userId: session.user.id }
+    });
+    const settingsResult = await prisma.settings.deleteMany({
+      where: { userId: session.user.id }
+    });
 
     return NextResponse.json({
-      message: "All data deleted successfully",
+      message: "Your data deleted successfully",
       bookings: bookingsResult.count,
       customers: customersResult.count,
       items: itemsResult.count,

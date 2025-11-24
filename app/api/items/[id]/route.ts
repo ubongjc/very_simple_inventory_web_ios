@@ -51,6 +51,7 @@ export async function PATCH(
       const overlappingBookings = await prisma.booking.findMany({
         where: {
           AND: [
+            { userId: session.user.id },
             { endDate: { gte: now } },
             { status: { in: ["CONFIRMED", "OUT"] } },
           ],
@@ -137,9 +138,14 @@ export async function DELETE(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Check if item is used in any bookings
+    // Check if item is used in any bookings (only count current user's bookings)
     const itemBookings = await prisma.bookingItem.count({
-      where: { itemId: id }
+      where: {
+        itemId: id,
+        booking: {
+          userId: session.user.id
+        }
+      }
     });
 
     if (itemBookings > 0) {
