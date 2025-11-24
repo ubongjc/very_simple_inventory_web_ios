@@ -3,11 +3,16 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/app/lib/prisma";
 import { verifyPassword } from "@/app/lib/auth";
 
-// Validate NEXTAUTH_SECRET at startup
-if (!process.env.NEXTAUTH_SECRET || process.env.NEXTAUTH_SECRET.length < 32) {
-  throw new Error(
-    'NEXTAUTH_SECRET must be set and at least 32 characters long. ' +
-    'Generate one with: openssl rand -base64 32'
+// Validate NEXTAUTH_SECRET at startup (warning only, don't crash)
+if (!process.env.NEXTAUTH_SECRET) {
+  console.error(
+    '⚠️ WARNING: NEXTAUTH_SECRET is not set! ' +
+    'This is a critical security issue. Generate one with: openssl rand -base64 32'
+  );
+} else if (process.env.NEXTAUTH_SECRET.length < 32) {
+  console.warn(
+    '⚠️ WARNING: NEXTAUTH_SECRET is shorter than recommended (32 characters). ' +
+    'Consider generating a new one with: openssl rand -base64 32'
   );
 }
 
