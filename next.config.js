@@ -82,11 +82,11 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline'", // unsafe-inline needed for Next.js
-              "style-src 'self' 'unsafe-inline'", // unsafe-inline needed for Tailwind
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live", // Added Vercel domains
+              "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self' data:",
-              "connect-src 'self' https://api.paystack.co",
+              "connect-src 'self' https://api.paystack.co https://vercel.live https://*.vercel.live", // Added Vercel domains
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
