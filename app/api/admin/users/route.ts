@@ -197,6 +197,19 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    // Prevent deleting the last admin account
+    if (userExists.role === 'admin') {
+      const adminCount = await prisma.user.count({
+        where: { role: 'admin' }
+      });
+
+      if (adminCount <= 1) {
+        return NextResponse.json({
+          error: "Cannot delete the last admin account. System must have at least one admin."
+        }, { status: 403 });
+      }
+    }
+
     // Delete the user (cascade will handle all related data)
     await prisma.user.delete({
       where: { id: userId },
