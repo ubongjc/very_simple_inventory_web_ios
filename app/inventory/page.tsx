@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Edit, Trash2, Package, Users, AlertTriangle, Search, Menu, X, ChevronDown, ChevronRight } from "lucide-react";
+import { ArrowLeft, Edit, Trash2, Package, Users, AlertTriangle, Search, Menu, X, ChevronDown, ChevronRight, Edit2 } from "lucide-react";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import InventorySummary from "../components/InventorySummary";
 import NotesDisplay from "../components/NotesDisplay";
@@ -565,10 +565,10 @@ export default function InventoryPage() {
                   <th className="w-[10%] px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
                     Qty
                   </th>
-                  <th className="w-[13%] px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                  <th className="w-[18%] px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
                     Price
                   </th>
-                  <th className="w-[25%] px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                  <th className="w-[20%] px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
                     Notes
                   </th>
                   <th className="w-[20%] px-2 py-1 text-right text-[9px] font-bold text-black uppercase">
@@ -679,7 +679,7 @@ export default function InventoryPage() {
                     ) : (
                       <>
                         <td className="px-2 py-1 font-bold text-black text-[10px]">
-                          <div className="truncate" title={item.name}>{item.name}</div>
+                          <div className="break-words">{item.name}</div>
                         </td>
                         <td className="px-2 py-1 font-semibold text-black text-[10px]">{item.unit}</td>
                         <td className="px-2 py-1 font-semibold text-black text-[10px]">{item.totalQuantity}</td>
@@ -687,8 +687,13 @@ export default function InventoryPage() {
                           {item.price ? formatCurrency(item.price) : "-"}
                         </td>
                         <td className="px-2 py-1 text-black text-[9px] font-medium">
-                          <div className="truncate cursor-pointer" title={item.notes || ""} onClick={() => handleOpenItemNotes(item)}>
-                            {item.notes || "-"}
+                          <div
+                            className="truncate cursor-pointer hover:bg-yellow-100 hover:text-blue-600 rounded px-1 py-0.5 transition-colors flex items-center gap-1 group"
+                            onClick={() => handleOpenItemNotes(item)}
+                            title={item.notes ? "Click to edit notes" : "Click to add notes"}
+                          >
+                            <Edit2 className="w-3 h-3 flex-shrink-0 text-gray-400 group-hover:text-blue-600" />
+                            <span className="truncate">{item.notes || "Add notes..."}</span>
                           </div>
                         </td>
                         <td className="px-2 py-1 text-right space-x-1">
