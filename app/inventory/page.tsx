@@ -552,33 +552,33 @@ export default function InventoryPage() {
                 </select>
               </div>
             </div>
-            <div className="overflow-x-scroll">
-            <table className="min-w-full divide-y divide-gray-200">
+            <div className="w-full overflow-hidden">
+            <table className="w-full table-fixed divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                  <th className="w-[20%] px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
                     Name
                   </th>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                  <th className="w-[12%] px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
                     Unit
                   </th>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                  <th className="w-[10%] px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
                     Qty
                   </th>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                  <th className="w-[13%] px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
                     Price
                   </th>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                  <th className="w-[25%] px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
                     Notes
                   </th>
-                  <th className="px-2 py-1 text-right text-[9px] font-bold text-black uppercase">
+                  <th className="w-[20%] px-2 py-1 text-right text-[9px] font-bold text-black uppercase">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {getFilteredAndSortedItems().map((item) => (
-                  <tr key={item.id}>
+                {getFilteredAndSortedItems().map((item, index) => (
+                  <tr key={item.id} className={index % 2 === 0 ? "bg-blue-100" : "bg-purple-100"}>
                     {editingId === item.id ? (
                       <>
                         <td className="px-2 py-1">
@@ -678,7 +678,7 @@ export default function InventoryPage() {
                       </>
                     ) : (
                       <>
-                        <td className="px-2 py-1 font-bold text-black text-[10px] max-w-[150px]">
+                        <td className="px-2 py-1 font-bold text-black text-[10px]">
                           <div className="truncate" title={item.name}>{item.name}</div>
                         </td>
                         <td className="px-2 py-1 font-semibold text-black text-[10px]">{item.unit}</td>
@@ -686,11 +686,10 @@ export default function InventoryPage() {
                         <td className="px-2 py-1 font-semibold text-green-700 text-[10px]">
                           {item.price ? formatCurrency(item.price) : "-"}
                         </td>
-                        <td className="px-2 py-1 text-black text-[9px] font-medium max-w-[120px]">
-                          <NotesDisplay
-                            notes={item.notes || ""}
-                            onClick={() => handleOpenItemNotes(item)}
-                          />
+                        <td className="px-2 py-1 text-black text-[9px] font-medium">
+                          <div className="truncate cursor-pointer" title={item.notes || ""} onClick={() => handleOpenItemNotes(item)}>
+                            {item.notes || "-"}
+                          </div>
                         </td>
                         <td className="px-2 py-1 text-right space-x-1">
                           <button
@@ -775,30 +774,30 @@ export default function InventoryPage() {
                 </select>
               </div>
             </div>
-            <div className="overflow-x-scroll">
-            <table className="min-w-full divide-y divide-gray-200">
+            <div className="w-full overflow-hidden">
+            <table className="w-full table-fixed divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                  <th className="w-[35%] px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
                     First Name
                   </th>
-                  <th className="px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
+                  <th className="w-[35%] px-2 py-1 text-left text-[9px] font-bold text-black uppercase">
                     Last Name
                   </th>
-                  <th className="px-2 py-1 text-right text-[9px] font-bold text-black uppercase">
+                  <th className="w-[30%] px-2 py-1 text-right text-[9px] font-bold text-black uppercase">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {getFilteredAndSortedCustomers().map((customer) => {
+                {getFilteredAndSortedCustomers().map((customer, index) => {
                   const isExpanded = expandedCustomerIds.has(customer.id);
                   const isEditing = editingId === customer.id;
 
                   return (
                     <React.Fragment key={customer.id}>
                       <tr
-                        className="cursor-pointer hover:bg-blue-50 transition-colors"
+                        className={`cursor-pointer transition-colors ${index % 2 === 0 ? "bg-blue-100 hover:bg-blue-200" : "bg-purple-100 hover:bg-purple-200"}`}
                         onClick={() => !isEditing && toggleCustomerExpand(customer.id)}
                       >
                         <td className="px-2 py-1 font-bold text-black text-[10px]">

@@ -1052,7 +1052,7 @@ export default function AddBookingModal({
                             : "bg-gray-300 text-gray-500 cursor-not-allowed"
                         }`}
                       >
-                        <Plus className="w-4 h-4" /> Add item to rent
+                        <Plus className="w-4 h-4" /> Add another item to rent
                       </button>
                     );
                   })()
@@ -1190,10 +1190,11 @@ export default function AddBookingModal({
                           const error = validateLastName(sanitized);
                           setErrors((prev) => ({ ...prev, lastName: error }));
                         }}
-                        placeholder="Last Name"
+                        placeholder="Last Name *"
                         className={`w-full px-2 py-1.5 border-2 ${
                           errors.lastName ? "border-red-500" : "border-gray-400"
                         } rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm`}
+                        required
                       />
                       {errors.lastName && (
                         <div className="mt-1 bg-red-50 border border-red-200 rounded p-1">
@@ -1331,7 +1332,7 @@ export default function AddBookingModal({
                   </div>
                   <div className="flex flex-col min-w-0">
                     <label className="block text-xs font-bold mb-1 text-green-800">
-                      Advance
+                      Advance payment amount
                     </label>
                     <div className="flex items-center min-w-0">
                       <div className="flex items-center justify-center h-10 px-2 bg-white border-2 border-gray-400 border-r-0 rounded-l flex-shrink-0">
