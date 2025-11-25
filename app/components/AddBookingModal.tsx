@@ -105,7 +105,8 @@ export default function AddBookingModal({
 
   // Calculate max date based on plan type
   const today = new Date();
-  const todayStr = today.toISOString().split('T')[0];
+  // Use local timezone instead of UTC to avoid date shifting
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
   // For free users: 2 calendar months from now, for premium: 1 year
   const planType = usageStats?.planType || 'free';
@@ -121,7 +122,8 @@ export default function AddBookingModal({
       })()
     : new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
 
-  const maxDateStr = maxDate.toISOString().split('T')[0];
+  // Use local timezone instead of UTC to avoid date shifting
+  const maxDateStr = `${maxDate.getFullYear()}-${String(maxDate.getMonth() + 1).padStart(2, '0')}-${String(maxDate.getDate()).padStart(2, '0')}`;
 
   // Format date without timezone conversion
   const formatDate = (dateString: string) => {

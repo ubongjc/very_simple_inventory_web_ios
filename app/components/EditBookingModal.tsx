@@ -124,7 +124,8 @@ export default function EditBookingModal({
       })()
     : new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
 
-  const maxDateStr = maxDate.toISOString().split('T')[0];
+  // Use local timezone instead of UTC to avoid date shifting
+  const maxDateStr = `${maxDate.getFullYear()}-${String(maxDate.getMonth() + 1).padStart(2, '0')}-${String(maxDate.getDate()).padStart(2, '0')}`;
 
   // Track initial values to detect changes
   const [initialValues, setInitialValues] = useState<{

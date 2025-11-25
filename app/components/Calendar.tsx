@@ -412,8 +412,12 @@ export default function Calendar({
             validRange={
               userPlan === 'free' && minDate && maxDate
                 ? {
-                    start: minDate.toISOString().split('T')[0],
-                    end: new Date(maxDate.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Add 1 day to make it inclusive
+                    // Use local timezone to avoid date shifting
+                    start: `${minDate.getFullYear()}-${String(minDate.getMonth() + 1).padStart(2, '0')}-${String(minDate.getDate()).padStart(2, '0')}`,
+                    end: (() => {
+                      const endDate = new Date(maxDate.getTime() + 24 * 60 * 60 * 1000);
+                      return `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')}`;
+                    })(),
                   }
                 : undefined
             }

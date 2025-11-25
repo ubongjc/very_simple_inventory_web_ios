@@ -82,7 +82,10 @@ export default function BookingsPage() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [addingPaymentFor, setAddingPaymentFor] = useState<string | null>(null);
   const [paymentAmount, setPaymentAmount] = useState("");
-  const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [paymentDate, setPaymentDate] = useState((() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  })());
   const [paymentNotes, setPaymentNotes] = useState("");
   const [paymentError, setPaymentError] = useState("");
   const { formatCurrency, settings } = useSettings();
@@ -557,7 +560,10 @@ export default function BookingsPage() {
 
       // Reset form and refresh data
       setPaymentAmount("");
-      setPaymentDate(new Date().toISOString().split('T')[0]);
+      setPaymentDate((() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  })());
       setPaymentNotes("");
       setPaymentError("");
       setAddingPaymentFor(null);
@@ -1291,7 +1297,10 @@ export default function BookingsPage() {
                                         value={paymentDate}
                                         onChange={(date) => setPaymentDate(date)}
                                         label="Select Payment Date:"
-                                        minDate={new Date().toISOString().split('T')[0]}
+                                        minDate={(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  })()}
                                         className="text-[9px]"
                                       />
                                     </div>
@@ -1317,7 +1326,10 @@ export default function BookingsPage() {
                                       onClick={() => {
                                         setAddingPaymentFor(null);
                                         setPaymentAmount("");
-                                        setPaymentDate(new Date().toISOString().split('T')[0]);
+                                        setPaymentDate((() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  })());
                                         setPaymentNotes("");
                                         setPaymentError("");
                                       }}
@@ -1332,7 +1344,10 @@ export default function BookingsPage() {
                               <button
                                 onClick={() => {
                                   setAddingPaymentFor(booking.id);
-                                  setPaymentDate(new Date().toISOString().split('T')[0]);
+                                  setPaymentDate((() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  })());
                                   setPaymentAmount("");
                                   setPaymentNotes("");
                                   setPaymentError("");
