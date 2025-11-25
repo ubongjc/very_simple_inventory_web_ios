@@ -20,6 +20,7 @@ interface Item {
 interface BookingItem {
   itemId: string;
   quantity: number | "";
+  quantityError?: string;
 }
 
 export default function CheckAvailabilityModal({
@@ -364,76 +365,106 @@ export default function CheckAvailabilityModal({
               </label>
               <div className="space-y-2">
                 {bookingItems.map((bookingItem, index) => (
-                  <div key={index} className="grid grid-cols-[1fr_auto] gap-4 items-center">
-                    <div className="flex gap-1 items-center min-w-0">
-                      <select
-                        value={bookingItem.itemId}
-                        onChange={(e) => {
-                          // Prevent selecting the "Select" option
-                          if (e.target.value !== "") {
-                            updateBookingItem(index, "itemId", e.target.value);
-                          }
-                        }}
-                        className="flex-1 min-w-0 px-1 py-1 border-2 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-xs truncate"
-                        required
-                      >
-                        <option value="" disabled>Select Item</option>
-                        {items
-                          .filter((item) =>
-                            // Show current item OR items not already selected in other rows
-                            item.id === bookingItem.itemId ||
-                            !bookingItems.some((ri, i) => i !== index && ri.itemId === item.id)
-                          )
-                          .map((item) => {
-                            const available = item.available ?? item.totalQuantity;
-                            const isOverbooked = available < 0;
-                            return (
-                              <option key={item.id} value={item.id} disabled={isOverbooked || available === 0}>
-                                {item.name} ({available} remaining{isOverbooked ? ' ⚠️ OVERBOOKED' : available === 0 ? ' - NONE AVAILABLE' : ''})
-                              </option>
-                            );
-                          })
-                        }
-                      </select>
-                      {bookingItems.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeBookingItem(index)}
-                          className="w-6 h-6 flex-shrink-0 flex items-center justify-center text-red-600 hover:text-white hover:bg-red-600 border border-red-600 rounded transition-colors"
-                          title="Remove item"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      )}
-                    </div>
-                    <div className="flex justify-end">
-                      <input
-                        type="number"
-                        value={bookingItem.quantity}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          // Allow empty string while typing
-                          if (val === "") {
-                            updateBookingItem(index, "quantity", "");
-                          } else {
-                            const numVal = parseInt(val);
-                            // Prevent negative numbers and 0
-                            if (numVal > 0) {
-                              updateBookingItem(index, "quantity", numVal);
+                  <div key={index} className="space-y-0.5">
+                    <div className="grid grid-cols-[1fr_auto] gap-4 items-center">
+                      <div className="flex gap-1 items-center min-w-0">
+                        <select
+                          value={bookingItem.itemId}
+                          onChange={(e) => {
+                            // Prevent selecting the "Select" option
+                            if (e.target.value !== "") {
+                              updateBookingItem(index, "itemId", e.target.value);
                             }
+                          }}
+                          className="flex-1 min-w-0 px-1 py-1 border-2 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-xs truncate"
+                          required
+                        >
+                          <option value="" disabled>Select Item</option>
+                          {items
+                            .filter((item) =>
+                              // Show current item OR items not already selected in other rows
+                              item.id === bookingItem.itemId ||
+                              !bookingItems.some((ri, i) => i !== index && ri.itemId === item.id)
+                            )
+                            .map((item) => {
+                              const available = item.available ?? item.totalQuantity;
+                              const isOverbooked = available < 0;
+                              return (
+                                <option key={item.id} value={item.id} disabled={isOverbooked || available === 0}>
+                                  {item.name} ({available} remaining{isOverbooked ? ' ⚠️ OVERBOOKED' : available === 0 ? ' - NONE AVAILABLE' : ''})
+                                </option>
+                              );
+                            })
                           }
-                        }}
-                        onBlur={(e) => {
-                          // Set to 1 if empty on blur
-                          if (e.target.value === "" || parseInt(e.target.value) < 1) {
-                            updateBookingItem(index, "quantity", 1);
-                          }
-                        }}
-                        placeholder="Qty"
-                        className="w-20 px-1 py-1 border-2 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-xs"
-                        min="1"
-                      />
+                        </select>
+                        {bookingItems.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeBookingItem(index)}
+                            className="w-6 h-6 flex-shrink-0 flex items-center justify-center text-red-600 hover:text-white hover:bg-red-600 border border-red-600 rounded transition-colors"
+                            title="Remove item"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        )}
+                      </div>
+                      <div className="flex justify-end">
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={bookingItem.quantity}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            // Only allow digits
+                            const numericValue = val.replace(/[^0-9]/g, '');
+
+                            // Update booking items with validation
+                            const updatedItems = [...bookingItems];
+                            if (numericValue === "") {
+                              updatedItems[index] = { ...bookingItem, quantity: "", quantityError: "" };
+                            } else {
+                              const numVal = parseInt(numericValue);
+                              if (numVal > 0 && numVal <= 100000) {
+                                updatedItems[index] = { ...bookingItem, quantity: numVal, quantityError: "" };
+                              } else if (numVal > 100000) {
+                                updatedItems[index] = { ...bookingItem, quantity: "", quantityError: "Qty cannot exceed 100,000" };
+                              } else {
+                                updatedItems[index] = { ...bookingItem, quantity: "", quantityError: "Qty must be greater than 0" };
+                              }
+                            }
+                            setBookingItems(updatedItems);
+                          }}
+                          onKeyPress={(e) => {
+                            // Prevent non-numeric characters from being typed
+                            if (!/[0-9]/.test(e.key)) {
+                              e.preventDefault();
+                              // Show error message briefly
+                              const updatedItems = [...bookingItems];
+                              updatedItems[index] = { ...bookingItem, quantityError: "Only numbers allowed" };
+                              setBookingItems(updatedItems);
+
+                              // Clear error after 2 seconds
+                              setTimeout(() => {
+                                const items = [...bookingItems];
+                                items[index] = { ...items[index], quantityError: "" };
+                                setBookingItems(items);
+                              }, 2000);
+                            }
+                          }}
+                          placeholder="Qty"
+                          className={`w-20 px-1 py-1 border-2 rounded focus:ring-2 ${
+                            bookingItem.quantityError
+                              ? "border-red-500 ring-2 ring-red-500/40"
+                              : "border-gray-400"
+                          } focus:ring-blue-500 outline-none text-black font-semibold text-xs`}
+                        />
+                      </div>
                     </div>
+                    {bookingItem.quantityError && (
+                      <p className="text-[10px] font-semibold text-red-600 ml-1">
+                        {bookingItem.quantityError}
+                      </p>
+                    )}
                   </div>
                 ))}
                 {/* Check if all items are selected and last item is complete */}
@@ -455,14 +486,14 @@ export default function CheckAvailabilityModal({
                       type="button"
                       onClick={addBookingItem}
                       disabled={!hasValidLastItem}
-                      className={`text-[10px] flex items-center gap-1 ${
+                      className={`text-xs px-3 py-1.5 rounded-lg font-semibold shadow-md transition-all flex items-center gap-1 ${
                         hasValidLastItem
-                          ? 'text-blue-600 hover:underline cursor-pointer'
-                          : 'text-gray-400 cursor-not-allowed'
+                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 cursor-pointer'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       }`}
                       title={!hasValidLastItem ? 'Please select an item and enter a quantity first' : ''}
                     >
-                      <Plus className="w-3 h-3" /> Add another item
+                      <Plus className="w-4 h-4" /> Add another item
                     </button>
                   );
                 })()}
