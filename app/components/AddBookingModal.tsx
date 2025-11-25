@@ -170,6 +170,7 @@ export default function AddBookingModal({
         address: "",
         totalPrice: "",
         advancePayment: "",
+        paymentDueDate: "",
       });
 
       fetchCustomers();
@@ -876,6 +877,7 @@ export default function AddBookingModal({
         address: "",
         totalPrice: "",
         advancePayment: "",
+        paymentDueDate: "",
       });
 
       onSuccess();
