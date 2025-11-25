@@ -1404,7 +1404,6 @@ export default function AddBookingModal({
                     }}
                     label="Due Date *"
                     minDate={endDate || undefined}
-                    error={errors.paymentDueDate}
                   />
                   {errors.paymentDueDate && (
                     <div className="mt-1 bg-red-50 border border-red-200 rounded p-1">
