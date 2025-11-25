@@ -696,7 +696,7 @@ export default function InventoryPage() {
                             <span className="truncate">{item.notes || "Add notes..."}</span>
                           </div>
                         </td>
-                        <td className="px-2 py-1 text-right space-x-1">
+                        <td className="px-2 py-1 text-right space-x-1 whitespace-nowrap">
                           <button
                             onClick={() => handleEdit(item.id, item)}
                             className="px-1 py-0.5 text-[9px] font-bold text-blue-600 hover:text-white hover:bg-blue-600 border border-blue-600 rounded transition-colors"
