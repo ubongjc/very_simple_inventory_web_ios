@@ -331,7 +331,7 @@ export default function AddItemModal({
               </Link>
 
               <Link
-                href="/dashboard"
+                href="/dashboard?openBooking=true"
                 className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 font-semibold text-center block transition-all shadow-md"
                 onClick={handleCloseSuccess}
               >

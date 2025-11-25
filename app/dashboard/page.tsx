@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import Calendar from '../components/Calendar';
 import DayDrawer from '../components/DayDrawer';
 import AddItemModal from '../components/AddItemModal';
@@ -78,6 +79,9 @@ export default function Home() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [usageStats, setUsageStats] = useState<any | null>(null);
 
+  // Get URL search parameters
+  const searchParams = useSearchParams();
+
   // Enable 5-minute inactivity timeout
   useInactivityTimeout(5);
 
@@ -113,6 +117,13 @@ export default function Home() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
+
+  // Auto-open booking modal if URL parameter is present
+  useEffect(() => {
+    if (searchParams.get('openBooking') === 'true') {
+      setIsAddBookingModalOpen(true);
+    }
+  }, [searchParams]);
 
   const fetchItems = async () => {
     try {

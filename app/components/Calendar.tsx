@@ -205,6 +205,43 @@ export default function Calendar({
               onDateClick(info.date);
               return 'popover'; // Can also return "week", "day", or custom function
             }}
+            dayHeaderDidMount={(info) => {
+              // Make day headers clickable in Week and Day views
+              const headerEl = info.el;
+              headerEl.style.cursor = 'pointer';
+              headerEl.style.userSelect = 'none';
+
+              // Add click handler to open drawer for that specific day
+              const clickHandler = (e: Event) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onDateClick(info.date);
+              };
+
+              headerEl.addEventListener('click', clickHandler);
+
+              // Add keyboard support
+              headerEl.setAttribute('tabindex', '0');
+              headerEl.setAttribute('role', 'button');
+              headerEl.setAttribute('aria-label', `View details for ${info.date.toLocaleDateString()}`);
+
+              const keyHandler = (e: KeyboardEvent) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onDateClick(info.date);
+                }
+              };
+
+              headerEl.addEventListener('keydown', keyHandler);
+
+              // Add hover effect
+              headerEl.addEventListener('mouseenter', () => {
+                headerEl.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+              });
+              headerEl.addEventListener('mouseleave', () => {
+                headerEl.style.backgroundColor = '';
+              });
+            }}
             eventDidMount={(info) => {
               // Add accessibility attributes to event elements
               const eventEl = info.el;
