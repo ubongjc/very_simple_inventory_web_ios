@@ -94,15 +94,6 @@ export default function AddItemModal({
     if (!item.unit.trim()) {
       errors.unit = "*Unit is required";
       isValid = false;
-    } else if (item.unit.trim().length < 2) {
-      errors.unit = "*Unit must be at least 2 characters";
-      isValid = false;
-    } else if (item.unit.length > 16) {
-      errors.unit = "*Unit must be 16 characters or less";
-      isValid = false;
-    } else if (!/^[a-z\s]+$/.test(item.unit)) {
-      errors.unit = "*Enter letters only (no numbers)";
-      isValid = false;
     }
 
     // Quantity validation
@@ -478,19 +469,34 @@ export default function AddItemModal({
                         <label className="block text-xs font-semibold mb-1 text-black">
                           Unit *
                         </label>
-                        <input
-                          type="text"
+                        <select
                           value={item.unit}
                           onChange={(e) => {
-                            const value = e.target.value.toLowerCase().replace(/[^a-z\s]/g, '');
-                            handleFieldChange(index, 'unit', value);
+                            handleFieldChange(index, 'unit', e.target.value);
                           }}
-                          maxLength={16}
                           className={`w-full px-2 py-1.5 border-2 ${
                             item.errors.unit ? "border-red-500 ring-2 ring-red-500/40" : "border-gray-400"
                           } rounded focus:ring-2 focus:ring-blue-500 outline-none text-black font-semibold text-sm`}
-                          placeholder="pcs"
-                        />
+                        >
+                          <option value="pcs">pcs (pieces)</option>
+                          <option value="kg">kg (kilograms)</option>
+                          <option value="g">g (grams)</option>
+                          <option value="lbs">lbs (pounds)</option>
+                          <option value="oz">oz (ounces)</option>
+                          <option value="litres">litres</option>
+                          <option value="ml">ml (millilitres)</option>
+                          <option value="gallons">gallons</option>
+                          <option value="yards">yards</option>
+                          <option value="metres">metres</option>
+                          <option value="feet">feet</option>
+                          <option value="inches">inches</option>
+                          <option value="sets">sets</option>
+                          <option value="boxes">boxes</option>
+                          <option value="packs">packs</option>
+                          <option value="rolls">rolls</option>
+                          <option value="bags">bags</option>
+                          <option value="units">units</option>
+                        </select>
                         {item.errors.unit && (
                           <p className="mt-1 text-xs font-semibold text-red-600">{item.errors.unit}</p>
                         )}
@@ -635,7 +641,7 @@ export default function AddItemModal({
               disabled={loading}
               className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 font-semibold"
             >
-              {loading ? "Adding..." : `Add ${items.length} Item${items.length > 1 ? 's' : ''}`}
+              {loading ? "Saving..." : `Save ${items.length} item${items.length > 1 ? 's' : ''}`}
             </button>
           </div>
         </div>
